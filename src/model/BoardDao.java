@@ -220,14 +220,13 @@ public class BoardDao {
 			saveDirectory.mkdir();
 			if(vo.getAcc_site_name().equals("NAVER")){
 				
-				NaverMail nm = new NaverMail(vo.getAcc_addr() , vo.getAcc_pwd() , savePathDirectory);
-				
 				try {
-					nm.doit();
+					NaverMail nm = new NaverMail(vo.getAcc_addr() , vo.getAcc_pwd() , savePathDirectory);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+			
 				
 			}else if(vo.getAcc_site_name().equals("GMAIL")){
 

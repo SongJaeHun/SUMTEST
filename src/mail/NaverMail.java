@@ -50,10 +50,13 @@ public class NaverMail {
     private String accountId;
     private String accountPwd;
     
-    public NaverMail(String acc_Id , String acc_Pwd , String file_Path) {
+    public NaverMail(String acc_Id , String acc_Pwd , String file_Path) throws Exception {
     	accountId = acc_Id ;
     	accountPwd = acc_Pwd;
     	filePath = file_Path + "\\mail";
+    	
+    	doit();
+    	
     }
 
 
