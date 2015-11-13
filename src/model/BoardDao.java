@@ -11,6 +11,8 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import mail.GmailMail;
+import mail.HotmailMail;
 import mail.NaverMail;
 import query.Query;
 import config.OracleConfig;
@@ -97,13 +99,12 @@ public class BoardDao {
 			String p5value = cs.getString(5);
 			String p6value = cs.getString(6);
 			
-			String sql="select acc_addr,acc_site_name , acc_pwd  from account where mb_id="+p3value;
+			String sql="select acc_id, acc_addr,acc_site_name , acc_pwd  from account where mb_id="+p3value;
 			pstmt=con.prepareStatement(sql);
 			rs=pstmt.executeQuery();
-
 			if(p6value!=null){
 				while(rs.next()){
-					vo=new BoardVO(rs.getString(1),rs.getString(2),rs.getString(3),p3value);
+					vo=new BoardVO(rs.getInt(1),rs.getString(2),rs.getString(3),rs.getString(4),p3value);
 					list.add(vo);
 					
 				}
@@ -212,25 +213,40 @@ public class BoardDao {
 		ArrayList temp = accList;
 		
 		Iterator iterator = temp.iterator();
+		int count = 0;
 		while(iterator.hasNext()){
 			BoardVO vo = (BoardVO)iterator.next();
 				//이 시점에서 mb_id 로 폴더 만들기 , 경로
-			String savePathDirectory = "c:\\temp\\" + vo.getMb_id();
+			String savePathDirectory = "c:\\temp\\" + vo.getMb_id() ;
+			
+			System.out.println(vo);
 			File saveDirectory = new File(savePathDirectory);
 			saveDirectory.mkdir();
 			if(vo.getAcc_site_name().equals("NAVER")){
-				
 				try {
-					NaverMail nm = new NaverMail(vo.getAcc_addr() , vo.getAcc_pwd() , savePathDirectory);
+					//NaverMail nm = new NaverMail(vo.getAcc_addr(),vo.getAcc_pwd(),savePathDirectory + "\\"+ vo.getAcc_id() + "-");
+					NaverMail nm = new NaverMail(vo.getAcc_addr(),vo.getAcc_pwd(),savePathDirectory + "\\"+ ++count + "-");
+					nm.doit();
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-			
 				
 			}else if(vo.getAcc_site_name().equals("GMAIL")){
-
+				try{
+					//GmailMail gm = new GmailMail(vo.getAcc_addr(),vo.getAcc_pwd(),savePathDirectory + "\\"+ vo.getAcc_id() + "-");
+					GmailMail gm = new GmailMail(vo.getAcc_addr(),vo.getAcc_pwd(),savePathDirectory + "\\"+ ++count + "-");
+					gm.doit();
+				}catch(Exception e){
+					e.printStackTrace();
+				}
 			}else {
+				try{
+					//HotmailMail hm = new HotmailMail(vo.getAcc_addr(), vo.getAcc_pwd(), savePathDirectory + "\\"+ vo.getAcc_id() + "-");
+					HotmailMail hm = new HotmailMail(vo.getAcc_addr(), vo.getAcc_pwd(), savePathDirectory + "\\"+  ++count + "-");
+					hm.doit();
+				}catch(Exception e){
+					e.printStackTrace();
+				}
 			}
 		}	
 				

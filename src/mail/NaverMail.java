@@ -38,28 +38,25 @@ import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingExcepti
 
 public class NaverMail {
 
-    private static long previousUID = 1;
+    private  long previousUID =1 ;
     
-    private static int number = 1;
+    private  int number =1 ;
     	
-    private static int temp = 1;
+    private  int temp =1  ;
     
-    private static ArrayList<String> str  ;
+    private  ArrayList<String> str  ;
     
     private String filePath;
-    private String accountId;
+    private String accountAddr;
     private String accountPwd;
     
-    public NaverMail(String acc_Id , String acc_Pwd , String file_Path) throws Exception {
-    	accountId = acc_Id ;
-    	accountPwd = acc_Pwd;
-    	filePath = file_Path + "\\mail";
+    public NaverMail(String accAddr , String accPwd , String file_Path) throws Exception {
     	
-    	doit();
-    	
+    	accountAddr = accAddr ;
+    	accountPwd = accPwd;
+    	filePath = file_Path ;
+    	System.out.println(filePath);
     }
-
-
 
     public  void doit() throws Exception {
         Folder folder = null;
@@ -79,8 +76,7 @@ public class NaverMail {
             Session session = Session.getDefaultInstance(props,null);
             URLName urlName = new URLName("imap","imap.naver.com" ,
             												993, "" ,
-            												accountId,accountPwd);
-
+            												accountAddr,accountPwd);
             store = new IMAPStore(session,urlName);
             store.connect();
 
@@ -100,7 +96,7 @@ public class NaverMail {
    
                 if(getContent instanceof String)
                 {
-                	System.out.println("스트링 파트 : " + msg.getSubject());
+                //	System.out.println("스트링 파트 : " + msg.getSubject());
                 	String content = (String)getContent;
                     byte[] contents = content.getBytes("UTF-8");   
                     content = new String(contents,"UTF-8");
@@ -124,7 +120,7 @@ public class NaverMail {
 
                 }else if (getContent instanceof Multipart){ // multipart 인 경우
                 	
-                	System.out.println("멀티파트 : " + msg.getSubject());               	
+               // 	System.out.println("멀티파트 : " + msg.getSubject());               	
                 	mp = (Multipart)getContent;		 
                 	
                 	long uId = uf.getUID(msg);
@@ -181,11 +177,10 @@ public class NaverMail {
  	      {
  	    	 int pathIndex = htmlPath.lastIndexOf("-");
  	    	 String path = htmlPath.substring(0,pathIndex) + "-1.html";
- 	  //  	 System.out.println("ㅠ" + path);
  	         input = new File(path);
  	         int index = path.indexOf("1.html");
  	         String filePath = path.substring(0,index);
- 	         Document doc = Jsoup.parse(input, "utf-8"); ///////////
+ 	         Document doc = Jsoup.parse(input, "utf-8"); 
  	         Elements elements = doc.select("img");
  	         
  	         int i = 0 ;
@@ -194,11 +189,7 @@ public class NaverMail {
   	 
  	             String cid = e.attr("src" );
  	             if(cid.contains("cid")){
- 	            	 	//여기 걸리는 만큼 본문 img 라고 생각하면 될듯
- 	          
- 	                 //본문 이미지 갯수만큼 반복문 돌려서 저장된 본문img 를 html 에 걸어준 후 html 저장.
  	                 num_Of_Content_Img++;
- 	                 System.out.println("ㅋㅋㅋ" + str.get(i));
  	                 e.attr("src", filePath + num_Of_Content_Img + str.get(i++));
  	             }
  	         }
@@ -379,7 +370,7 @@ public class NaverMail {
                  //기타 확장자들 MimeType에 따라 걸러서 확장자 추가해주면 됨
                  
                  else {
-                     fileName = fileName + "_" + part.getDataHandler().getName();		//part.getDataHandler().getName() 
+                     fileName = fileName + "_" + part.getDataHandler().getName();	
                  }
                  fileFullPath = filePath + fileName;
              }
