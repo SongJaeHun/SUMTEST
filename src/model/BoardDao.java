@@ -24,7 +24,7 @@ public class BoardDao {
 		return instance;
 	}
 
-	public int getSequence() throws SQLException{
+	/*public int getSequence() throws SQLException{
 		Connection con=null;
 		PreparedStatement pstmt=null;
 		ResultSet rs=null;
@@ -43,11 +43,11 @@ public class BoardDao {
 		}
 
 		return bno;
-	}
+	}*/
 
 
 	
-	public String getDate() throws SQLException{
+	/*public String getDate() throws SQLException{
 		String date=null;
 		Connection con=null;
 		ResultSet rs=null;
@@ -65,7 +65,7 @@ public class BoardDao {
 		}
 		System.out.println(date);
 		return date;
-	}
+	}*/
 	
 
 
@@ -145,6 +145,28 @@ public class BoardDao {
 		return list;
 	}
 
+	
+	public ArrayList getMailView(int acc_id) throws SQLException{
+		ArrayList list=new ArrayList();
+		Connection con=null;
+		PreparedStatement pstmt=null;
+		ResultSet rs=null;
+		try{
+			
+			con=DriverManager.getConnection(OracleConfig.URL, OracleConfig.USER, OracleConfig.PASS);
+			/*String sql=Query.ALLVIEW;*/
+			System.out.println(p3value);
+			String sql="select * from mail_info, account where mail_info.acc_id = account.acc_id and account.mb_id="+p3value;
+			pstmt=con.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				list.add(new BoardVO(rs.getInt(1),rs.getString(2),rs.getString(4),rs.getString(3)));
+			}
+		}finally{
+			closeAll(rs, pstmt, con);
+		}
+		return list;
+	}
 
 	public ArrayList getGmailBoard() throws SQLException{
 		ArrayList list=new ArrayList();
@@ -252,7 +274,7 @@ public class BoardDao {
 				
 	}
 
-	public BoardVO getBoardView(int b_no) throws SQLException{
+	/*public BoardVO getBoardView(int b_no) throws SQLException{
 		BoardVO vo=null;
 		Connection con=null;
 		PreparedStatement pstmt=null;
@@ -270,7 +292,7 @@ public class BoardDao {
 			closeAll(rs, pstmt, con);
 		}
 		return vo;
-	}
+	}*/
 	/*public String isPass(int b_no) throws SQLException{
 		Connection con=null;
 		PreparedStatement pstmt=null;

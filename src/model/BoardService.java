@@ -16,6 +16,11 @@ public class BoardService {
 		return list;
 	}
 	
+	public ArrayList getBoardView(int acc_id) throws SQLException{
+		ArrayList list=dao.getMailView(acc_id);
+		return list;
+	}
+	
 	public ArrayList getGmailBoard() throws SQLException{
 		ArrayList list=dao.getGmailBoard();
 		return list;
@@ -31,9 +36,9 @@ public class BoardService {
 		return list;
 	}
 	
-	public void getMail(ArrayList accList) throws SQLException{
+	/*public void getMail(ArrayList accList) throws SQLException{
 		dao.getMail(accList);
-	}
+	}*/
 	
 	public ArrayList login(BoardVO vo) throws SQLException{
 		return dao.login(vo.getUser_id(),vo.getUser_pwd());
