@@ -123,6 +123,13 @@ public class BoardVO {
 		this.user_id = user_id;
 		this.user_pwd = user_pwd;
 	}
+	public BoardVO(int acc_id, String acc_addr, String acc_site_name, String acc_pwd, int mb_id) {
+		this.acc_id = acc_id;
+		this.acc_addr = acc_addr;
+		this.acc_site_name = acc_site_name;
+		this.acc_pwd = acc_pwd;
+		this.mb_id = mb_id;
+	}
 	@Override
 	public String toString() {
 		return "BoardVO [user_id=" + user_id + ", user_pwd=" + user_pwd
