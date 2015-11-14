@@ -168,14 +168,14 @@ public class BoardDao {
 		return list;
 	}
 
-	public ArrayList getGmailBoard() throws SQLException{
+	public ArrayList getGmailBoard(int acc_id) throws SQLException{
 		ArrayList list=new ArrayList();
 		Connection con=null;
 		PreparedStatement pstmt=null;
 		ResultSet rs=null;
 		try{
 			con=DriverManager.getConnection(OracleConfig.URL, OracleConfig.USER, OracleConfig.PASS);
-			String sql="select * from mail_info, account where mail_info.acc_id = account.acc_id and account.mb_id ="+p3value+"and acc_site_name = 'GMAIL'";
+			String sql="select * from mail_info, account where mail_info.acc_id = account.acc_id and account.mb_id ="+p3value+"and account.acc_id="+acc_id;
 			pstmt=con.prepareStatement(sql);
 			rs=pstmt.executeQuery();
 			while(rs.next()){
@@ -189,14 +189,17 @@ public class BoardDao {
 	}
 
 
-	public ArrayList getNaverBoard() throws SQLException{
+	public ArrayList getNaverBoard(int acc_id) throws SQLException{
 		ArrayList list=new ArrayList();
 		Connection con=null;
 		PreparedStatement pstmt=null;
 		ResultSet rs=null;
 		try{
 			con=DriverManager.getConnection(OracleConfig.URL, OracleConfig.USER, OracleConfig.PASS);
-			String sql="select * from mail_info, account where mail_info.acc_id = account.acc_id and account.mb_id ="+p3value+"and acc_site_name = 'NAVER'";
+			System.out.println("******"+acc_id);
+			String sql="select * from mail_info, account where mail_info.acc_id = account.acc_id and account.mb_id ="+p3value+"and account.acc_id="+acc_id;
+			System.out.println("******"+acc_id);
+			System.out.println(sql);
 			pstmt=con.prepareStatement(sql);
 			rs=pstmt.executeQuery();
 			while(rs.next()){
@@ -210,14 +213,14 @@ public class BoardDao {
 	}
 
 
-	public ArrayList getHotmailBoard() throws SQLException{
+	public ArrayList getHotmailBoard(int acc_id) throws SQLException{
 		ArrayList list=new ArrayList();
 		Connection con=null;
 		PreparedStatement pstmt=null;
 		ResultSet rs=null;
 		try{
 			con=DriverManager.getConnection(OracleConfig.URL, OracleConfig.USER, OracleConfig.PASS);
-			String sql="select * from mail_info, account where mail_info.acc_id = account.acc_id and account.mb_id ="+p3value+"and acc_site_name = 'HOTMAIL'";
+			String sql="select * from mail_info, account where mail_info.acc_id = account.acc_id and account.mb_id ="+p3value+"and account.acc_id="+acc_id;
 			pstmt=con.prepareStatement(sql);
 			rs=pstmt.executeQuery();
 

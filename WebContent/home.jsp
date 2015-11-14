@@ -51,9 +51,9 @@
 
 </head>
 <script>
-window.onload=function(){
+/* window.onload=function(){
 	  alert("${loginInfo}");
-}
+} */
 </script>
 <body>
 	<%--   	<c:forEach items="${loginInfo}" var="loginInfo">
@@ -238,7 +238,7 @@ window.onload=function(){
 				<ul class="sub">
 					<c:forEach items="${loginInfo}" var="list">
 						<c:if test="${list.acc_site_name eq 'GMAIL'}">
-							<li><a class="" href="DispatcherServlet?command=mailview&acc_id=${list.acc_id }">${list.acc_addr }</a></li>
+							<li><a class="" href="DispatcherServlet?command=gmail&acc_id=${list.acc_id }">${list.acc_addr }</a></li>
 						</c:if>
 					</c:forEach>
 				</ul></li>
@@ -252,7 +252,7 @@ window.onload=function(){
 				<ul class="sub">
 					<c:forEach items="${loginInfo}" var="list">
 						<c:if test="${list.acc_site_name eq 'NAVER'}">
-							<li><a class="" href="DispatcherServlet?command=mailview&acc_id=${list.acc_id }">${list.acc_addr }</a></li>
+							<li><a class="" href="DispatcherServlet?command=naver&acc_id=${list.acc_id }">${list.acc_addr }</a></li>
 						</c:if>
 					</c:forEach>
 				</ul></li>
@@ -268,10 +268,11 @@ window.onload=function(){
 				<ul class="sub">
 					<c:forEach items="${loginInfo}" var="list">
 						<c:if test="${list.acc_site_name eq 'HOTMAIL'}">
-							<li><a class="" href="DispatcherServlet?command=mailview&acc_id=${list.acc_id }">${list.acc_addr }</a></li>
+							<li><a class="" href="DispatcherServlet?command=hotmail&acc_id=${list.acc_id }">${list.acc_addr }</a></li>
 						</c:if>
 					</c:forEach>
-				</ul></li>
+				</ul>
+			</li>
 	
 	
 	
@@ -367,7 +368,7 @@ window.onload=function(){
 			</tr>
 		</thead>
 		<tbody>
-			<c:forEach items="${requestScope.view}" var="allview">
+			<c:forEach items="${requestScope.home}" var="allview">
 				<tr>
 					<td align="center">${allview.mail_no}</td>
 					<td align="center"><a

@@ -15,10 +15,13 @@ public class GmailController implements Controller {
 			HttpServletResponse response) {
 		BoardService service=BoardService.getInstance();
 		ModelAndView mv=new ModelAndView();
+		int acc_id=0;
+		acc_id=Integer.parseInt(request.getParameter("acc_id"));
+		System.out.println("gmail컨트롤러"+acc_id+"***");
 		try {
-			ArrayList list=service.getGmailBoard();
+			ArrayList list=service.getGmailBoard(acc_id);
 			request.setAttribute("gmail", list);
-			mv.setPath("gmail.jsp");
+			mv.setPath("mailview.jsp");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
