@@ -422,7 +422,7 @@ function insRow() {
 								</td>
 							</tr>
 							<tr>
-								<td colspan="5" bgcolor="#FFFFFF" height="25" align="left">
+								<td colspan="5" bgcolor="#FFFFFF" height="25" align="center">
 									<input name="addButton" type="button" style="cursor: hand"
 									onClick="insRow()" value="+">
 								</td>
