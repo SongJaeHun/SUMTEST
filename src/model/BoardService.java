@@ -21,24 +21,24 @@ public class BoardService {
 		return list;
 	}
 	
-	public ArrayList getGmailBoard() throws SQLException{
-		ArrayList list=dao.getGmailBoard();
+	public ArrayList getGmailBoard(int acc_id) throws SQLException{
+		ArrayList list=dao.getGmailBoard(acc_id);
 		return list;
 	}
 	
-	public ArrayList getNaverBoard() throws SQLException{
-		ArrayList list=dao.getNaverBoard();
+	public ArrayList getNaverBoard(int acc_id) throws SQLException{
+		ArrayList list=dao.getNaverBoard(acc_id);
 		return list;
 	}
 	
-	public ArrayList getHotmailBoard() throws SQLException{
-		ArrayList list=dao.getHotmailBoard();
+	public ArrayList getHotmailBoard(int acc_id) throws SQLException{
+		ArrayList list=dao.getHotmailBoard(acc_id);
 		return list;
 	}
 	
-	/*public void getMail(ArrayList accList) throws SQLException{
+	public void getMail(ArrayList accList) throws SQLException{
 		dao.getMail(accList);
-	}*/
+	}
 	
 	public ArrayList login(BoardVO vo) throws SQLException{
 		return dao.login(vo.getUser_id(),vo.getUser_pwd());

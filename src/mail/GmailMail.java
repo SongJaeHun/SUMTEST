@@ -86,16 +86,18 @@ public class GmailMail {
             System.out.println(messages.length);
             BASE64Encoder base64Encoder = new BASE64Encoder();
             BASE64Decoder base64Decoder = new BASE64Decoder();
-
             for (int i = messages.length - 1 ; i  >= 0  ; i--) {
                 Message msg = messages[i];
-                
+
                 Object getContent = msg.getContent();
                 Multipart mp = null;
-   
+
+            //    mp = (Multipart)getContent;		 
+
                 if(getContent instanceof String)
                 {
-                //	System.out.println("스트링 파트 : " + msg.getSubject());
+
+                	System.out.println("스트링 파트 : " + msg.getSubject());
                 	String content = (String)getContent;
                     byte[] contents = content.getBytes("UTF-8");   
                     content = new String(contents,"UTF-8");
@@ -119,9 +121,10 @@ public class GmailMail {
 
                 }else if (getContent instanceof Multipart){ // multipart 인 경우
                 	
-               // 	System.out.println("멀티파트 : " + msg.getSubject());               	
-                	mp = (Multipart)getContent;		 
+                	System.out.println("멀티파트 : " + msg.getSubject());               	
+                	mp = (Multipart)getContent;		
                 	
+
                 	long uId = uf.getUID(msg);
                     String fileName = "" + System.currentTimeMillis();
                     saveParts(uId, mp , fileName, filePath);
@@ -131,6 +134,7 @@ public class GmailMail {
                     
                     msg.setFlag(Flags.Flag.SEEN, false);
                 }
+
             }
         } finally {
             if (folder != null) {
@@ -312,7 +316,8 @@ public class GmailMail {
         BufferedOutputStream out = null;
         BufferedInputStream in = null;
         String fileFullPath = "";
-        try {		//첨부파일 html 인지 메일 html 인지 구분해줘야해...
+        System.out.println(part.getContentType());
+        try {		//첨부파일 html 인지 메일 html 지 구분해줘야해...
         	if (part.isMimeType("text/html")) {
         		if(number != 2 ){
         			fileName = fileName+ "-" +  numOfAttachment + ".html";
@@ -334,33 +339,67 @@ public class GmailMail {
                  
                  else if(part.isMimeType("image/jpeg")){
                 	 fileName = fileName+ "-" + numOfAttachment + ".jpg" ;    
-                	 str.add(".jpg");
+                   	 if(str != null)
+                		 str.add(".jpg");
                 	 
+                 }
+        		
+                 else if(part.isMimeType("image/gif")){
+                	 fileName = fileName + "-" + numOfAttachment + ".gif";
+                  	 if(str != null)
+                		 str.add(".gif");
                  }
                  
                  else if(part.isMimeType("application/pdf")){
                 	 fileName = fileName+ "-" + numOfAttachment  + ".pdf";
                  }
                  
-                 else if(part.isMimeType("application/octet-stream")){
+                 else if(part.isMimeType("application/octet-stream") || part.isMimeType("APPLICATION/HANDSOFTHWP") || part.isMimeType("application/x-hwp")
+                		 	|| part.isMimeType("APPLICATION/HAANSOFTHWP")){
                 	 fileName = fileName+ "-" + numOfAttachment  + ".hwp";
                  }
                  
-                 else if(part.isMimeType("application/excel")){
+                 else if(part.isMimeType("application/excel") || part.isMimeType("application/vnd.ms-excel")){
                 	 fileName = fileName+ "-" + numOfAttachment  + ".xls";
                  }
                  
-                 else if(part.isMimeType("application/powerpoint")){
+                 else if(part.isMimeType("application/powerpoint") || part.isMimeType("APPLICATION/VND.MS-POWERPOINT")){
                 	 fileName = fileName+ "-" + numOfAttachment  + ".ppt";
                  }
+        		
+                 else if(part.isMimeType("APPLICATION/VND.OPENXMLFORMATS-OFFICEDOCUMENT.PRESENTATIONML.PRESENTATION")
+                		 			|| part.isMimeType("APPLICATION/HAANSOFTPPTX") ){
+                	 fileName = fileName + "-" + numOfAttachment + ".pptx";
+                 }
+        		
+                 else if(part.isMimeType("message/rfc822")){
+                	 fileName = fileName + "-" + numOfAttachment + ".sln";
+                 }
+        		
+                 else if(part.isMimeType("text/x-csrc")){
+                	 fileName = fileName + "-" + numOfAttachment + ".c";
+                 }
                  
-                 else if(part.isMimeType("application/zip")){
+                 else if(part.isMimeType("application/zip") || part.isMimeType("MESSAGE/DELIVERY-STATUS")){
                 	 fileName = fileName+ "-" + numOfAttachment  + ".zip";
+                 }
+        		
+                 else if(part.isMimeType("text/css")){
+                	 fileName = fileName + "-" + numOfAttachment + ".css";
+                 }
+        		
+                 else if(part.isMimeType("APPLICATION/VND.OPENXMLFORMATS-OFFICEDOCUMENT.WORDPROCESSINGML.DOCUMENT")){
+                	 fileName = fileName + "-" + numOfAttachment + ".docx";
+                 }
+        		
+                 else if(part.isMimeType("APPLICATION/MSWORD")){
+                	 fileName = fileName + "-" + numOfAttachment + ".doc";
                  }
         		
                  else if(part.isMimeType("image/PNG")){
                 	 fileName = fileName+ "-" + numOfAttachment  + ".PNG";
-                	 str.add(".PNG");
+                   	 if(str != null)
+                		 str.add(".PNG");
                  }
         		
                  else if(part.isMimeType("application/x-zip-compressed")){
@@ -369,15 +408,12 @@ public class GmailMail {
                  //기타 확장자들 MimeType에 따라 걸러서 확장자 추가해주면 됨
                  
                  else {
+                	 System.out.println(part.getContentType());
                      fileName = fileName + "_" + part.getDataHandler().getName();	
                  }
                  fileFullPath = filePath + fileName;
              }
         	 
-            String result = String.format("[%d]: fileName:%s \tfilePath:%s", uId, fileName, fileFullPath);
-
-            System.out.println("... " + result);
-
             try {
                 Thread.sleep(1);
             } catch (Exception e) {

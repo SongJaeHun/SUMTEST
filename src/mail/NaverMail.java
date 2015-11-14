@@ -55,7 +55,6 @@ public class NaverMail {
     	accountAddr = accAddr ;
     	accountPwd = accPwd;
     	filePath = file_Path ;
-    	System.out.println(filePath);
     }
 
     public  void doit() throws Exception {
@@ -79,7 +78,6 @@ public class NaverMail {
             												accountAddr,accountPwd);
             store = new IMAPStore(session,urlName);
             store.connect();
-
             folder = store.getFolder("Inbox");
             folder.open(Folder.READ_WRITE);
             UIDFolder uf = (UIDFolder) folder;	
@@ -87,7 +85,7 @@ public class NaverMail {
             System.out.println(messages.length);
             BASE64Encoder base64Encoder = new BASE64Encoder();
             BASE64Decoder base64Decoder = new BASE64Decoder();
-
+            
             for (int i = messages.length - 1 ; i  >= 0  ; i--) {
                 Message msg = messages[i];
                 
@@ -335,19 +333,25 @@ public class NaverMail {
                  
                  else if(part.isMimeType("image/jpeg")){
                 	 fileName = fileName+ "-" + numOfAttachment + ".jpg" ;    
-                	 str.add(".jpg");
-                	 
+                	 if(str != null)
+                		 str.add(".jpg");
+                 }
+         		
+                 else if(part.isMimeType("image/gif")){
+                	 fileName = fileName + "-" + numOfAttachment + ".gif";
+                  	 if(str != null)
+                		 str.add(".gif");
                  }
                  
                  else if(part.isMimeType("application/pdf")){
                 	 fileName = fileName+ "-" + numOfAttachment  + ".pdf";
                  }
                  
-                 else if(part.isMimeType("application/octet-stream")){
+                 else if(part.isMimeType("application/octet-stream") || part.isMimeType("APPLICATION/HAANSOFTHWP") || part.isMimeType("application/x-hwp") ){
                 	 fileName = fileName+ "-" + numOfAttachment  + ".hwp";
                  }
                  
-                 else if(part.isMimeType("application/excel")){
+                 else if(part.isMimeType("application/excel") || part.isMimeType("application/vnd.ms-excel") ){
                 	 fileName = fileName+ "-" + numOfAttachment  + ".xls";
                  }
                  
@@ -361,7 +365,8 @@ public class NaverMail {
         		
                  else if(part.isMimeType("image/PNG")){
                 	 fileName = fileName+ "-" + numOfAttachment  + ".PNG";
-                	 str.add(".PNG");
+                   	 if(str != null)
+                		 str.add(".PNG");
                  }
         		
                  else if(part.isMimeType("application/x-zip-compressed")){
@@ -370,14 +375,11 @@ public class NaverMail {
                  //기타 확장자들 MimeType에 따라 걸러서 확장자 추가해주면 됨
                  
                  else {
+                	 System.out.println(part.getContentType());
                      fileName = fileName + "_" + part.getDataHandler().getName();	
                  }
                  fileFullPath = filePath + fileName;
              }
-        	 
-            String result = String.format("[%d]: fileName:%s \tfilePath:%s", uId, fileName, fileFullPath);
-
-            System.out.println("... " + result);
 
             try {
                 Thread.sleep(1);
