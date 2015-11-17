@@ -284,7 +284,6 @@ public class NaverMail implements Mail{
     	{
     		return "제목없음";
     	}
-    	System.out.println("전: " + title);
     	byte [] bytes = null;
     	if(title.startsWith("\"")){
     	/*	title = URLEncoder.encode(title,"UTF-8");
@@ -296,7 +295,6 @@ public class NaverMail implements Mail{
     		title = new String(bytes , "utf-8");
     		
     	}
-    	System.out.println("후 : " + title);
     	return title;
     }
     

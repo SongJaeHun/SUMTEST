@@ -94,4 +94,5 @@ public class BoardService {
 		// TODO Auto-generated method stub
 		return dao.getAccCheck(mail_id);
 	}
+		
 }

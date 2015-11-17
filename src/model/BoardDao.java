@@ -137,7 +137,8 @@ public class BoardDao {
 		try{
 			con=DriverManager.getConnection(OracleConfig.URL, OracleConfig.USER, OracleConfig.PASS);
 			for(int i = 0 ; i < registMails.length ; i++){
-				cs = con.prepareCall("{call ADD_ACCOUNT(?,?,?,?,?,?)}");
+				cs = con.prepareCall("{call ADD_ACCOUNT(?,?,?,?,?)}");
+				System.out.println(" p3value : " + p3value);
 				cs.setInt(1 , p3value);
 				cs.setString(2,registMails[i]);
 				cs.setString(3,"@" + registSites[i]);
@@ -145,7 +146,9 @@ public class BoardDao {
 				
 				cs.registerOutParameter(5, Types.INTEGER);
 				
+				cs.executeUpdate();
 				registCount = cs.getInt(5);
+				
 				if(registCount != 1){
 					System.out.println("계정 추가 실패..");
 				}
@@ -402,6 +405,32 @@ public class BoardDao {
 		return list;
 	}
 	
+	public boolean getAccCheck(String mail_id) throws SQLException{
+		// TODO Auto-generated method stub
+		boolean isCheck = false;
+		CallableStatement cs = null;
+		Connection con=null;
+		PreparedStatement pstmt=null;
+		ResultSet rs=null;
+		try{
+			con=DriverManager.getConnection(OracleConfig.URL, OracleConfig.USER, OracleConfig.PASS);
+			cs = con.prepareCall("{call CK_EXIST_ACCOUNT(?,?)}");
+			cs.setString(1, mail_id);
+			cs.registerOutParameter(2, Types.INTEGER);
+			cs.executeQuery();
+			
+			int count = cs.getInt(2);
+			if(count == 1){
+				isCheck = true;
+			}
+			
+		}finally{
+			closeAll(rs, pstmt, con);
+		}
+
+		return isCheck;
+	}
+	
 	public ArrayList getHotmailBoard() throws SQLException{
 		ArrayList list=new ArrayList();
 		Connection con=null;
@@ -507,6 +536,5 @@ public class BoardDao {
 		}
 
 	}
-
 
 }
