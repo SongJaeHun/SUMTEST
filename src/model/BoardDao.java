@@ -70,6 +70,7 @@ public class BoardDao {
 		return date;
 	}
 	
+<<<<<<< HEAD
 
 	public int registCount(MailContent mail) throws SQLException {
 		int registCount = 0;
@@ -140,7 +141,7 @@ public class BoardDao {
 			rs=pstmt.executeQuery();
 			if(p6value!=null){
 				while(rs.next()){
-					vo=new BoardVO(rs.getInt(1),rs.getString(2),rs.getString(3),rs.getString(4),p3value);
+					vo=new BoardVO(rs.getInt(1),rs.getString(2),rs.getString(3),rs.getString(4),p3value,p1value);
 					list.add(vo);
 					
 				}
@@ -158,6 +159,48 @@ public class BoardDao {
 	}
 	
 	
+	public ArrayList register(String user_id,String user_pwd,String user_name, String cf_email)throws SQLException{
+		Connection con=null;
+		CallableStatement cs = null;
+		BoardVO vo = null;
+		ArrayList list=new ArrayList();
+		PreparedStatement pstmt=null;
+		ResultSet rs=null;
+		try{
+			con=DriverManager.getConnection(OracleConfig.URL, OracleConfig.USER, OracleConfig.PASS);
+			System.out.println("DB접속중");
+
+			String p1value= new String(user_id);
+			String p2value= new String(user_pwd);
+			String p3value= new String(user_name);
+			String p4value= new String(cf_email);
+			
+
+			cs = con.prepareCall("{call ADD_MEMBER(?,?,?,?,?)}");
+			cs.setString(1, p1value);
+			cs.setString(2, p2value);
+			cs.setString(3, p2value);
+			cs.setString(4, p2value);
+
+			cs.registerOutParameter(5, Types.INTEGER);
+			cs.executeUpdate();
+
+			int p5value= cs.getInt(5);
+			
+			if(p5value==1){
+				System.out.println("성공");
+			}
+			else{
+				System.out.println("실패");
+			}
+
+		}
+		finally{
+			closeAll(cs,con);
+		}
+		return list;
+	}
+	
 	
 	public ArrayList getAllBoard() throws SQLException{
 		ArrayList list=new ArrayList();
@@ -173,7 +216,7 @@ public class BoardDao {
 			pstmt=con.prepareStatement(sql);
 			rs=pstmt.executeQuery();
 			while(rs.next()){
-				list.add(new BoardVO(rs.getInt(1),rs.getString(2),rs.getString(4),rs.getString(3)));
+				list.add(new BoardVO(rs.getInt(1),rs.getString(3),rs.getString(4),rs.getString(6)));
 			}
 		}finally{
 			closeAll(rs, pstmt, con);
@@ -196,7 +239,7 @@ public class BoardDao {
 			pstmt=con.prepareStatement(sql);
 			rs=pstmt.executeQuery();
 			while(rs.next()){
-				list.add(new BoardVO(rs.getInt(1),rs.getString(2),rs.getString(4),rs.getString(3)));
+				list.add(new BoardVO(rs.getInt(1),rs.getString(3),rs.getString(4),rs.getString(6)));
 			}
 		}finally{
 			closeAll(rs, pstmt, con);
@@ -215,7 +258,7 @@ public class BoardDao {
 			pstmt=con.prepareStatement(sql);
 			rs=pstmt.executeQuery();
 			while(rs.next()){
-				list.add(new BoardVO(rs.getInt(1),rs.getString(2),rs.getString(4),rs.getString(3)));
+				list.add(new BoardVO(rs.getInt(1),rs.getString(3),rs.getString(4),rs.getString(6)));
 				
 			}
 		}finally{
@@ -224,6 +267,25 @@ public class BoardDao {
 		return list;
 	}
 
+	public ArrayList getGmailBoard() throws SQLException{
+		ArrayList list=new ArrayList();
+		Connection con=null;
+		PreparedStatement pstmt=null;
+		ResultSet rs=null;
+		try{
+			con=DriverManager.getConnection(OracleConfig.URL, OracleConfig.USER, OracleConfig.PASS);
+			String sql="select * from mail_info, account where mail_info.acc_id = account.acc_id and account.mb_id ="+p3value+"and acc_site_name = 'GMAIL'";
+			pstmt=con.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				list.add(new BoardVO(rs.getInt(1),rs.getString(3),rs.getString(4),rs.getString(6)));
+				
+			}
+		}finally{
+			closeAll(rs, pstmt, con);
+		}
+		return list;
+	}
 
 	public ArrayList getNaverBoard(int acc_id) throws SQLException{
 		ArrayList list=new ArrayList();
@@ -237,7 +299,7 @@ public class BoardDao {
 			pstmt=con.prepareStatement(sql);
 			rs=pstmt.executeQuery();
 			while(rs.next()){
-				list.add(new BoardVO(rs.getInt(1),rs.getString(2),rs.getString(4),rs.getString(3)));
+				list.add(new BoardVO(rs.getInt(1),rs.getString(3),rs.getString(4),rs.getString(6)));
 				
 			}
 		}finally{
@@ -246,6 +308,27 @@ public class BoardDao {
 		return list;
 	}
 
+	public ArrayList getNaverBoard() throws SQLException{
+		ArrayList list=new ArrayList();
+		Connection con=null;
+		PreparedStatement pstmt=null;
+		ResultSet rs=null;
+		try{
+			con=DriverManager.getConnection(OracleConfig.URL, OracleConfig.USER, OracleConfig.PASS);
+
+			String sql="select * from mail_info, account where mail_info.acc_id = account.acc_id and account.mb_id ="+p3value+"and acc_site_name = 'NAVER'";
+			System.out.println(sql);
+			pstmt=con.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				list.add(new BoardVO(rs.getInt(1),rs.getString(3),rs.getString(4),rs.getString(6)));
+				
+			}
+		}finally{
+			closeAll(rs, pstmt, con);
+		}
+		return list;
+	}
 
 	public ArrayList getHotmailBoard(int acc_id) throws SQLException{
 		ArrayList list=new ArrayList();
@@ -259,7 +342,27 @@ public class BoardDao {
 			rs=pstmt.executeQuery();
 
 			while(rs.next()){
-				list.add(new BoardVO(rs.getInt(1),rs.getString(2),rs.getString(4),rs.getString(3)));
+				list.add(new BoardVO(rs.getInt(1),rs.getString(3),rs.getString(4),rs.getString(6)));
+			}
+		}finally{
+			closeAll(rs, pstmt, con);
+		}
+		return list;
+	}
+	
+	public ArrayList getHotmailBoard() throws SQLException{
+		ArrayList list=new ArrayList();
+		Connection con=null;
+		PreparedStatement pstmt=null;
+		ResultSet rs=null;
+		try{
+			con=DriverManager.getConnection(OracleConfig.URL, OracleConfig.USER, OracleConfig.PASS);
+			String sql="select * from mail_info, account where mail_info.acc_id = account.acc_id and account.mb_id ="+p3value+"and acc_site_name = 'HOTMAIL'";
+			pstmt=con.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+
+			while(rs.next()){
+				list.add(new BoardVO(rs.getInt(1),rs.getString(3),rs.getString(4),rs.getString(6)));
 			}
 		}finally{
 			closeAll(rs, pstmt, con);

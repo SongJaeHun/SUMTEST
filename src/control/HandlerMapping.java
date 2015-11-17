@@ -12,6 +12,8 @@ public class HandlerMapping {
 			c=new AllViewController();
 		}else if(command.equals("login")){
 			c=new LoginController();
+		}else if(command.equals("register")){
+			c=new RegisterController();
 		}else if(command.equals("home")){
 			c=new HomeController();
 		}else if(command.equals("gmail")){
@@ -24,8 +26,17 @@ public class HandlerMapping {
 			c=new LoginController();
 		}else if(command.equals("mailview")){
 			c=new MailViewController();
+<<<<<<< HEAD
 		}else if(command.equals("regist")){
 			c = new RegistController();
+=======
+		}else if(command.equals("gmailAll")){
+			c=new GmailAllController();
+		}else if(command.equals("naverAll")){
+			c=new NaverAllController();
+		}else if(command.equals("hotmailAll")){
+			c=new HotmailController();
+>>>>>>> branch 'master' of https://github.com/SongJaeHun/SUMTEST.git
 		}
 		return c;
 	}

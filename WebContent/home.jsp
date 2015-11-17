@@ -50,16 +50,23 @@
     <![endif]-->
 
 </head>
-<script>
-/* window.onload=function(){
+<!-- <script>
+	window.onload=function(){
 	  alert("${loginInfo}");
-} */
-</script>
+}
+</script> -->
 <body>
-	<%--   	<c:forEach items="${loginInfo}" var="loginInfo">
-		${loginInfo.acc_addr}
-		${loginInfo.acc_site_name}
-	</c:forEach> --%>
+
+<% int count=0; %>
+	<c:forEach items="${loginInfo}" var="loginInfo" >
+		<%-- ${loginInfo.acc_addr}
+		${loginInfo.acc_site_name} --%>
+		<%count++; %>
+	</c:forEach>
+
+	<%-- <c:set var="user_id" value="${user_id}"></c:set> --%>
+	<c:set var="name" value="${user_id}" scope="session"></c:set>
+	
 
 	<!-- container section start -->
 	<section id="container" class=""> <header
@@ -71,17 +78,28 @@
 		</div>
 	</div>
 
-	<!--logo start--> <a href="home.html" class="logo">Team<span
-		class="lite"> SC</span></a> <!--logo end--> <!--  search form start -->
-	<div class="nav search-row" id="top_menu">
-		<ul class="nav top-menu">
-			<li>
-				<form class="navbar-form">
-					<input class="form-control" placeholder="Search" type="text">
-				</form>
-			</li>
-		</ul>
-	</div>
+	<!--logo start--> <a href="DispatcherServlet?command=home" class="logo">Team<span
+		class="lite"> SC</span></a> <!--logo end--> 
+		
+		
+		<!--  search form start -->
+			<div class="nav search-row" id="top_menu">
+				<ul class="nav top-menu">
+					<li>
+						<form class="navbar-form">
+							<input class="form-control" placeholder="Search" type="text">
+							<select id="search" name="search" class="form-control">
+								<option value="">검색값 선택</option>
+								<option value="mailsearch">일반메일검색</option>
+								<option value="attachsearch">첨부파일검색</option>
+								<option value="mailidsearch">메일주소검색</option>
+								<option value="daysearch">수신기간검색</option>
+							</select>
+							<input type="submit" value="검색" class="form-control">
+						</form>
+					</li>
+				</ul>
+			</div>
 	<!--  search form end -->
 
 
@@ -90,35 +108,52 @@
 		<ul class="nav pull-right top-menu">
 
 			<!-- task notificatoin start 자기가 등록한 메일로가기-->
-			<li id="task_notificatoin_bar" class="dropdown"><a
-				data-toggle="dropdown" class="dropdown-toggle" href="#"> <span
+			<li id="task_notificatoin_bar" class="dropdown">
+			
+			<a data-toggle="dropdown" class="dropdown-toggle" href="#"> <span
 					class="icon-task-l"></i> <span class="badge bg-important">6</span></a>
 				<ul class="dropdown-menu extended tasks-bar">
 					<div class="notify-arrow notify-arrow-blue"></div>
 					<li>
-						<p class="blue">자기가 등록한 메일 갯수</p>
+						<p class="blue"><%= count %></p>
+						
 					</li>
-					<li class="external"><a href="home.html">전체보기</a></li>
+					<li class="external"><a href="DispatcherServlet?command=home">전체보기</a></li>
 
 
-					<li class="active"><a href="DispatcherServlet?command=gmail">
+					<li class="active"><a href="DispatcherServlet?command=gmailAll">
 							<div class="task-info">
-								<div class="desc">Gmail - 아이디</div>
+								<div class="desc">Gmail - 
+									<c:forEach items="${loginInfo}" var="list">
+										<c:if test="${list.acc_site_name eq 'GMAIL'}">
+											<p>${list.acc_addr}</p>
+										</c:if>
+									</c:forEach>
+								</div>
 							</div>
 					</a></li>
-					<li><a href="naver.html">
+					
+					<li class="active"><a href="DispatcherServlet?command=naverAll">
 							<div class="task-info">
-								<div class="desc">Naver - 아이디</div>
+								<div class="desc">Naver - 
+									<c:forEach items="${loginInfo}" var="list">
+										<c:if test="${list.acc_site_name eq 'NAVER'}">
+											<p>${list.acc_addr}</p>
+										</c:if>
+									</c:forEach>
+								</div>
 							</div>
 					</a></li>
-					<li><a href="daum.html">
+					
+					<li class="active"><a href="DispatcherServlet?command=hotmailAll">
 							<div class="task-info">
-								<div class="desc">Daum - 아이디</div>
-							</div>
-					</a></li>
-					<li><a href="daum.html">
-							<div class="task-info">
-								<div class="desc">Daum - 아이디</div>
+								<div class="desc">Hotmail - 
+									<c:forEach items="${loginInfo}" var="list">
+										<c:if test="${list.acc_site_name eq 'HOTMAIL'}">
+											<p>${list.acc_addr}</p>
+										</c:if>
+									</c:forEach>
+								</div>
 							</div>
 					</a></li>
 
@@ -129,8 +164,7 @@
 			<!-- inbox notificatoin start-->
 			<li id="mail_notificatoin_bar" class="dropdown"><a
 				data-toggle="dropdown" class="dropdown-toggle" href="#"> <i
-					class="icon-envelope-l"></i> <span class="badge bg-important">최근
-						메일 5개</span>
+					class="icon-envelope-l"></i> <span class="badge bg-important">최근메일 5개</span>
 			</a>
 				<ul class="dropdown-menu extended inbox">
 					<div class="notify-arrow notify-arrow-blue"></div>
@@ -169,30 +203,32 @@
 					</a></li>
 				</ul></li>
 			<!-- inbox notificatoin end -->
+			
+			
 			<!-- alert notification start-->
-			<li id="alert_notificatoin_bar" class="dropdown"><a
-				data-toggle="dropdown" class="dropdown-toggle" href="#"> 설정하러 가기
-					<i class="icon-bell-l"></i> <span class="badge bg-important">7</span>
+			<li id="alert_notificatoin_bar" class="dropdown"><a href="setting.jsp">설정
+					<i class="icon-bell-l"></i> <span class="badge bg-important"><%=count %></span>
 			</a></li>
 			<!-- alert notification end-->
+			
+			
 			<!-- user login dropdown start-->
 			<li class="dropdown"><a data-toggle="dropdown"
 				class="dropdown-toggle" href="#"> <span class="profile-ava">
 						<img alt="" src="img2/avatar1_small.jpg">
-				</span> <span class="username">로그인한사람 id or 이름</span> <b class="caret"></b>
+				</span> <span class="username"><c:out value="${name}"></c:out></span> <b class="caret"></b>
 			</a>
 				<ul class="dropdown-menu extended logout">
 					<div class="log-arrow-up"></div>
-					<li class="eborder-top"><a href="#"><i
-							class="icon_profile"></i>설정하러가기</a></li>
-					<li><a href="#"><i class="icon_mail_alt"></i>모든메일 보여주는데로</a></li>
-					<li><a href="#"><i class="icon_clock_alt"></i>Naver</a></li>
-					<li><a href="#"><i class="icon_chat_alt"></i>Gmail</a></li>
-					<li><a href="#"><i class="icon_chat_alt"></i>Daum</a></li>
-					<li><a href="login.html"><i class="icon_key_alt"></i> Log
-							Out</a></li>
+					<li><a href="DispatcherServlet?command=home"><i class="icon_mail_alt"></i>모든메일</a></li>
+					<li class="eborder-top"><a href="setting.jsp"><i class="icon_profile"></i>설정하러가기</a></li>
+					<li><a href="DispatcherServlet?command=gmailAll"><i class="icon_chat_alt"></i>Gmail</a></li>
+					<li><a href="DispatcherServlet?command=naverAll"><i class="icon_chat_alt"></i>Naver</a></li>
+					<li><a href="DispatcherServlet?command=hotmailAll"><i class="icon_chat_alt"></i>Daum</a></li>
+					<li><a href="index.html"><i class="icon_key_alt"></i> Log Out</a></li>
 				</ul></li>
 			<!-- user login dropdown end -->
+			
 		</ul>
 		<!-- notificatoin dropdown end-->
 	</div>
@@ -208,7 +244,7 @@
 			<input type="hidden" name="command" value="allview"> -->
 		<ul class="sidebar-menu">
 			<li class="active">
-				<a class="" href="home.jsp"> 
+				<a class="" href="DispatcherServlet?command=home"> 
 					<i class="icon_house_alt"></i> 
 					<span>Home</span>
 				</a>
@@ -224,8 +260,6 @@
 	                  	vo.getAcc_addr();
 	                  
 	                  <%} %> --%>
-
-
 
 
 		<!-- <form action="DispatcherServlet" method="post" name="llll">
@@ -275,72 +309,14 @@
 			</li>
 	
 	
-	
-			<!-- <form action="DispatcherServlet" method="post" name="1234">
-						  <input type="hidden" name="command" value="naver">
-							  <li class="active">
-							  <a href="DispatcherServlet?command=naver">
-			                      <a href="gmail.html" class="">
-			                          <i class="icon_document_alt"></i>
-			                          <span>Naver</span>
-			                  </a>
-		                  </li>
-		                  <input type="submit" value="dd">
-	                  </form>
-	                  <form action="DispatcherServlet" method="post" name="2323">
-						  <input type="hidden" name="command" value="hotmail">
-							  <li class="active">
-							  <a href="DispatcherServlet?command=hotmail">
-			                      <a href="gmail.html" class="">
-			                          <i class="icon_document_alt"></i>
-			                          <span>Hotmail</span>
-			                  </a>
-		                  </li>
-		                  <input type="submit" value="dd">
-	                  </form>            
-	                  <li class="active">
-	                       <a href="naver.html" class="">
-	                          <i class="icon_desktop"></i>
-	                          <span>Naver</span>
-	                      </a>
-	                  </li>
-	                  <li>
-	                      <a class="active" href="daum.html">
-	                          <i class="icon_genius"></i>
-	                          <span>Daum</span>
-	                      </a>
-	                  </li> -->
 			<li><a class="" href="setting.jsp"> <i class="icon_piechart"></i>
 					<span>설정</span>
 	
 			</a></li>
-			<!--      
-	                  <li class="sub-menu">
-	                      <a href="javascript:;" class="">
-	                          <i class="icon_table"></i>
-	                          <span>Tables</span>
-	                          <span class="menu-arrow arrow_carrot-right"></span>
-	                      </a>
-	                      <ul class="sub">
-	                          <li><a class="" href="basic_table.html">Basic Table</a></li>
-	                      </ul>
-	                  </li>
-	                  
-	                  <li class="sub-menu">
-	                      <a href="javascript:;" class="">
-	                          <i class="icon_documents_alt"></i>
-	                          <span>Pages</span>
-	                          <span class="menu-arrow arrow_carrot-right"></span>
-	                      </a>
-	                      <ul class="sub">                          
-	                          <li><a class="" href="profile.html">Profile</a></li>
-	                          <li><a class="" href="login.html"><span>Login Page</span></a></li>
-	                          <li><a class="" href="blank.html">Blank Page</a></li>
-	                          <li><a class="" href="404.html">404 Error</a></li>
-	                      </ul>
-	                  </li>
-	-->
 		</ul>
+		
+		
+		
 		<!-- sidebar menu end-->
 	</div>
 	</aside> <!--sidebar end--> <!--main content start--> <section
@@ -358,7 +334,7 @@
 	</div>
 
 	</section> <!-- 테이블 -->
-	<table border=1 align="center">
+	<table style="text-align:center; align:center" border=2 align="center">
 		<thead>
 			<tr>
 				<td>메일번호</td>
@@ -367,7 +343,7 @@
 				<td>받은 시간</td>
 			</tr>
 		</thead>
-		<tbody>
+		<tbody align="center">
 			<c:forEach items="${requestScope.home}" var="allview">
 				<tr>
 					<td align="center">${allview.mail_no}</td>

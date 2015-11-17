@@ -66,8 +66,7 @@ function insRow() {
 	  var site_count=1;
 	  
 	  //삽입될 Form Tag
-	  var frmTag = "<input type=text name=mail_id_" +(++count) + " style=width:150px; height:20px; padding-top:10px>";
-	  frmTag += "<input type=hidden name=count value="+count +">"
+	  var frmTag = "<input type=text name=mail_id" + "-" + id_count + "style=width:150px; height:20px; padding-top:10px>";
 	  frmTag += " @ <select name=siteAdd" + "-" + site_count +"value=site><option value= >메일선택</option><option value=naver.com>naver.com</option><option value=gmail.com>gmail.com</option><option value=daum.net>daum.net</option></select>"
 	  frmTag += "&nbsp;&nbsp;&nbsp<input type=button value='-' onClick='removeRow()' style='cursor:hand'>"
 	  frmTag += "&nbsp;&nbsp;&nbsp;<input type=button value='중복 검사 ' onClick='mailCheck()'>";
@@ -109,6 +108,15 @@ function insRow() {
 
 </script>
 <body>
+<<<<<<< HEAD
+=======
+	<% int count=0; %>
+	<c:forEach items="${loginInfo}" var="loginInfo" >
+		<%count++; %>
+	</c:forEach>
+
+	<!-- container section start -->
+>>>>>>> branch 'master' of https://github.com/SongJaeHun/SUMTEST.git
 	<section id="container" class=""> <header
 		class="header dark-bg">
 	<div class="toggle-nav">
@@ -118,7 +126,7 @@ function insRow() {
 		</div>
 	</div>
 
-	<!--logo start--> <a href="home.html" class="logo">Team<span
+	<!--logo start--> <a href="DispatcherServlet?command=home" class="logo">Team<span
 		class="lite"> SC</span></a> <!--logo end--> <!--  search form start -->
 	<div class="nav search-row" id="top_menu">
 		<ul class="nav top-menu">
@@ -137,35 +145,51 @@ function insRow() {
 		<ul class="nav pull-right top-menu">
 
 			<!-- task notificatoin start 자기가 등록한 메일로가기-->
-			<li id="task_notificatoin_bar" class="dropdown"><a
-				data-toggle="dropdown" class="dropdown-toggle" href="#"> <span
+			<li id="task_notificatoin_bar" class="dropdown">
+			
+			<a data-toggle="dropdown" class="dropdown-toggle" href="#"> <span
 					class="icon-task-l"></i> <span class="badge bg-important">6</span></a>
 				<ul class="dropdown-menu extended tasks-bar">
 					<div class="notify-arrow notify-arrow-blue"></div>
 					<li>
-						<p class="blue">자기가 등록한 메일 갯수</p>
+						<p class="blue"><%=count %></p>
 					</li>
-					<li class="external"><a href="home.html">전체보기</a></li>
+					<li class="external"><a href="DispatcherServlet?command=home">전체보기</a></li>
 
 
-					<li class="active"><a href="DispatcherServlet?command=gmail">
+					<li class="active"><a href="DispatcherServlet?command=gmailAll">
 							<div class="task-info">
-								<div class="desc">Gmail - 아이디</div>
+								<div class="desc">Gmail - 
+									<c:forEach items="${loginInfo}" var="list">
+										<c:if test="${list.acc_site_name eq 'GMAIL'}">
+											<p>${list.acc_addr}</p>
+										</c:if>
+									</c:forEach>
+								</div>
 							</div>
 					</a></li>
-					<li><a href="naver.html">
+					
+					<li class="active"><a href="DispatcherServlet?command=naverAll">
 							<div class="task-info">
-								<div class="desc">Naver - 아이디</div>
+								<div class="desc">Naver - 
+									<c:forEach items="${loginInfo}" var="list">
+										<c:if test="${list.acc_site_name eq 'NAVER'}">
+											<p>${list.acc_addr}</p>
+										</c:if>
+									</c:forEach>
+								</div>
 							</div>
 					</a></li>
-					<li><a href="daum.html">
+					
+					<li class="active"><a href="DispatcherServlet?command=hotmailAll">
 							<div class="task-info">
-								<div class="desc">Daum - 아이디</div>
-							</div>
-					</a></li>
-					<li><a href="daum.html">
-							<div class="task-info">
-								<div class="desc">Daum - 아이디</div>
+								<div class="desc">Hotmail - 
+									<c:forEach items="${loginInfo}" var="list">
+										<c:if test="${list.acc_site_name eq 'HOTMAIL'}">
+											<p>${list.acc_addr}</p>
+										</c:if>
+									</c:forEach>
+								</div>
 							</div>
 					</a></li>
 
@@ -217,27 +241,24 @@ function insRow() {
 				</ul></li>
 			<!-- inbox notificatoin end -->
 			<!-- alert notification start-->
-			<li id="alert_notificatoin_bar" class="dropdown"><a
-				data-toggle="dropdown" class="dropdown-toggle" href="#"> 설정하러 가기
-					<i class="icon-bell-l"></i> <span class="badge bg-important">7</span>
+			<li id="alert_notificatoin_bar" class="dropdown"><a href="setting.jsp"> 설정
+					<i class="icon-bell-l"></i> <span class="badge bg-important"><%= count %></span>
 			</a></li>
 			<!-- alert notification end-->
 			<!-- user login dropdown start-->
 			<li class="dropdown"><a data-toggle="dropdown"
 				class="dropdown-toggle" href="#"> <span class="profile-ava">
 						<img alt="" src="img2/avatar1_small.jpg">
-				</span> <span class="username">로그인한사람 id or 이름</span> <b class="caret"></b>
+				</span> <span class="username"><c:out value="${name}"></c:out></span> <b class="caret"></b>
 			</a>
 				<ul class="dropdown-menu extended logout">
 					<div class="log-arrow-up"></div>
-					<li class="eborder-top"><a href="#"><i
-							class="icon_profile"></i>설정하러가기</a></li>
-					<li><a href="#"><i class="icon_mail_alt"></i>모든메일 보여주는데로</a></li>
-					<li><a href="#"><i class="icon_clock_alt"></i>Naver</a></li>
-					<li><a href="#"><i class="icon_chat_alt"></i>Gmail</a></li>
-					<li><a href="#"><i class="icon_chat_alt"></i>Daum</a></li>
-					<li><a href="login.html"><i class="icon_key_alt"></i> Log
-							Out</a></li>
+					<li><a href="DispatcherServlet?command=home"><i class="icon_mail_alt"></i>모든메일</a></li>
+					<li class="eborder-top"><a href="setting.jsp"><i class="icon_profile"></i>설정하러가기</a></li>
+					<li><a href="DispatcherServlet?command=gmailAll"><i class="icon_chat_alt"></i>Gmail</a></li>
+					<li><a href="DispatcherServlet?command=naverAll"><i class="icon_chat_alt"></i>Naver</a></li>
+					<li><a href="DispatcherServlet?command=hotmailAll"><i class="icon_chat_alt"></i>Daum</a></li>
+					<li><a href="index.html"><i class="icon_key_alt"></i> Log Out</a></li>
 				</ul></li>
 			<!-- user login dropdown end -->
 		</ul>
@@ -251,7 +272,7 @@ function insRow() {
 	<div id="sidebar" class="nav-collapse ">
 		<ul class="sidebar-menu">
 			<li class="active">
-				<a class="" href="home.jsp"> 
+				<a class="" href="DispatcherServlet?command=home"> 
 					<i class="icon_house_alt"></i> 
 					<span>Home</span>
 				</a>
