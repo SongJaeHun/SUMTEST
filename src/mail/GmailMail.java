@@ -36,7 +36,7 @@ import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingExcepti
 
 
 
-public class GmailMail {
+public class GmailMail implements Mail {
 
     private  long previousUID =1 ;
     
@@ -49,9 +49,9 @@ public class GmailMail {
     private String filePath;
     private String accountAddr;
     private String accountPwd;
-    
-    public GmailMail(String accAddr , String accPwd , String file_Path) throws Exception {
-    	
+    private int accountId;
+    public GmailMail(int accId , String accAddr , String accPwd , String file_Path) throws Exception {
+    	accountId = accId;
     	accountAddr = accAddr ;
     	accountPwd = accPwd;
     	filePath = file_Path ;
@@ -93,11 +93,9 @@ public class GmailMail {
                 Multipart mp = null;
 
             //    mp = (Multipart)getContent;		 
-
+                System.out.println(accountAddr + " : " + msg.getSubject());
                 if(getContent instanceof String)
                 {
-
-                	System.out.println("스트링 파트 : " + msg.getSubject());
                 	String content = (String)getContent;
                     byte[] contents = content.getBytes("UTF-8");   
                     content = new String(contents,"UTF-8");
@@ -121,10 +119,7 @@ public class GmailMail {
 
                 }else if (getContent instanceof Multipart){ // multipart 인 경우
                 	
-                	System.out.println("멀티파트 : " + msg.getSubject());               	
                 	mp = (Multipart)getContent;		
-                	
-
                 	long uId = uf.getUID(msg);
                     String fileName = "" + System.currentTimeMillis();
                     saveParts(uId, mp , fileName, filePath);
@@ -263,6 +258,12 @@ public class GmailMail {
         } else if (msg.getFrom().length >= 1) {
             from = msg.getFrom()[0].toString();
         }
+        
+        if(from.startsWith("=")){					// euc-kr or utf-8 일 경우 짤라서 sender 저장
+        	int index = from.lastIndexOf("<");
+        	from = from.substring(index , from.length());
+        }
+        
         return from;
     }
     	
@@ -316,7 +317,6 @@ public class GmailMail {
         BufferedOutputStream out = null;
         BufferedInputStream in = null;
         String fileFullPath = "";
-        System.out.println(part.getContentType());
         try {		//첨부파일 html 인지 메일 html 지 구분해줘야해...
         	if (part.isMimeType("text/html")) {
         		if(number != 2 ){
@@ -409,7 +409,7 @@ public class GmailMail {
                  
                  else {
                 	 System.out.println(part.getContentType());
-                     fileName = fileName + "_" + part.getDataHandler().getName();	
+                     fileName = fileName + "-" + part.getDataHandler().getName();	
                  }
                  fileFullPath = filePath + fileName;
              }

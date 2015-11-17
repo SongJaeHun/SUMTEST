@@ -27,7 +27,7 @@ import org.jsoup.select.Elements;
 
 import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
 
-public class HotmailMail {
+public class HotmailMail implements Mail {
 
 	private  int number = 1;
 	private  int temp = 1;
@@ -72,8 +72,8 @@ public class HotmailMail {
         	 Message msg = messages[i];
             Multipart mp = null;
 
-        	 System.out.println("멀티파트 : " + msg.getSubject());                  
-        	 mp = (Multipart)msg.getContent();      
+            System.out.println(accountAddr + " : " + msg.getSubject());
+            mp = (Multipart)msg.getContent();      
 
         	 String fileName = "" + System.currentTimeMillis();
         	 saveParts(mp , fileName, filePath);
@@ -333,7 +333,6 @@ public class HotmailMail {
                 //기타 확장자들 MimeType에 따라 걸러서 확장자 추가해주면 됨
                 
                 else {
-               	 System.out.println(part.getContentType());
                     fileName = fileName + "_" + part.getDataHandler().getName();		//part.getDataHandler().getName() 
                 }
                 fileFullPath = filePath + fileName;

@@ -7,6 +7,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Properties;
 
@@ -22,6 +24,9 @@ import javax.mail.UIDFolder;
 import javax.mail.URLName;
 import javax.mail.internet.MimeBodyPart;
 
+import model.BoardService;
+
+import org.json.simple.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -36,25 +41,34 @@ import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingExcepti
 
 
 
-public class NaverMail {
+public class NaverMail implements Mail{
 
     private  long previousUID =1 ;
     
     private  int number =1 ;
     	
-    private  int temp =1  ;
+    private  int temp = 0  ;
     
     private  ArrayList<String> str  ;
     
     private String filePath;
     private String accountAddr;
     private String accountPwd;
+    private int accountId;
     
-    public NaverMail(String accAddr , String accPwd , String file_Path) throws Exception {
-    	
+    private MailContent mail ;
+    
+    private String contentImgPath;
+    private String attachmentPath;
+    
+    private BoardService service = BoardService.getInstance();
+    
+    public NaverMail(int accId , String accAddr , String accPwd , String file_Path) throws Exception {
+    	accountId = accId;
     	accountAddr = accAddr ;
     	accountPwd = accPwd;
     	filePath = file_Path ;
+
     }
 
     public  void doit() throws Exception {
@@ -76,25 +90,30 @@ public class NaverMail {
             URLName urlName = new URLName("imap","imap.naver.com" ,
             												993, "" ,
             												accountAddr,accountPwd);
+            
             store = new IMAPStore(session,urlName);
             store.connect();
             folder = store.getFolder("Inbox");
             folder.open(Folder.READ_WRITE);
             UIDFolder uf = (UIDFolder) folder;	
             Message messages[] = uf.getMessagesByUID(previousUID + 1, UIDFolder.LASTUID);
+        //    mails = new MailContent[messages.length - 1]();
             System.out.println(messages.length);
             BASE64Encoder base64Encoder = new BASE64Encoder();
             BASE64Decoder base64Decoder = new BASE64Decoder();
+            JSONObject json = null;
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             
             for (int i = messages.length - 1 ; i  >= 0  ; i--) {
                 Message msg = messages[i];
-                
+                contentImgPath = "";
+                attachmentPath = "";
+                mail = new MailContent(accountId , getSubject(msg.getSubject()) , getSender(msg) , format.format(msg.getReceivedDate()));;
                 Object getContent = msg.getContent();
                 Multipart mp = null;
-   
+                
                 if(getContent instanceof String)
                 {
-                //	System.out.println("스트링 파트 : " + msg.getSubject());
                 	String content = (String)getContent;
                     byte[] contents = content.getBytes("UTF-8");   
                     content = new String(contents,"UTF-8");
@@ -118,7 +137,6 @@ public class NaverMail {
 
                 }else if (getContent instanceof Multipart){ // multipart 인 경우
                 	
-               // 	System.out.println("멀티파트 : " + msg.getSubject());               	
                 	mp = (Multipart)getContent;		 
                 	
                 	long uId = uf.getUID(msg);
@@ -130,6 +148,12 @@ public class NaverMail {
                     
                     msg.setFlag(Flags.Flag.SEEN, false);
                 }
+                
+                mail.setContentImgPath(contentImgPath);
+                mail.setAttachmentPath(attachmentPath);
+                
+                service.registContent(mail);
+
             }
         } finally {
             if (folder != null) {
@@ -148,11 +172,12 @@ public class NaverMail {
     		 input = new File(htmlPath);
     		 Document doc = Jsoup.parse(input, "utf-8"); 
     		 Elements elements = doc.select("img");
-	    
     		 for(Element e : elements) {     	 
  	             String cid = e.attr("src" );
- 	             if(cid.contains("cid"))
+ 	             if(cid.contains("cid")){
  	                 num_Of_Content_Img++;
+ 	                 //이 시점에서 ContentImgPath 에 추가해주면 될듯.
+ 	             }
  	         }
     	 }catch(NullPointerException ne) {
  	         ne.printStackTrace();
@@ -189,6 +214,7 @@ public class NaverMail {
  	             if(cid.contains("cid")){
  	                 num_Of_Content_Img++;
  	                 e.attr("src", filePath + num_Of_Content_Img + str.get(i++));
+ 	                 contentImgPath += filePath + num_Of_Content_Img + str.get(i - 1) + " ; ";
  	             }
  	         }
  	         
@@ -208,7 +234,8 @@ public class NaverMail {
  	      
  	      finally {
  	          try {
- 	             writer.close();
+ 	        	  if(writer != null)
+ 	        		  writer.close();
  	             System.gc();
  	             
  	          } catch (IOException e) {
@@ -251,6 +278,18 @@ public class NaverMail {
     	return strBuffer.toString();
     }
     
+    public String getSubject(String subject) throws UnsupportedEncodingException{
+    	String title = subject;
+    	byte[] bytes = null;
+    	if(title.startsWith("=")){
+    		bytes = title.getBytes();
+    		title = new String (bytes , "utf-8");
+    	}
+    	
+    	
+    	return title;
+    }
+    
     public  String getSender(Message msg) throws MessagingException {
         String from = "unknown";
         if (msg.getReplyTo().length >= 1) {
@@ -258,6 +297,12 @@ public class NaverMail {
         } else if (msg.getFrom().length >= 1) {
             from = msg.getFrom()[0].toString();
         }
+        System.out.println("sender 변환 전 : " + from);
+        if(from.startsWith("=")){					// euc-kr or utf-8 일 경우 짤라서 sender 저장
+        	int index = from.lastIndexOf("<");
+        	from = from.substring(index+1 , from.length()-1);
+        }
+        System.out.println("sender 변환 후 : " + from);
         return from;
     }
     	
@@ -298,7 +343,8 @@ public class NaverMail {
             FileOutputStream output = new FileOutputStream(filePath + fileName+ "-1.html");		// String part 의 본문 html 
             output.write(content.toString().getBytes());
             output.close();
-           temp = contentImgCount(filePath + fileName+ "-1.html");
+            mail.setMainHtmlPath(filePath + fileName + "-1.html");
+            temp = contentImgCount(filePath + fileName+ "-1.html");
             if(temp != 0){
             	str = new ArrayList<String>();
             }
@@ -334,13 +380,16 @@ public class NaverMail {
                  else if(part.isMimeType("image/jpeg")){
                 	 fileName = fileName+ "-" + numOfAttachment + ".jpg" ;    
                 	 if(str != null)
+                	 {
                 		 str.add(".jpg");
+                	 }
                  }
          		
                  else if(part.isMimeType("image/gif")){
                 	 fileName = fileName + "-" + numOfAttachment + ".gif";
-                  	 if(str != null)
+                  	 if(str != null){
                 		 str.add(".gif");
+                  	 }
                  }
                  
                  else if(part.isMimeType("application/pdf")){
@@ -365,8 +414,9 @@ public class NaverMail {
         		
                  else if(part.isMimeType("image/PNG")){
                 	 fileName = fileName+ "-" + numOfAttachment  + ".PNG";
-                   	 if(str != null)
-                		 str.add(".PNG");
+                   	 if(str != null){
+                		 str.add(".gif");
+                  	 }
                  }
         		
                  else if(part.isMimeType("application/x-zip-compressed")){
@@ -375,8 +425,7 @@ public class NaverMail {
                  //기타 확장자들 MimeType에 따라 걸러서 확장자 추가해주면 됨
                  
                  else {
-                	 System.out.println(part.getContentType());
-                     fileName = fileName + "_" + part.getDataHandler().getName();	
+                     fileName = fileName + "-" + part.getDataHandler().getName();	
                  }
                  fileFullPath = filePath + fileName;
              }
@@ -392,9 +441,18 @@ public class NaverMail {
             while ((k = in.read()) != -1) {
                 out.write(k);
             }
-            
+
             if(temp == (numOfAttachment - 1)){
             	contentImgParsing(fileFullPath );
+            }
+            
+            if(numOfAttachment > 1){
+            	//여기서 attachmentPath 에 추가해줘야 할듯..
+            	if( temp > 0){
+            		temp --;
+            	}else{
+            		attachmentPath += fileFullPath + " ; " ;
+            	}
             }
             
             

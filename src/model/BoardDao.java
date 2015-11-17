@@ -13,6 +13,9 @@ import java.util.Iterator;
 
 import mail.GmailMail;
 import mail.HotmailMail;
+import mail.MailContent;
+import mail.MailThread;
+import mail.NateMail;
 import mail.NaverMail;
 import query.Query;
 import config.OracleConfig;
@@ -68,7 +71,41 @@ public class BoardDao {
 	}
 	
 
+	public int registCount(MailContent mail) throws SQLException {
+		int registCount = 0;
+		
+		Connection con=null;
+		CallableStatement cs = null;
+		BoardVO vo = null;
+		//regist 하는 프로시저
+		PreparedStatement pstmt=null;
+		MailContent temp = mail;
+		try{
+			con=DriverManager.getConnection(OracleConfig.URL, OracleConfig.USER, OracleConfig.PASS);
 
+			cs = con.prepareCall("{call INSERT_MAIL(?,?,?,?,?,?,?)}");
+			cs.setInt(1,temp.getAcc_id());
+			cs.setString(2,temp.getSubject());
+			cs.setString(3,temp.getMainHtmlPath());
+			cs.setString(4,temp.getReceivedDate().toString());
+			cs.setString(5,temp.getSender());
+			cs.setString(6, temp.getContentImgPath());
+			cs.setString(7, temp.getAttachmentPath());
+			
+			registCount = cs.executeUpdate();
+
+			if(registCount < 1){
+				System.out.println("regist 실패..?");
+			}
+		}
+		finally{
+			closeAll(cs,con);
+		}
+	
+	
+		return registCount;
+	}
+	
 	public ArrayList login(String user_id,String user_pwd)throws SQLException{
 		Connection con=null;
 		CallableStatement cs = null;
@@ -78,7 +115,6 @@ public class BoardDao {
 		ResultSet rs=null;
 		try{
 			con=DriverManager.getConnection(OracleConfig.URL, OracleConfig.USER, OracleConfig.PASS);
-			System.out.println("DB접속중");
 
 			String p1value= new String(user_id);
 			String p2value= new String(user_pwd);
@@ -197,6 +233,7 @@ public class BoardDao {
 		try{
 			con=DriverManager.getConnection(OracleConfig.URL, OracleConfig.USER, OracleConfig.PASS);
 			String sql="select * from mail_info, account where mail_info.acc_id = account.acc_id and account.mb_id ="+p3value+"and account.acc_id="+acc_id;
+			System.out.println(sql);
 			pstmt=con.prepareStatement(sql);
 			rs=pstmt.executeQuery();
 			while(rs.next()){
@@ -230,6 +267,8 @@ public class BoardDao {
 		return list;
 	}
 	
+
+	
 	public void getMail(ArrayList accList) {
 		// TODO Auto-generated method stub
 		ArrayList temp = accList;
@@ -246,9 +285,10 @@ public class BoardDao {
 			saveDirectory.mkdir();
 			if(vo.getAcc_site_name().equals("NAVER")){
 				try {
-					NaverMail nm = new NaverMail(vo.getAcc_addr(),vo.getAcc_pwd(),savePathDirectory + "\\"+ vo.getAcc_id() + "-");
+					NaverMail nm = new NaverMail(vo.getAcc_id() ,vo.getAcc_addr(),vo.getAcc_pwd(),savePathDirectory + "\\"+ vo.getAcc_id() + "-");
 					System.out.println("naver : " + vo.getAcc_addr() + "시작");
-					nm.doit();
+					MailThread naverMail = new MailThread(nm);
+					naverMail.start();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -256,20 +296,32 @@ public class BoardDao {
 			}else if(vo.getAcc_site_name().equals("GMAIL")){
 				try{
 					System.out.println("gmail :" + vo.getAcc_addr() + "시작");
-					GmailMail gm = new GmailMail(vo.getAcc_addr(),vo.getAcc_pwd(),savePathDirectory + "\\"+ vo.getAcc_id() + "-");
-					gm.doit();
+					GmailMail gm = new GmailMail(vo.getAcc_id() ,vo.getAcc_addr(),vo.getAcc_pwd(),savePathDirectory + "\\"+ vo.getAcc_id() + "-");
+					MailThread gmailThread = new MailThread(gm);
+					gmailThread.start();
 				}catch(Exception e){
 					e.printStackTrace();
 				}
-			}else {
+			}else{
 				try{
-					System.out.println("hotmail : " + vo.getAcc_addr() + "시작");
-					HotmailMail hm = new HotmailMail(vo.getAcc_addr(), vo.getAcc_pwd(), savePathDirectory + "\\"+ vo.getAcc_id() + "-");
-					hm.doit();
+					System.out.println("natemail : " + vo.getAcc_addr() + "시작");
+					NateMail nm = new NateMail(vo.getAcc_id() , vo.getAcc_addr() , vo.getAcc_pwd() , savePathDirectory + "\\" + vo.getAcc_id() + "-");
+					MailThread natemailThread = new MailThread(nm);
+					natemailThread.start();
 				}catch(Exception e){
 					e.printStackTrace();
 				}
 			}
+			/*else {
+				try{
+					System.out.println("hotmail : " + vo.getAcc_addr() + "시작");
+					HotmailMail hm = new HotmailMail(vo.getAcc_addr(), vo.getAcc_pwd(), savePathDirectory + "\\"+ vo.getAcc_id() + "-");
+					MailThread hotmailThread = new MailThread(hm);
+					hotmailThread.start();
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+			}*/
 		}	
 				
 	}

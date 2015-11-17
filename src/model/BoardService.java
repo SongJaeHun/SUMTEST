@@ -3,6 +3,8 @@ package model;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import mail.MailContent;
+
 public class BoardService {
 	private static BoardService instance=new BoardService();
 	private BoardService(){}
@@ -14,6 +16,11 @@ public class BoardService {
 	public ArrayList getAllBoard() throws SQLException{
 		ArrayList list=dao.getAllBoard();
 		return list;
+	}
+	
+	public int registContent(MailContent mail) throws SQLException{
+		int updateCount = dao.registCount(mail);
+		return updateCount;
 	}
 	
 	public ArrayList getBoardView(int acc_id) throws SQLException{

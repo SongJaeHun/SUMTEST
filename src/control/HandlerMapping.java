@@ -14,16 +14,18 @@ public class HandlerMapping {
 			c=new LoginController();
 		}else if(command.equals("home")){
 			c=new HomeController();
-		}/*else if(command.equals("gmail")){
+		}else if(command.equals("gmail")){
 			c=new GmailController();
 		}else if(command.equals("naver")){
 			c=new NaverController();
-		}else if(command.equals("gmail")){
-			c=new HotmailController();
 		}else if(command.equals("hotmail")){
+			c=new HotmailController();
+		}else if(command.equals("login")){
 			c=new LoginController();
-		}*/else if(command.equals("mailview")){
+		}else if(command.equals("mailview")){
 			c=new MailViewController();
+		}else if(command.equals("regist")){
+			c = new RegistController();
 		}
 		return c;
 	}

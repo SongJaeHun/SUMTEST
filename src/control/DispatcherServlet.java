@@ -32,6 +32,7 @@ public class DispatcherServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Controller ct=null;
 		String command=request.getParameter("command");
+		System.out.println(request.getParameter("count"));
 		System.out.println(command);
 		ct=mapping.create(command);
 		ModelAndView mv=ct.execute(request, response);

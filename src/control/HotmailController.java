@@ -15,12 +15,10 @@ public class HotmailController implements Controller {
 			HttpServletResponse response) {
 		BoardService service=BoardService.getInstance();
 		ModelAndView mv=new ModelAndView();
-		int acc_id=0;
-		acc_id=Integer.parseInt(request.getParameter("acc_id"));
-		System.out.println("Hotmail컨트롤러"+acc_id+"***");
+		System.out.println("Hotmail컨트롤러");
 		try {
-			ArrayList list=service.getHotmailBoard(acc_id);
-			request.setAttribute("hotmail", list);
+			ArrayList list=service.getHotmailBoard();
+			request.setAttribute("hotmailAll", list);
 			mv.setPath("mailview.jsp");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
