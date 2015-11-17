@@ -297,12 +297,10 @@ public class NaverMail implements Mail{
         } else if (msg.getFrom().length >= 1) {
             from = msg.getFrom()[0].toString();
         }
-        System.out.println("sender 변환 전 : " + from);
         if(from.startsWith("=")){					// euc-kr or utf-8 일 경우 짤라서 sender 저장
         	int index = from.lastIndexOf("<");
         	from = from.substring(index+1 , from.length()-1);
         }
-        System.out.println("sender 변환 후 : " + from);
         return from;
     }
     	

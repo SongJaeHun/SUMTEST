@@ -388,14 +388,12 @@ window.onload=function(){
 					<td align="left" colspan="2"><a href="DispatcherServlet?command=gmail&acc_id=${allview.mail_no}">${detail.recv_addr }</a></td>
 				</tr>
 				<tr>
-					<td align="center" colspan="2">${detail.html_path}
-						---------------
+					<td align="center" colspan="2">
 						<%-- <%@ include file=${detail.html_path} %> --%>
 						
 						<%-- <% String html_path = (String)session.getAttribute("html_path"); %> --%>
-						<iframe src="${detail.html_path }"  frameborder="1"></iframe>
-						------------------
-						${detail.html_path }
+						<iframe src="c:\\temp\\15\\30-1447757779895-1.html" >${detail.html_path }</iframe>
+								
 					</td>
 				</tr>
 		
@@ -411,6 +409,7 @@ window.onload=function(){
 		</table>	
 	</div>
 	
+	<iframe src="c:\\temp\\15\\30-1447757779895-1.html" >${detail.html_path }</iframe>
 	<input type="button" border="0" value="홈으로"
 		onclick="location.href='\index.jsp'"> </section> <!--main content end-->
 	</section>
