@@ -6,19 +6,20 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+
 import model.BoardService;
 
-public class HotmailController implements Controller {
+public class GmailAllController implements Controller {
 
 	@Override
 	public ModelAndView execute(HttpServletRequest request,
 			HttpServletResponse response) {
 		BoardService service=BoardService.getInstance();
 		ModelAndView mv=new ModelAndView();
-		System.out.println("Hotmail컨트롤러");
+		System.out.println("gmailAll컨트롤러");
 		try {
-			ArrayList list=service.getHotmailBoard();
-			request.setAttribute("hotmailAll", list);
+			ArrayList list=service.getGmailBoard();
+			request.setAttribute("gmailAll", list);
 			mv.setPath("mailview.jsp");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

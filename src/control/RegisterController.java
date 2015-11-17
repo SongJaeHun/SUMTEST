@@ -7,11 +7,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-
 import model.BoardService;
 import model.BoardVO;
 
-public class LoginController implements Controller {
+public class RegisterController implements Controller {
 
 	@Override
 	public ModelAndView execute(HttpServletRequest request,
@@ -20,20 +19,21 @@ public class LoginController implements Controller {
 		ModelAndView mv=new ModelAndView();
 		String user_id = request.getParameter("user_id");
 		String user_pwd = request.getParameter("user_pwd");
+		String user_name = request.getParameter("user_name");
+		String cf_email = request.getParameter("cf_email");
 		
-		BoardVO vo = new BoardVO(user_id,user_pwd);
+		
+		BoardVO vo = new BoardVO(user_id,user_pwd,user_name,cf_email);
 		ArrayList list = null;
+		
 		try{
-			list = service.login(vo);	//로그인 된 계정 목록들..
+			list = service.register(vo);	//로그인 된 계정 목록들..
 			
 			
 			if(vo!=null){
-				request.setAttribute("user_id", user_id);
-				HttpSession session=request.getSession();
-				session.setAttribute("loginInfo",list);
-				mv.setPath("DispatcherServlet?command=home");
+				mv.setPath("index.html");
 			}else{
-				mv.setPath("login_fail.jsp");
+				mv.setPath("register_fail.jsp");
 			}
 			
 			/*if(list != null){

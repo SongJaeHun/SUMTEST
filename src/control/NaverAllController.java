@@ -8,17 +8,17 @@ import javax.servlet.http.HttpServletResponse;
 
 import model.BoardService;
 
-public class HotmailController implements Controller {
+public class NaverAllController implements Controller {
 
 	@Override
 	public ModelAndView execute(HttpServletRequest request,
 			HttpServletResponse response) {
 		BoardService service=BoardService.getInstance();
 		ModelAndView mv=new ModelAndView();
-		System.out.println("Hotmail컨트롤러");
+		System.out.println("naverAll컨트롤러");
 		try {
-			ArrayList list=service.getHotmailBoard();
-			request.setAttribute("hotmailAll", list);
+			ArrayList list=service.getNaverBoard();
+			request.setAttribute("naverAll", list);
 			mv.setPath("mailview.jsp");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

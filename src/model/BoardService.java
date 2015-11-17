@@ -26,13 +26,29 @@ public class BoardService {
 		return list;
 	}
 	
+	public ArrayList getGmailBoard() throws SQLException{
+		ArrayList list=dao.getGmailBoard();
+		return list;
+	}
+	
 	public ArrayList getNaverBoard(int acc_id) throws SQLException{
 		ArrayList list=dao.getNaverBoard(acc_id);
 		return list;
 	}
 	
+	
+	public ArrayList getNaverBoard() throws SQLException{
+		ArrayList list=dao.getNaverBoard();
+		return list;
+	}
+	
 	public ArrayList getHotmailBoard(int acc_id) throws SQLException{
 		ArrayList list=dao.getHotmailBoard(acc_id);
+		return list;
+	}
+	
+	public ArrayList getHotmailBoard() throws SQLException{
+		ArrayList list=dao.getHotmailBoard();
 		return list;
 	}
 	
@@ -42,6 +58,10 @@ public class BoardService {
 	
 	public ArrayList login(BoardVO vo) throws SQLException{
 		return dao.login(vo.getUser_id(),vo.getUser_pwd());
+	}
+	
+	public ArrayList register(BoardVO vo) throws SQLException{
+		return dao.register(vo.getUser_id(),vo.getUser_pwd(),vo.getUser_name(),vo.getCf_email());
 	}
 	/*public BoardVO getBoardView(int b_no) throws SQLException{
 		dao.incrementConut(b_no);

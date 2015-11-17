@@ -12,8 +12,22 @@ public class BoardVO {
 	String acc_addr;	//내계정 주소
 	String acc_pwd;		//내계정 비밀전호
 	String acc_site_name;//내가등록한사이트 이름 = acc_id(내계정아이디랑 연결)
+	String user_name;
+	String cf_email;
 	
 	
+	public String getUser_name() {
+		return user_name;
+	}
+	public void setUser_name(String user_name) {
+		this.user_name = user_name;
+	}
+	public String getCf_email() {
+		return cf_email;
+	}
+	public void setCf_email(String cf_email) {
+		this.cf_email = cf_email;
+	}
 	public String getUser_id() {
 		return user_id;
 	}
@@ -81,7 +95,14 @@ public class BoardVO {
 		this.acc_site_name = acc_site_name;
 	}
 	
-
+	public BoardVO(String user_id, String user_pwd, String user_name, String cf_email) {
+		super();
+		this.user_id = user_id;
+		this.user_pwd = user_pwd;
+		this.user_name = user_name;
+		this.cf_email = cf_email;
+	}
+	
 	public BoardVO(String acc_addr,String acc_site_name, int mb_id) {
 		super();
 		this.acc_addr = acc_addr;
@@ -123,6 +144,10 @@ public class BoardVO {
 		this.user_id = user_id;
 		this.user_pwd = user_pwd;
 	}
+	
+	public BoardVO(String user_id){
+		this.user_id = user_id;
+	}
 	public BoardVO(int acc_id, String acc_addr, String acc_site_name, String acc_pwd, int mb_id) {
 		this.acc_id = acc_id;
 		this.acc_addr = acc_addr;
@@ -130,6 +155,20 @@ public class BoardVO {
 		this.acc_pwd = acc_pwd;
 		this.mb_id = mb_id;
 	}
+	
+	public BoardVO(int acc_id, String acc_addr, String acc_site_name, String acc_pwd, int mb_id,String user_id) {
+		this.acc_id = acc_id;
+		this.acc_addr = acc_addr;
+		this.acc_site_name = acc_site_name;
+		this.acc_pwd = acc_pwd;
+		this.mb_id = mb_id;
+		this.user_id = user_id;
+	}
+	
+	public BoardVO(){
+		
+	}
+	
 	@Override
 	public String toString() {
 		return "BoardVO [user_id=" + user_id + ", user_pwd=" + user_pwd
