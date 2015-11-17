@@ -67,6 +67,11 @@ public class BoardService {
 		return dao.login(vo.getUser_id(),vo.getUser_pwd());
 	}
 	
+	public int getRegistResult(String [] mails, String[] pwds, String[] sites) throws SQLException{
+		return dao.getRegistResult(mails,pwds,sites);
+	}
+	
+	
 	public ArrayList register(BoardVO vo) throws SQLException{
 		return dao.register(vo.getUser_id(),vo.getUser_pwd(),vo.getUser_name(),vo.getCf_email());
 	}
@@ -85,5 +90,8 @@ public class BoardService {
 		String pass=dao.isPass(b_no);
 		return pass;
 	}*/
-		
+	public boolean getAccCheck(String mail_id) throws SQLException {
+		// TODO Auto-generated method stub
+		return dao.getAccCheck(mail_id);
+	}
 }

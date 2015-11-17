@@ -36,6 +36,9 @@ public class HandlerMapping {
 			c=new HotmailController();
 		}else if(command.equals("detailView")){
 			c=new DetailViewController();
+		}else if(command.equals("accCheck")){
+			System.out.println("??");
+			c = new AccCheckController();
 		}
 		return c;
 	}

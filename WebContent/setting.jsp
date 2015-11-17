@@ -55,7 +55,11 @@
 	  alert("${loginInfo}");
 } */
 
-var count = 0;
+function checkChange(){
+	var doc = document.settingForm;
+	doc.mail_site.value = doc.mail_id.value + "@" + doc.siteAdd.value;
+}
+
 
 function insRow() {
 	  oTbl = document.getElementById("addTable");
@@ -64,49 +68,43 @@ function insRow() {
 	  var oCell = oRow.insertCell();
 	  var id_count =1;
 	  var site_count=1;
-	  
 	  //삽입될 Form Tag
-	  var frmTag = "<input type=text name=mail_id" + "-" + id_count + "style=width:150px; height:20px; padding-top:10px>";
-	  frmTag += " @ <select name=siteAdd" + "-" + site_count +"value=site><option value= >메일선택</option><option value=naver.com>naver.com</option><option value=gmail.com>gmail.com</option><option value=nate.com>nate.com</option></select>";
-	  frmTag += "&nbsp;&nbsp;&nbsp;<input type=password name=mail_pwd>";
+	  var frmTag = "<input type=text name=mail_id style=width:150px; height:20px; padding-top:10px>";
+	  frmTag += " @ <select name=siteAdd onchange='checkChange()'><option value= >메일선택</option><option value=naver.com>naver.com</option><option value=gmail.com>gmail.com</option><option value=nate.com>nate.com</option></select>";
+	  frmTag += "&nbsp;&nbsp;&nbsp;<input type=password name=mail_pwd>"
 	  frmTag += "&nbsp;&nbsp;&nbsp;<input type=button value='-' onClick='removeRow()' style='cursor:hand'>"
 	  frmTag += "&nbsp;&nbsp;&nbsp;<input type=button value='중복 검사 ' onClick='mailCheck()'>";
-	 oCell.innerHTML = frmTag;
+	  oCell.innerHTML = frmTag;
 	  
 	}
 	
-	function getCount(){
-		return count;
+	function mailCheck(){
+		var id = document.settingForm.mail_id.value;
+		var site =  document.settingForm.siteAdd.value;
+		var temp = id+"@"+site;
+		location.href="DispatcherServlet?command=accCheck&mail_id=" + temp;
 	}
+
 
 	//Row 삭제
 	function removeRow() {
-	  oTbl.deleteRow(oTbl.clickedRowIndex);
-	  count--;
+		oTbl.deleteRow(oTbl.clickedRowIndex);
 	}
 
-	function mailCheck(){
-		
-	}
-	
-	
 	//텍스트 박스 비엇는지 확인하는거
-	function frmCheck()
-	{
-	  var frm = document.settingForm;
-	  
-	  for( var i = 0; i <= frm.elements.length - 1; i++ ){
-	     if( frm.elements[i].name == "mail_id" )
-	     {
-	         if( !frm.elements[i].value ){
-	             alert("텍스트박스에 값을 입력하세요!");
-	                 frm.elements[i].focus();
-		 return;
-	          }
-	      }
-	   }
-	 }
+	function frmCheck() {
+		var frm = document.settingForm;
 
+		for (var i = 0; i <= frm.elements.length - 1; i++) {
+			if (frm.elements[i].name == "mail_id") {
+				if (!frm.elements[i].value) {
+					alert("텍스트박스에 값을 입력하세요!");
+					frm.elements[i].focus();
+					return;
+				}
+			}
+		}
+	}
 </script>
 <body>
 	<% int count=0; %>
@@ -136,7 +134,6 @@ function insRow() {
 		</ul>
 	</div>
 	<!--  search form end -->
-
 
 	<div class="top-nav notification-row">
 		<!-- notificatoin dropdown start-->
