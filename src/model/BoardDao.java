@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import mail.GmailMail;
-import mail.HotmailMail;
 import mail.MailContent;
 import mail.MailThread;
 import mail.NateMail;
@@ -70,8 +69,6 @@ public class BoardDao {
 		return date;
 	}
 	
-<<<<<<< HEAD
-
 	public int registCount(MailContent mail) throws SQLException {
 		int registCount = 0;
 		
@@ -104,6 +101,40 @@ public class BoardDao {
 		}
 	
 	
+		return registCount;
+	}
+	
+	public int getRegistResult(String [] mails, String[] pwds, String[] sites) throws SQLException{
+		int registCount = 0;
+		Connection con=null;
+		CallableStatement cs = null;
+		String [] registMails = mails;
+		String [] registPwds = pwds;
+		String [] registSites = sites;
+		PreparedStatement pstmt=null;
+		ResultSet rs=null;
+		try{
+			con=DriverManager.getConnection(OracleConfig.URL, OracleConfig.USER, OracleConfig.PASS);
+			for(int i = 0 ; i < registMails.length ; i++){
+				cs = con.prepareCall("{call ADD_ACCOUNT(?,?,?,?,?,?)}");
+				cs.setInt(1 , p3value);
+				cs.setString(2,registMails[i]);
+				cs.setString(3,"@" + registSites[i]);
+				cs.setString(4,registPwds[i]);
+				
+				cs.registerOutParameter(5, Types.INTEGER);
+				
+				registCount = cs.getInt(5);
+				if(registCount != 1){
+					System.out.println("계정 추가 실패..");
+				}
+				
+			}
+			
+		}finally{
+			closeAll(cs,con);
+		}
+		
 		return registCount;
 	}
 	
@@ -428,47 +459,6 @@ public class BoardDao {
 		}	
 				
 	}
-
-	/*public BoardVO getBoardView(int b_no) throws SQLException{
-		BoardVO vo=null;
-		Connection con=null;
-		PreparedStatement pstmt=null;
-		ResultSet rs=null;
-		try{
-			con=DriverManager.getConnection(OracleConfig.URL, OracleConfig.USER, OracleConfig.PASS);
-			String sql=Query.BOARDVIEW;
-			pstmt=con.prepareStatement(sql);
-			pstmt.setInt(1, b_no);
-			rs=pstmt.executeQuery();
-			if(rs.next()){
-				vo=new BoardVO(rs.getInt(1),rs.getString(2),rs.getString(3),rs.getString(4));
-			}
-		}finally{
-			closeAll(rs, pstmt, con);
-		}
-		return vo;
-	}*/
-	/*public String isPass(int b_no) throws SQLException{
-		Connection con=null;
-		PreparedStatement pstmt=null;
-		ResultSet rs=null;
-		String b_pass=null;
-		try{
-		con=DriverManager.getConnection(OracleConfig.URL, OracleConfig.USER, OracleConfig.PASS);
-		String sql=Query.PASSCHECK;
-		pstmt=con.prepareStatement(sql);
-		pstmt.setInt(1, b_no);
-		rs=pstmt.executeQuery();
-		if(rs.next()){
-			b_pass=rs.getString(1);
-		}
-		}finally{
-			closeAll(rs, pstmt, con);
-		}
-
-		return b_pass;
-	}*/
-
 
 
 	private void closeAll(ResultSet rs, PreparedStatement pstmt, Connection con) throws SQLException {

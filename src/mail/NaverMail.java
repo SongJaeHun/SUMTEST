@@ -8,6 +8,8 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -26,7 +28,6 @@ import javax.mail.internet.MimeBodyPart;
 
 import model.BoardService;
 
-import org.json.simple.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -47,7 +48,7 @@ public class NaverMail implements Mail{
     
     private  int number =1 ;
     	
-    private  int temp = 0  ;
+    private  int temp = 1  ;
     
     private  ArrayList<String> str  ;
     
@@ -101,7 +102,6 @@ public class NaverMail implements Mail{
             System.out.println(messages.length);
             BASE64Encoder base64Encoder = new BASE64Encoder();
             BASE64Decoder base64Decoder = new BASE64Decoder();
-            JSONObject json = null;
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             
             for (int i = messages.length - 1 ; i  >= 0  ; i--) {
@@ -280,13 +280,23 @@ public class NaverMail implements Mail{
     
     public String getSubject(String subject) throws UnsupportedEncodingException{
     	String title = subject;
-    	byte[] bytes = null;
-    	if(title.startsWith("=")){
-    		bytes = title.getBytes();
-    		title = new String (bytes , "utf-8");
+    	if(title.equals(null))
+    	{
+    		return "제목없음";
     	}
-    	
-    	
+    	System.out.println("전: " + title);
+    	byte [] bytes = null;
+    	if(title.startsWith("\"")){
+    	/*	title = URLEncoder.encode(title,"UTF-8");
+    		System.out.println("1: " + title);
+    		title = URLDecoder.decode(title,"UTF-8");
+    		System.out.println("2: " + title);*/
+    		
+    		bytes = title.getBytes("utf-8");
+    		title = new String(bytes , "utf-8");
+    		
+    	}
+    	System.out.println("후 : " + title);
     	return title;
     }
     
@@ -297,12 +307,10 @@ public class NaverMail implements Mail{
         } else if (msg.getFrom().length >= 1) {
             from = msg.getFrom()[0].toString();
         }
-        System.out.println("sender 변환 전 : " + from);
         if(from.startsWith("=")){					// euc-kr or utf-8 일 경우 짤라서 sender 저장
         	int index = from.lastIndexOf("<");
         	from = from.substring(index+1 , from.length()-1);
         }
-        System.out.println("sender 변환 후 : " + from);
         return from;
     }
     	
@@ -379,17 +387,12 @@ public class NaverMail implements Mail{
                  
                  else if(part.isMimeType("image/jpeg")){
                 	 fileName = fileName+ "-" + numOfAttachment + ".jpg" ;    
-                	 if(str != null)
-                	 {
                 		 str.add(".jpg");
-                	 }
                  }
          		
                  else if(part.isMimeType("image/gif")){
                 	 fileName = fileName + "-" + numOfAttachment + ".gif";
-                  	 if(str != null){
                 		 str.add(".gif");
-                  	 }
                  }
                  
                  else if(part.isMimeType("application/pdf")){
@@ -414,9 +417,7 @@ public class NaverMail implements Mail{
         		
                  else if(part.isMimeType("image/PNG")){
                 	 fileName = fileName+ "-" + numOfAttachment  + ".PNG";
-                   	 if(str != null){
-                		 str.add(".gif");
-                  	 }
+                		 str.add(".PNG");
                  }
         		
                  else if(part.isMimeType("application/x-zip-compressed")){
@@ -446,10 +447,12 @@ public class NaverMail implements Mail{
             	contentImgParsing(fileFullPath );
             }
             
+            int t = temp;
+            
             if(numOfAttachment > 1){
             	//여기서 attachmentPath 에 추가해줘야 할듯..
-            	if( temp > 0){
-            		temp --;
+            	if( t > 0){
+            		t --;
             	}else{
             		attachmentPath += fileFullPath + " ; " ;
             	}
