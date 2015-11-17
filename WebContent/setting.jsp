@@ -67,8 +67,9 @@ function insRow() {
 	  
 	  //삽입될 Form Tag
 	  var frmTag = "<input type=text name=mail_id" + "-" + id_count + "style=width:150px; height:20px; padding-top:10px>";
-	  frmTag += " @ <select name=siteAdd" + "-" + site_count +"value=site><option value= >메일선택</option><option value=naver.com>naver.com</option><option value=gmail.com>gmail.com</option><option value=daum.net>daum.net</option></select>"
-	  frmTag += "&nbsp;&nbsp;&nbsp<input type=button value='-' onClick='removeRow()' style='cursor:hand'>"
+	  frmTag += " @ <select name=siteAdd" + "-" + site_count +"value=site><option value= >메일선택</option><option value=naver.com>naver.com</option><option value=gmail.com>gmail.com</option><option value=nate.com>nate.com</option></select>";
+	  frmTag += "&nbsp;&nbsp;&nbsp;<input type=password name=mail_pwd>";
+	  frmTag += "&nbsp;&nbsp;&nbsp;<input type=button value='-' onClick='removeRow()' style='cursor:hand'>"
 	  frmTag += "&nbsp;&nbsp;&nbsp;<input type=button value='중복 검사 ' onClick='mailCheck()'>";
 	 oCell.innerHTML = frmTag;
 	  
@@ -108,15 +109,12 @@ function insRow() {
 
 </script>
 <body>
-<<<<<<< HEAD
-=======
 	<% int count=0; %>
 	<c:forEach items="${loginInfo}" var="loginInfo" >
 		<%count++; %>
 	</c:forEach>
 
 	<!-- container section start -->
->>>>>>> branch 'master' of https://github.com/SongJaeHun/SUMTEST.git
 	<section id="container" class=""> <header
 		class="header dark-bg">
 	<div class="toggle-nav">
@@ -348,7 +346,7 @@ function insRow() {
 	<div style="padding-left:17px">
 		<form name="settingForm" method="post" action="DispatcherServlet">
 		<input type="hidden" name="command" value="regist">
-			<table width="400" border="0" cellspacing="0" cellpadding="0">
+			<table width="600" border="0" cellspacing="0" cellpadding="0">
 				<tr>
 					<td colspan="2" align="left" bgcolor="#FFFFFF">
 						<table width="100%" border="0" cellpadding="0" cellspacing="0">
