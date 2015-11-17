@@ -77,34 +77,34 @@ function insRow() {
 	  oCell.innerHTML = frmTag;
 	  
 	}
+	
+	function mailCheck(){
+		var id = document.settingForm.mail_id.value;
+		var site =  document.settingForm.siteAdd.value;
+		var temp = id+"@"+site;
+		location.href="DispatcherServlet?command=accCheck&mail_id=" + temp;
+	}
+
 
 	//Row 삭제
 	function removeRow() {
-	  oTbl.deleteRow(oTbl.clickedRowIndex);
+		oTbl.deleteRow(oTbl.clickedRowIndex);
 	}
 
-	function mailCheck(){
-		
-	}
-	
-	
 	//텍스트 박스 비엇는지 확인하는거
-	function frmCheck()
-	{
-	  var frm = document.settingForm;
-	  
-	  for( var i = 0; i <= frm.elements.length - 1; i++ ){
-	     if( frm.elements[i].name == "mail_id" )
-	     {
-	         if( !frm.elements[i].value ){
-	             alert("텍스트박스에 값을 입력하세요!");
-	                 frm.elements[i].focus();
-		 return;
-	          }
-	      }
-	   }
-	 }
+	function frmCheck() {
+		var frm = document.settingForm;
 
+		for (var i = 0; i <= frm.elements.length - 1; i++) {
+			if (frm.elements[i].name == "mail_id") {
+				if (!frm.elements[i].value) {
+					alert("텍스트박스에 값을 입력하세요!");
+					frm.elements[i].focus();
+					return;
+				}
+			}
+		}
+	}
 </script>
 <body>
 	<% int count=0; %>

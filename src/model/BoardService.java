@@ -84,5 +84,9 @@ public class BoardService {
 		String pass=dao.isPass(b_no);
 		return pass;
 	}*/
+	public boolean getAccCheck(String mail_id) throws SQLException {
+		// TODO Auto-generated method stub
+		return dao.getAccCheck(mail_id);
+	}
 		
 }

@@ -34,6 +34,9 @@ public class HandlerMapping {
 			c=new NaverAllController();
 		}else if(command.equals("hotmailAll")){
 			c=new HotmailController();
+		}else if(command.equals("accCheck")){
+			System.out.println("??");
+			c = new AccCheckController();
 		}
 		return c;
 	}
