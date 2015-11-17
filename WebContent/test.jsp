@@ -48,11 +48,14 @@
           console.log( count );
           
           for( var i = 0; i < count; i++ ) {
-        	  var fields = response.hits.hits[ i ].fields;
+        	  var fields = response.hits.hits[ i ];
         	  
 
         	  
-        	  console.log( fields.file + ":" + fields.file );
+        	  console.log("파일 id = " + fields._id + ":" + "파일 : "+ fields.fields.file);
+        	  console.log("하이라이트 = " + fields.highlight.file);
+        	  
+        	  
           }
           
 		}

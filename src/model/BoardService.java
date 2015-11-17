@@ -70,6 +70,12 @@ public class BoardService {
 	public ArrayList register(BoardVO vo) throws SQLException{
 		return dao.register(vo.getUser_id(),vo.getUser_pwd(),vo.getUser_name(),vo.getCf_email());
 	}
+	
+	public BoardVO getDetailView(int mail_no) throws SQLException{
+		BoardVO vo = dao.getDetailView(mail_no);
+		System.out.println(vo);
+		return vo;
+	}
 	/*public BoardVO getBoardView(int b_no) throws SQLException{
 		dao.incrementConut(b_no);
 		BoardVO vo=dao.getBoardView(b_no);

@@ -48,6 +48,28 @@ public class BoardDao {
 		return bno;
 	}
 
+	public BoardVO getDetailView(int mail_no) throws SQLException{
+		BoardVO vo=null;
+		Connection con=null;
+		PreparedStatement pstmt=null;
+		ResultSet rs=null;
+		try{
+		con=DriverManager.getConnection(OracleConfig.URL, OracleConfig.USER, OracleConfig.PASS);
+		String sql="select mail_info.title, mail_info.recvdate, mail_info.RECVADDR, html_path, img_num, file_num from mail_info, mail_detail where mail_info.mail_no = mail_detail.mail_no and  mail_info.mail_no=?";
+		pstmt=con.prepareStatement(sql);
+		pstmt.setInt(1, mail_no);
+		rs=pstmt.executeQuery();
+		System.out.println("안녕하세요@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+		
+		if(rs.next()){
+			System.out.println("안녕하세요***********************************");
+			vo=new BoardVO(rs.getString(1),rs.getString(2), rs.getString(3), rs.getString(4),rs.getInt(5),rs.getInt(6));
+		}
+		}finally{
+			closeAll(rs, pstmt, con);
+		}
+		return vo;
+	}
 
 	
 	public String getDate() throws SQLException{
@@ -70,7 +92,6 @@ public class BoardDao {
 		return date;
 	}
 	
-<<<<<<< HEAD
 
 	public int registCount(MailContent mail) throws SQLException {
 		int registCount = 0;
@@ -135,7 +156,7 @@ public class BoardDao {
 			String p4value = cs.getString(4);
 			String p5value = cs.getString(5);
 			String p6value = cs.getString(6);
-			
+			System.out.println("**********************" + p3value);
 			String sql="select acc_id, acc_addr,acc_site_name , acc_pwd  from account where mb_id="+p3value;
 			pstmt=con.prepareStatement(sql);
 			rs=pstmt.executeQuery();
@@ -381,14 +402,14 @@ public class BoardDao {
 		while(iterator.hasNext()){
 			BoardVO vo = (BoardVO)iterator.next();
 				//이 시점에서 mb_id 로 폴더 만들기 , 경로
-			String savePathDirectory = "c:\\temp\\" + vo.getMb_id() ;
+			String savePathDirectory = "c:\\\\temp\\\\" + vo.getMb_id() ;
 			
 			System.out.println(vo);
 			File saveDirectory = new File(savePathDirectory);
 			saveDirectory.mkdir();
 			if(vo.getAcc_site_name().equals("NAVER")){
 				try {
-					NaverMail nm = new NaverMail(vo.getAcc_id() ,vo.getAcc_addr(),vo.getAcc_pwd(),savePathDirectory + "\\"+ vo.getAcc_id() + "-");
+					NaverMail nm = new NaverMail(vo.getAcc_id() ,vo.getAcc_addr(),vo.getAcc_pwd(),savePathDirectory + "\\\\"+ vo.getAcc_id() + "-");
 					System.out.println("naver : " + vo.getAcc_addr() + "시작");
 					MailThread naverMail = new MailThread(nm);
 					naverMail.start();
@@ -399,7 +420,7 @@ public class BoardDao {
 			}else if(vo.getAcc_site_name().equals("GMAIL")){
 				try{
 					System.out.println("gmail :" + vo.getAcc_addr() + "시작");
-					GmailMail gm = new GmailMail(vo.getAcc_id() ,vo.getAcc_addr(),vo.getAcc_pwd(),savePathDirectory + "\\"+ vo.getAcc_id() + "-");
+					GmailMail gm = new GmailMail(vo.getAcc_id() ,vo.getAcc_addr(),vo.getAcc_pwd(),savePathDirectory + "\\\\"+ vo.getAcc_id() + "-");
 					MailThread gmailThread = new MailThread(gm);
 					gmailThread.start();
 				}catch(Exception e){
@@ -408,7 +429,7 @@ public class BoardDao {
 			}else{
 				try{
 					System.out.println("natemail : " + vo.getAcc_addr() + "시작");
-					NateMail nm = new NateMail(vo.getAcc_id() , vo.getAcc_addr() , vo.getAcc_pwd() , savePathDirectory + "\\" + vo.getAcc_id() + "-");
+					NateMail nm = new NateMail(vo.getAcc_id() , vo.getAcc_addr() , vo.getAcc_pwd() , savePathDirectory + "\\\\" + vo.getAcc_id() + "-");
 					MailThread natemailThread = new MailThread(nm);
 					natemailThread.start();
 				}catch(Exception e){

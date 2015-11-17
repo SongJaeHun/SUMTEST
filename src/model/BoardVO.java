@@ -12,10 +12,39 @@ public class BoardVO {
 	String acc_addr;	//내계정 주소
 	String acc_pwd;		//내계정 비밀전호
 	String acc_site_name;//내가등록한사이트 이름 = acc_id(내계정아이디랑 연결)
-	String user_name;
-	String cf_email;
+	String user_name;	//사용자 이름
+	String cf_email;	//사용자 비밀번호 찾을때 쓰는 메일
+	
+	//attached_file 
+	int file_no;
+	String file_path;
 	
 	
+	//html path
+	String html_path;
+	int img_num;
+	int file_num;
+	
+	
+	
+	public String getHtml_path() {
+		return html_path;
+	}
+	public void setHtml_path(String html_path) {
+		this.html_path = html_path;
+	}
+	public int getImg_num() {
+		return img_num;
+	}
+	public void setImg_num(int img_num) {
+		this.img_num = img_num;
+	}
+	public int getFile_num() {
+		return file_num;
+	}
+	public void setFile_num(int file_num) {
+		this.file_num = file_num;
+	}
 	public String getUser_name() {
 		return user_name;
 	}
@@ -95,6 +124,39 @@ public class BoardVO {
 		this.acc_site_name = acc_site_name;
 	}
 	
+	public int getFile_no() {
+		return file_no;
+	}
+	public void setFile_no(int file_no) {
+		this.file_no = file_no;
+	}
+	public String getFile_path() {
+		return file_path;
+	}
+	public void setFile_path(String file_path) {
+		this.file_path = file_path;
+	}
+	
+	
+	
+	
+	public BoardVO(String title, String recv_date, String recv_addr , String html_path, int img_num, int file_num) {
+		super();
+		this.title= title;
+		this.recv_date = recv_date;
+		this.recv_addr = recv_addr;
+		this.html_path = html_path;
+		this.img_num = img_num;
+		this.file_num = file_num;
+	}
+	
+	public BoardVO(int file_no, int mail_no, String file_path) {
+		super();
+		this.file_no = file_no;
+		this.mail_no = mail_no;
+		this.file_path = file_path;
+	}
+	
 	public BoardVO(String user_id, String user_pwd, String user_name, String cf_email) {
 		super();
 		this.user_id = user_id;
@@ -168,16 +230,18 @@ public class BoardVO {
 	public BoardVO(){
 		
 	}
-	
 	@Override
 	public String toString() {
-		return "BoardVO [user_id=" + user_id + ", user_pwd=" + user_pwd
-				+ ", mail_no=" + mail_no + ", acc_id=" + acc_id + ", title="
-				+ title + ", recv_date=" + recv_date + ", recv_addr="
-				+ recv_addr + ", mb_id=" + mb_id + ", acc_addr=" + acc_addr
-				+ ", acc_pwd=" + acc_pwd + ", acc_site_name=" + acc_site_name
-				+ "]";
+		return "BoardVO [user_id=" + user_id + ", user_pwd=" + user_pwd + ", mail_no=" + mail_no + ", acc_id=" + acc_id
+				+ ", title=" + title + ", recv_date=" + recv_date + ", recv_addr=" + recv_addr + ", mb_id=" + mb_id
+				+ ", acc_addr=" + acc_addr + ", acc_pwd=" + acc_pwd + ", acc_site_name=" + acc_site_name
+				+ ", user_name=" + user_name + ", cf_email=" + cf_email + ", file_no=" + file_no + ", file_path="
+				+ file_path + ", html_path=" + html_path + ", img_num=" + img_num + ", file_num=" + file_num + "]";
 	}
+	
+	
+	
+	
 
 
 }
