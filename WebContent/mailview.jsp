@@ -458,6 +458,15 @@ window.onload=function(){
 			</c:forEach>
 		
 		
+			<c:forEach items="${requestScope.search}" var="allview">
+				<tr>
+					<td align="center">${allview.mail_no}</td>
+					<td align="center"><a
+						href="DispatcherServlet?command=gmail&acc_id=${allview.mail_no}">${allview.title}</a></td>
+					<td align="center">${allview.recv_addr}</td>
+					<td align="center">${allview.recv_date}</td>
+				</tr>
+			</c:forEach>
 		
 		
 		

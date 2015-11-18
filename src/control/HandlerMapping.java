@@ -41,6 +41,8 @@ public class HandlerMapping {
 		}else if(command.equals("accCheck")){
 			System.out.println("??");
 			c = new AccCheckController();
+		}else if(command.equals("search")){
+			c = new SearchController();
 		}
 		return c;
 	}

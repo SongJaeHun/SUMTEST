@@ -14,6 +14,7 @@ public class BoardVO {
 	String acc_site_name;//내가등록한사이트 이름 = acc_id(내계정아이디랑 연결)
 	String user_name;	//사용자 이름
 	String cf_email;	//사용자 비밀번호 찾을때 쓰는 메일
+	String search;
 	
 	//attached_file 
 	int file_no;
@@ -26,6 +27,14 @@ public class BoardVO {
 	int file_num;
 	
 	
+	
+	
+	public String getSearch() {
+		return search;
+	}
+	public void setSearch(String search) {
+		this.search = search;
+	}
 	
 	public String getHtml_path() {
 		return html_path;
@@ -210,6 +219,8 @@ public class BoardVO {
 	public BoardVO(String user_id){
 		this.user_id = user_id;
 	}
+	
+	
 	public BoardVO(int acc_id, String acc_addr, String acc_site_name, String acc_pwd, int mb_id) {
 		this.acc_id = acc_id;
 		this.acc_addr = acc_addr;
@@ -230,14 +241,17 @@ public class BoardVO {
 	public BoardVO(){
 		
 	}
+	
 	@Override
 	public String toString() {
 		return "BoardVO [user_id=" + user_id + ", user_pwd=" + user_pwd + ", mail_no=" + mail_no + ", acc_id=" + acc_id
 				+ ", title=" + title + ", recv_date=" + recv_date + ", recv_addr=" + recv_addr + ", mb_id=" + mb_id
 				+ ", acc_addr=" + acc_addr + ", acc_pwd=" + acc_pwd + ", acc_site_name=" + acc_site_name
-				+ ", user_name=" + user_name + ", cf_email=" + cf_email + ", file_no=" + file_no + ", file_path="
-				+ file_path + ", html_path=" + html_path + ", img_num=" + img_num + ", file_num=" + file_num + "]";
+				+ ", user_name=" + user_name + ", cf_email=" + cf_email + ", search=" + search + ", file_no=" + file_no
+				+ ", file_path=" + file_path + ", html_path=" + html_path + ", img_num=" + img_num + ", file_num="
+				+ file_num + "]";
 	}
+	
 	
 	
 	

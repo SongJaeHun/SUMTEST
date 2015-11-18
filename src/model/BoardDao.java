@@ -11,13 +11,13 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import config.OracleConfig;
 import mail.GmailMail;
 import mail.MailContent;
 import mail.MailThread;
 import mail.NateMail;
 import mail.NaverMail;
 import query.Query;
-import config.OracleConfig;
 
 public class BoardDao {
 	public static int p3value;
@@ -68,6 +68,37 @@ public class BoardDao {
 			closeAll(rs, pstmt, con);
 		}
 		return vo;
+	}
+
+	
+
+	public ArrayList getSearch(String search) throws SQLException{
+		ArrayList searchMailList = new ArrayList();
+		Connection con=null;
+		PreparedStatement pstmt=null;
+		ResultSet rs=null;
+		try{
+		con=DriverManager.getConnection(OracleConfig.URL, OracleConfig.USER, OracleConfig.PASS);
+		String sql="SELECT mail_info.mail_no, TITLE, RECVADDR, recvdate FROM MAIL_INFO, MAIL_DETAIL WHERE MAIL_INFO.MAIL_NO = MAIL_DETAIL.MAIL_NO AND TITLE LIKE ? OR RECVADDR LIKE ?";
+		pstmt=con.prepareStatement(sql);
+		
+		pstmt.setString(1,"%" + search +"%");
+		pstmt.setString(2,"%" + search +"%");
+		rs=pstmt.executeQuery();
+		System.out.println("안녕하세요@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+		
+		while(rs.next()){
+/*				System.out.println(rs.getInt(1));
+				System.out.println(rs.getString(2));
+				System.out.println(rs.getString(3));
+				System.out.println(rs.getString(4));*/
+			
+			searchMailList.add(new BoardVO(rs.getInt(1),rs.getString(2),rs.getString(3),rs.getString(4)) );
+		}
+		}finally{
+			closeAll(rs, pstmt, con);
+		}
+		return searchMailList;
 	}
 
 	
@@ -341,7 +372,7 @@ public class BoardDao {
 		}
 		return list;
 	}
-
+	
 	public ArrayList getNaverBoard(int acc_id) throws SQLException{
 		ArrayList list=new ArrayList();
 		Connection con=null;
