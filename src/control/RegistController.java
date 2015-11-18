@@ -21,7 +21,7 @@ public class RegistController implements Controller {
 		
 		try{
 			int isRegist = service.getRegistResult(mails,pwds,sites);
-			mv.setPath("allview.jsp");
+			mv.setPath("home.jsp");
 		}catch(SQLException e){
 			e.printStackTrace();
 		}

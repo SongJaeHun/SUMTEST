@@ -51,10 +51,10 @@
 
 </head>
 <script>
-window.onload=function(){
+/* window.onload=function(){
 	  alert("${detail.html_path}");
 
-}
+} */
 </script>
 <body>
 	<% int count=0; %>
@@ -392,7 +392,8 @@ window.onload=function(){
 						<%-- <%@ include file=${detail.html_path} %> --%>
 						
 						<%-- <% String html_path = (String)session.getAttribute("html_path"); %> --%>
-						<iframe src="c:\\temp\\15\\30-1447757779895-1.html" >${detail.html_path }</iframe>
+						<iframe src=" ${detail.html_path }" width="900" height="700">	
+						</iframe>
 								
 					</td>
 				</tr>
@@ -408,8 +409,6 @@ window.onload=function(){
 		
 		</table>	
 	</div>
-	
-	<iframe src="c:\\temp\\15\\30-1447757779895-1.html" >${detail.html_path }</iframe>
 	<input type="button" border="0" value="홈으로"
 		onclick="location.href='\index.jsp'"> </section> <!--main content end-->
 	</section>
