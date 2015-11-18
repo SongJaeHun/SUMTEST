@@ -38,6 +38,12 @@ public class BoardService {
 		return list;
 	}
 	
+	public ArrayList getSearch(String search) throws SQLException{
+		ArrayList searchMailList =dao.getSearch(search);
+		return searchMailList;
+	}
+	
+	
 	public ArrayList getNaverBoard(int acc_id) throws SQLException{
 		ArrayList list=dao.getNaverBoard(acc_id);
 		return list;

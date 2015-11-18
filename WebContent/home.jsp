@@ -86,8 +86,10 @@
 			<div class="nav search-row" id="top_menu">
 				<ul class="nav top-menu">
 					<li>
-						<form class="navbar-form">
-							<input class="form-control" placeholder="Search" type="text">
+						<form class="navbar-form" action="DispatcherServlet" method="post">
+							<input class="form-control" placeholder="Search" type="text" name="searchText">
+							<input type="hidden" name="command" value="search">
+							
 							<select id="search" name="search" class="form-control">
 								<option value="">검색값 선택</option>
 								<option value="mailsearch">일반메일검색</option>
