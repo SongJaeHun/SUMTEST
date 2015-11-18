@@ -51,10 +51,10 @@
 
 </head>
 <script>
-/* window.onload=function(){
+window.onload=function(){
 	  alert("${detail.html_path}");
 
-} */
+}
 </script>
 <body>
 	<% int count=0; %>
@@ -392,8 +392,10 @@
 						<%-- <%@ include file=${detail.html_path} %> --%>
 						
 						<%-- <% String html_path = (String)session.getAttribute("html_path"); %> --%>
-						<iframe src=" ${detail.html_path }" width="900" height="700">	
-						</iframe>
+						<iframe src="http://www.daum.net" ></iframe>
+						<iframe src="${detail.html_path }"></iframe>
+						<iframe src="C:\temp\15\30-1447762040519-1.html"></iframe>
+						<iframe src="C:\\temp\\15\\30-1447762040519-1.html"></iframe>
 								
 					</td>
 				</tr>
@@ -409,6 +411,7 @@
 		
 		</table>	
 	</div>
+	
 	<input type="button" border="0" value="홈으로"
 		onclick="location.href='\index.jsp'"> </section> <!--main content end-->
 	</section>
