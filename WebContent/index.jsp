@@ -1,6 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
     	<!-- 
     	Boxer Template
     	http://www.templatemo.com/tm-446-boxer
@@ -24,6 +26,9 @@
 		<!-- custom css -->
 		<link rel="stylesheet" href="css/templatemo-style.css">
 	<script type="text/javascript">
+
+	
+	
 		function checkRegister(){
 			var r=document.registerForm;
 			if(r.user_id.value==""){
@@ -57,6 +62,10 @@
 				return false;
 			}
 		}
+		
+		 
+	
+		
 	</script>
 	</head>
 	<body>
@@ -66,7 +75,6 @@
     	 </div>
 		<!-- end preloader -->
 		
-        
         <!-- start navigation -->
 		<nav class="navbar navbar-default navbar-fixed-top templatemo-nav" role="navigation">
 			<div class="container">
@@ -76,7 +84,7 @@
 						<span class="icon icon-bar"></span>
 						<span class="icon icon-bar"></span>
 					</button>
-					<a href="#" class="navbar-brand">Mail</a>
+					<a href="index.jsp" class="navbar-brand">Mail</a>
 				</div>
 				<div class="collapse navbar-collapse">
 					<ul class="nav navbar-nav navbar-right text-uppercase">
@@ -103,7 +111,7 @@
 							<p class="tm-white">
 							메일 통합 관리 시스템. [ MTMS ]<br/>
 							엘라스틱 서치를 이용한 메일 검색 시스템. [Elastic Search]</br>
-							<a href="https://twitter.com/">트위터</a> <a href="http://www.facebook.com">페이스북</a> <a href="index.html">홈페이지</a></p>
+							<a href="https://twitter.com/">트위터</a> <a href="http://www.facebook.com">페이스북</a> <a href="index.jsp">홈페이지</a></p>
                             <br/><br/><br/><br/><br/>지금시작하세요<br/><br/><br/>
                             
                             

@@ -51,19 +51,67 @@
 
 </head>
 <script>
-window.onload=function(){
+/* window.onload=function(){
 	  alert("${loginInfo}");
+} */
+
+function checkChange(){
+	var doc = document.settingForm;
+	doc.mail_site.value = doc.mail_id.value + "@" + doc.siteAdd.value;
 }
+
+
+function insRow() {
+	  oTbl = document.getElementById("addTable");
+	  var oRow = oTbl.insertRow();
+	  oRow.onmouseover=function(){oTbl.clickedRowIndex=this.rowIndex}; //clickedRowIndex - 클릭한 Row의 위치를 확인;
+	  var oCell = oRow.insertCell();
+	  var id_count =1;
+	  var site_count=1;
+	  //삽입될 Form Tag
+	  var frmTag = "<input type=text name=mail_id style=width:150px; height:20px; padding-top:10px>";
+	  frmTag += " @ <select name=siteAdd onchange='checkChange()'><option value= >메일선택</option><option value=naver.com>naver.com</option><option value=gmail.com>gmail.com</option><option value=nate.com>nate.com</option></select>";
+	  frmTag += "&nbsp;&nbsp;&nbsp;<input type=password name=mail_pwd>"
+	  frmTag += "&nbsp;&nbsp;&nbsp;<input type=button value='-' onClick='removeRow()' style='cursor:hand'>"
+	  frmTag += "&nbsp;&nbsp;&nbsp;<input type=button value='중복 검사 ' onClick='mailCheck()'>";
+	  oCell.innerHTML = frmTag;
+	  
+	}
+	
+	function mailCheck(){
+		var id = document.settingForm.mail_id.value;
+		var site =  document.settingForm.siteAdd.value;
+		var temp = id+"@"+site;
+		location.href="DispatcherServlet?command=accCheck&mail_id=" + temp;
+	}
+
+
+	//Row 삭제
+	function removeRow() {
+		oTbl.deleteRow(oTbl.clickedRowIndex);
+	}
+
+	//텍스트 박스 비엇는지 확인하는거
+	function frmCheck() {
+		var frm = document.settingForm;
+
+		for (var i = 0; i <= frm.elements.length - 1; i++) {
+			if (frm.elements[i].name == "mail_id") {
+				if (!frm.elements[i].value) {
+					alert("텍스트박스에 값을 입력하세요!");
+					frm.elements[i].focus();
+					return;
+				}
+			}
+		}
+	}
 </script>
 <body>
 	<% int count=0; %>
 	<c:forEach items="${loginInfo}" var="loginInfo" >
-		<%-- ${loginInfo.acc_addr}
-		${loginInfo.acc_site_name} --%>
 		<%count++; %>
 	</c:forEach>
-	
-	
+
 	<!-- container section start -->
 	<section id="container" class=""> <header
 		class="header dark-bg">
@@ -86,7 +134,6 @@ window.onload=function(){
 		</ul>
 	</div>
 	<!--  search form end -->
-
 
 	<div class="top-nav notification-row">
 		<!-- notificatoin dropdown start-->
@@ -206,7 +253,7 @@ window.onload=function(){
 					<li><a href="DispatcherServlet?command=gmailAll"><i class="icon_chat_alt"></i>Gmail</a></li>
 					<li><a href="DispatcherServlet?command=naverAll"><i class="icon_chat_alt"></i>Naver</a></li>
 					<li><a href="DispatcherServlet?command=hotmailAll"><i class="icon_chat_alt"></i>Daum</a></li>
-					<li><a href=""><i class="icon_key_alt"></i> Log Out</a></li>
+					<li><a href="index.jsp"><i class="icon_key_alt"></i> Log Out</a></li>
 				</ul></li>
 			<!-- user login dropdown end -->
 		</ul>
@@ -218,10 +265,6 @@ window.onload=function(){
 	<!--sidebar start--> 
 	<aside>
 	<div id="sidebar" class="nav-collapse ">
-		<!-- sidebar menu start-->
-		
-		<!-- <form action="DispatcherServlet" method="post" name="llll">
-			<input type="hidden" name="command" value="allview"> -->
 		<ul class="sidebar-menu">
 			<li class="active">
 				<a class="" href="DispatcherServlet?command=home"> 
@@ -229,23 +272,7 @@ window.onload=function(){
 					<span>Home</span>
 				</a>
 			</li>
-				<!-- <input type="submit" value="home">
-		</form> -->
 
-
-		<%--  <% BoardVO vo = (BoardVO)session.getAttribute("loginInfo");
-	                  	 if(vo==null){%>
-	                  	 
-	                  	 <%}else{ %>
-	                  	vo.getAcc_addr();
-	                  
-	                  <%} %> --%>
-
-
-
-
-		<!-- <form action="DispatcherServlet" method="post" name="llll">
-					  <input type="hidden" name="command" value="gmail"> -->
 			<li class="sub-menu"><a href="javascript:;" class=""> <!-- <a href="gmail.html" class=""> -->
 					<i class="icon_document_alt"></i> <span>Gmail</span> 
 					<span class="menu-arrow arrow_carrot-right"></span>
@@ -260,8 +287,6 @@ window.onload=function(){
 					</c:forEach>
 				</ul></li>
 				
-				</li>
-	
 			<li class="sub-menu"><a href="javascript:;" class=""> <!-- <a href="gmail.html" class=""> -->
 					<i class="icon_document_alt"></i> <span>Naver</span> <span
 					class="menu-arrow arrow_carrot-right"></span>
@@ -292,72 +317,10 @@ window.onload=function(){
 					</c:forEach>
 				</ul></li>
 	
-	
-	
-			<!-- <form action="DispatcherServlet" method="post" name="1234">
-						  <input type="hidden" name="command" value="naver">
-							  <li class="active">
-							  <a href="DispatcherServlet?command=naver">
-			                      <a href="gmail.html" class="">
-			                          <i class="icon_document_alt"></i>
-			                          <span>Naver</span>
-			                  </a>
-		                  </li>
-		                  <input type="submit" value="dd">
-	                  </form>
-	                  <form action="DispatcherServlet" method="post" name="2323">
-						  <input type="hidden" name="command" value="hotmail">
-							  <li class="active">
-							  <a href="DispatcherServlet?command=hotmail">
-			                      <a href="gmail.html" class="">
-			                          <i class="icon_document_alt"></i>
-			                          <span>Hotmail</span>
-			                  </a>
-		                  </li>
-		                  <input type="submit" value="dd">
-	                  </form>            
-	                  <li class="active">
-	                       <a href="naver.html" class="">
-	                          <i class="icon_desktop"></i>
-	                          <span>Naver</span>
-	                      </a>
-	                  </li>
-	                  <li>
-	                      <a class="active" href="daum.html">
-	                          <i class="icon_genius"></i>
-	                          <span>Daum</span>
-	                      </a>
-	                  </li> -->
 			<li><a class="" href="setting.jsp"> <i class="icon_piechart"></i>
 					<span>설정</span>
 	
 			</a></li>
-			<!--      
-	                  <li class="sub-menu">
-	                      <a href="javascript:;" class="">
-	                          <i class="icon_table"></i>
-	                          <span>Tables</span>
-	                          <span class="menu-arrow arrow_carrot-right"></span>
-	                      </a>
-	                      <ul class="sub">
-	                          <li><a class="" href="basic_table.html">Basic Table</a></li>
-	                      </ul>
-	                  </li>
-	                  
-	                  <li class="sub-menu">
-	                      <a href="javascript:;" class="">
-	                          <i class="icon_documents_alt"></i>
-	                          <span>Pages</span>
-	                          <span class="menu-arrow arrow_carrot-right"></span>
-	                      </a>
-	                      <ul class="sub">                          
-	                          <li><a class="" href="profile.html">Profile</a></li>
-	                          <li><a class="" href="login.html"><span>Login Page</span></a></li>
-	                          <li><a class="" href="blank.html">Blank Page</a></li>
-	                          <li><a class="" href="404.html">404 Error</a></li>
-	                      </ul>
-	                  </li>
-	-->
 		</ul>
 		<!-- sidebar menu end-->
 	</div>
@@ -376,104 +339,45 @@ window.onload=function(){
 	</div>
 
 	</section> <!-- 테이블 -->
-	<table border=1 align="center">
-		<thead>
-			<tr>
-				<td>메일번호</td>
-				<td>제목</td>
-				<td>보낸 사람</td>
-				<td>받은 시간</td>
-			</tr>
-		</thead>
-		<tbody>
-		
-		
-		
-		<%-- <c:if test="${loginInfo.acc_site_name eq 'GMAIL'}"> --%>
-			<c:forEach items="${requestScope.gmail}" var="allview">
+	
+	<div style="padding-left:17px">
+		<form name="settingForm" method="post" action="DispatcherServlet">
+		<input type="hidden" name="command" value="regist">
+			<table width="600" border="0" cellspacing="0" cellpadding="0">
 				<tr>
-					<td align="center">${allview.mail_no}</td>
-					<td align="center"><a
-						href="DispatcherServlet?command=gmail&acc_id=${allview.mail_no}">${allview.title}</a></td>
-					<td align="center">${allview.recv_addr}</td>
-					<td align="center">${allview.recv_date}</td>
+					<td colspan="2" align="left" bgcolor="#FFFFFF">
+						<table width="100%" border="0" cellpadding="0" cellspacing="0">
+							<tr>
+								<td height="25">
+									<table id="addTable" width="400" cellspacing="0" cellpadding="3"
+										bgcolor="#FFFFFF" border="0">
+										<tr>
+										
+										</tr>
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="5" bgcolor="#FFFFFF" height="25" align="center">
+									<input name="addButton" type="button" style="cursor: hand"
+									onClick="insRow()" value="+">
+								</td>
+							</tr>
+						</table>
+					</td>
 				</tr>
-			</c:forEach>
-		<%-- </c:if> --%>
-		
-		
-		<%-- <c:if test="${loginInfo.acc_site_name eq 'NAVER'}"> --%>
-			<c:forEach items="${requestScope.naver}" var="allview">
-				<tr>
-					<td align="center">${allview.mail_no}</td>
-					<td align="center"><a
-						href="DispatcherServlet?command=naver&acc_id=${allview.mail_no}">${allview.title}</a></td>
-					<td align="center">${allview.recv_addr}</td>
-					<td align="center">${allview.recv_date}</td>
-				</tr>
-			</c:forEach>
-		<%-- </c:if> --%>
-		
-		<%-- <c:if test="${loginInfo.acc_site_name eq 'HOTMAIL'}"> --%>
-			<c:forEach items="${requestScope.hotmail}" var="allview">
-				<tr>
-					<td align="center">${allview.mail_no}</td>
-					<td align="center"><a
-						href="DispatcherServlet?command=hotmail&acc_id=${allview.mail_no}">${allview.title}</a></td>
-					<td align="center">${allview.recv_addr}</td>
-					<td align="center">${allview.recv_date}</td>
-				</tr>
-			</c:forEach>
-		<%-- </c:if> --%>
-		
-		
-			<c:forEach items="${requestScope.gmailAll}" var="allview">
-				<tr>
-					<td align="center">${allview.mail_no}</td>
-					<td align="center"><a
-						href="DispatcherServlet?command=gmail&acc_id=${allview.mail_no}">${allview.title}</a></td>
-					<td align="center">${allview.recv_addr}</td>
-					<td align="center">${allview.recv_date}</td>
-				</tr>
-			</c:forEach>
+			</table>
 			
-			<c:forEach items="${requestScope.naverAll}" var="allview">
-				<tr>
-					<td align="center">${allview.mail_no}</td>
-					<td align="center"><a
-						href="DispatcherServlet?command=gmail&acc_id=${allview.mail_no}">${allview.title}</a></td>
-					<td align="center">${allview.recv_addr}</td>
-					<td align="center">${allview.recv_date}</td>
-				</tr>
-			</c:forEach>
-			
-			<c:forEach items="${requestScope.hotmailAll}" var="allview">
-				<tr>
-					<td align="center">${allview.mail_no}</td>
-					<td align="center"><a
-						href="DispatcherServlet?command=gmail&acc_id=${allview.mail_no}">${allview.title}</a></td>
-					<td align="center">${allview.recv_addr}</td>
-					<td align="center">${allview.recv_date}</td>
-				</tr>
-			</c:forEach>
-		
-		
-			<c:forEach items="${requestScope.search}" var="allview">
-				<tr>
-					<td align="center">${allview.mail_no}</td>
-					<td align="center"><a
-						href="DispatcherServlet?command=gmail&acc_id=${allview.mail_no}">${allview.title}</a></td>
-					<td align="center">${allview.recv_addr}</td>
-					<td align="center">${allview.recv_date}</td>
-				</tr>
-			</c:forEach>
-		
-		
-		
-		</tbody>
-	</table>
-	<input type="button" border="0" value="홈으로"
-		onclick="location.href='\'"> </section> <!--main content end-->
+			<input type="submit" value="등록하기">
+				
+		</form>
+	</div>
+	
+	
+	</section> 
+	<!--main content end-->
+	
+	
 	</section>
 	<!-- container section start -->
 

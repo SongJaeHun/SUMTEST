@@ -222,14 +222,17 @@ public class BoardDao {
 			String p5value = cs.getString(5);
 			String p6value = cs.getString(6);
 			System.out.println("**********************" + p3value);
+			System.out.println("p6값+++++++++++++++" + p6value);
+			
 			String sql="select acc_id, acc_addr,acc_site_name , acc_pwd  from account where mb_id="+p3value;
 			pstmt=con.prepareStatement(sql);
 			rs=pstmt.executeQuery();
+			System.out.println("***리스트값"+list);
 			if(p6value!=null){
 				while(rs.next()){
 					vo=new BoardVO(rs.getInt(1),rs.getString(2),rs.getString(3),rs.getString(4),p3value,p1value);
+					System.out.println("*****보드다오 로그인" + vo);
 					list.add(vo);
-					
 				}
 				System.out.println(list);
 			}

@@ -16,6 +16,8 @@ public class BoardVO {
 	String cf_email;	//사용자 비밀번호 찾을때 쓰는 메일
 	String search;
 	
+	
+
 	//attached_file 
 	int file_no;
 	String file_path;
@@ -25,8 +27,6 @@ public class BoardVO {
 	String html_path;
 	int img_num;
 	int file_num;
-	
-	
 	
 	
 	public String getSearch() {
@@ -241,7 +241,6 @@ public class BoardVO {
 	public BoardVO(){
 		
 	}
-	
 	@Override
 	public String toString() {
 		return "BoardVO [user_id=" + user_id + ", user_pwd=" + user_pwd + ", mail_no=" + mail_no + ", acc_id=" + acc_id
@@ -251,6 +250,11 @@ public class BoardVO {
 				+ ", file_path=" + file_path + ", html_path=" + html_path + ", img_num=" + img_num + ", file_num="
 				+ file_num + "]";
 	}
+	
+	
+	
+	
+	
 	
 	
 	

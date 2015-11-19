@@ -50,11 +50,19 @@
     <![endif]-->
 
 </head>
-<!-- <script>
-	window.onload=function(){
+<script>
+	/* window.onload=function(){
 	  alert("${loginInfo}");
-}
-</script> -->
+} */
+/* function logout(){
+	session.invalidate();
+	alert("로그아웃 되었습니다.");
+	System.out.println("안녕");
+	response.sendRedirect("");
+
+	System.out.println("하세요");
+} */
+</script>
 <body>
 
 <% int count=0; %>
@@ -227,7 +235,7 @@
 					<li><a href="DispatcherServlet?command=gmailAll"><i class="icon_chat_alt"></i>Gmail</a></li>
 					<li><a href="DispatcherServlet?command=naverAll"><i class="icon_chat_alt"></i>Naver</a></li>
 					<li><a href="DispatcherServlet?command=hotmailAll"><i class="icon_chat_alt"></i>Daum</a></li>
-					<li><a href="index.html"><i class="icon_key_alt"></i> Log Out</a></li>
+					<li><a href=""><i class="icon_key_alt"></i> Log Out</a></li>
 				</ul></li>
 			<!-- user login dropdown end -->
 			
@@ -297,7 +305,8 @@
 	
 			<li class="sub-menu">
 				<a href="javascript:;" class="">
-					<i class="icon_document_alt"></i> <span>HotMail</span>
+					<i class="icon_document_alt"></i> 
+					<span>HotMail</span>
 					<span class="menu-arrow arrow_carrot-right"></span>
 				</a> 
 				
@@ -311,8 +320,16 @@
 			</li>
 	
 	
-			<li><a class="" href="setting.jsp"> <i class="icon_piechart"></i>
+			<li class="sub-menu">
+				<a class="" href="javascript:;"> <i class="icon_piechart"></i>
 					<span>설정</span>
+					<span class="menu-arrow arrow_carrot-right"></span>
+					
+					<ul class="sub">
+						<li><a class="" href="accountAdd.jsp">계정 추가 </a></li>
+						<li><a class="" href="accountDel.jsp">계정 삭제 </a></li>
+						<li><a class="" href="DispatcherServlet?command=memberInfo">회원 정보 수정</a></li>
+					</ul>
 	
 			</a></li>
 		</ul>

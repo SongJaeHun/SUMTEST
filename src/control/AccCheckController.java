@@ -26,7 +26,7 @@ public class AccCheckController implements Controller {
 
 			}else{
 				System.out.println("******&&&&&&&&&&&&&&&&&&&&&&***********");
-				mv.setPath("index.html");
+				mv.setPath("index.jsp");
 				
 			}
 			

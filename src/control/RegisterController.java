@@ -31,7 +31,7 @@ public class RegisterController implements Controller {
 			
 			
 			if(vo!=null){
-				mv.setPath("index.html");
+				mv.setPath("index.jsp");
 			}else{
 				mv.setPath("register_fail.jsp");
 			}

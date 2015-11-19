@@ -43,6 +43,14 @@ public class HandlerMapping {
 			c = new AccCheckController();
 		}else if(command.equals("search")){
 			c = new SearchController();
+		}else if(command.equals("accountAdd")){
+			c = new AccountAddController();
+		}else if(command.equals("accountDel")){
+			c = new AccountDelController();
+		}else if(command.equals("accountChg")){
+			c = new AccountChgController();
+		}else if(command.equals("memberInfo")){
+			c = new MemberInfoController();
 		}
 		return c;
 	}
