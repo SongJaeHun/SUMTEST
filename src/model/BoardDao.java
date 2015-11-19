@@ -59,7 +59,8 @@ public class BoardDao {
 		pstmt.setInt(1, mail_no);
 		rs=pstmt.executeQuery();
 		System.out.println("안녕하세요@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-		
+		//4
+
 		if(rs.next()){
 			System.out.println("안녕하세요***********************************");
 			vo=new BoardVO(rs.getString(1),rs.getString(2), rs.getString(3), rs.getString(4),rs.getInt(5),rs.getInt(6));
@@ -205,8 +206,8 @@ public class BoardDao {
 
 			String p1value= new String(user_id);
 			String p2value= new String(user_pwd);
-
-
+			
+			
 			cs = con.prepareCall("{call LOGIN(?,?,?,?,?,?)}");
 			cs.setString(1, p1value);
 			cs.setString(2, p2value);
@@ -445,16 +446,17 @@ public class BoardDao {
 		ResultSet rs=null;
 		try{
 			con=DriverManager.getConnection(OracleConfig.URL, OracleConfig.USER, OracleConfig.PASS);
-			cs = con.prepareCall("{call CK_EXIST_ACCOUNT(?,?)}");
-			cs.setString(1, mail_id);
-			cs.registerOutParameter(2, Types.INTEGER);
+			cs = con.prepareCall("{call CK_EXIST_ACCOUNT(?,?,?)}");
+			cs.setInt(1, p3value);
+			cs.setString(2, mail_id);
+			cs.registerOutParameter(3, Types.INTEGER);
 			cs.executeQuery();
 			
-			int count = cs.getInt(2);
+			int count = cs.getInt(3);
 			if(count == 1){
 				isCheck = true;
 			}
-			
+			System.out.println("중복 < 1 : 중복 > -  " + isCheck);
 		}finally{
 			closeAll(rs, pstmt, con);
 		}
@@ -493,10 +495,15 @@ public class BoardDao {
 		while(iterator.hasNext()){
 			BoardVO vo = (BoardVO)iterator.next();
 				//이 시점에서 mb_id 로 폴더 만들기 , 경로
-			String savePathDirectory = "c:\\\\temp\\\\" + vo.getMb_id() ;
+			String savePathDirectory = "c:\\\\web\\\\SUMTEST\\\\WebContent\\\\temp\\\\" + vo.getMb_id() ;
 			
 			System.out.println(vo);
 			File saveDirectory = new File(savePathDirectory);
+			if(saveDirectory.exists())
+			{
+				saveDirectory.delete();
+				
+			}
 			saveDirectory.mkdir();
 			if(vo.getAcc_site_name().equals("NAVER")){
 				try {

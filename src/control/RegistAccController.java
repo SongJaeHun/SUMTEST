@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import model.BoardService;
 
-public class RegistController implements Controller {
+public class RegistAccController implements Controller {
 
 	@Override
 	public ModelAndView execute(HttpServletRequest request,

@@ -1,6 +1,5 @@
 package control;
 
-import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,15 +20,11 @@ public class AccCheckController implements Controller {
 		try{
 			boolean isCheck = service.getAccCheck(mail_id);
 			if(isCheck){
-				mv.setPath("setting.jsp");
-				System.out.println("******&&12324345&&&&&&&&&***********");
-
+				request.setAttribute("accCheck", false);
 			}else{
-				System.out.println("******&&&&&&&&&&&&&&&&&&&&&&***********");
-				mv.setPath("index.html");
-				
+				request.setAttribute("accCheck", true);
 			}
-			
+			mv.setPath("setting.jsp");
 		}catch(SQLException e){
 			e.printStackTrace();
 		}

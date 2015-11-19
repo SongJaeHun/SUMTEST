@@ -27,7 +27,7 @@ public class HandlerMapping {
 		}else if(command.equals("mailview")){
 			c=new MailViewController();
 		}else if(command.equals("regist")){
-			c = new RegistController();
+			c = new RegistAccController();
 		}else if(command.equals("gmailAll")){
 			c=new GmailAllController();
 		}else if(command.equals("naverAll")){

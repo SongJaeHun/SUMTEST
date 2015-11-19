@@ -51,10 +51,10 @@
 
 </head>
 <script>
-window.onload=function(){
+/* window.onload=function(){
 	  alert("${detail.html_path}");
 
-}
+} */
 </script>
 <body>
 	<% int count=0; %>
@@ -392,10 +392,7 @@ window.onload=function(){
 						<%-- <%@ include file=${detail.html_path} %> --%>
 						
 						<%-- <% String html_path = (String)session.getAttribute("html_path"); %> --%>
-						<iframe src="http://www.daum.net" ></iframe>
-						<iframe src="${detail.html_path }"></iframe>
-						<iframe src="C:\temp\15\30-1447762040519-1.html"></iframe>
-						<iframe src="C:\\temp\\15\\30-1447762040519-1.html"></iframe>
+						<iframe src="${detail.html_path }" width="900" height="600"></iframe>
 								
 					</td>
 				</tr>

@@ -50,6 +50,7 @@
     <![endif]-->
 
 </head>
+<script type="text/javascript" src="${pageContext.request.contextPath }/httpRequest.js"></script>
 <script>
 /* window.onload=function(){
 	  alert("${loginInfo}");
@@ -82,7 +83,26 @@ function insRow() {
 		var id = document.settingForm.mail_id.value;
 		var site =  document.settingForm.siteAdd.value;
 		var temp = id+"@"+site;
-		location.href="DispatcherServlet?command=accCheck&mail_id=" + temp;
+		var param ="command=accCheck&mail_id=" + temp;
+		sendRequest("${pageContext.request.contextPath}/DispatcherServlet", param , listResult , "POST");
+	}
+	
+	function listResult(){
+		if(httpRequest.readyState==4){
+			if(httpRequest.status==200){
+				var commentList = eval("(" + httpRequest.responseText + ")");
+				//모든 글들을 출력할 영역인 id가 commentList인 div 객체를 읽어와
+				alert(commentList);
+				var listDiv = document.getElementById('commentList');
+				//배열 commentList의 길이만큼 반복함
+				for(i=0;i<commentList.length;i++){
+					//함수 makeCommentView()를 호출하여 글 하나를 출력할 div를 생성하여 글 내용을 출력함
+					var commentDiv = makeCommentView(commentList[i]);
+					//위에서 글 하나 출력한 div를 id가 commentList인 div의 자식으로 추가
+					listDiv.appendChild(commentDiv);
+				}
+			}
+		}
 	}
 
 
@@ -94,13 +114,21 @@ function insRow() {
 	//텍스트 박스 비엇는지 확인하는거
 	function frmCheck() {
 		var frm = document.settingForm;
-
+		
+		
 		for (var i = 0; i <= frm.elements.length - 1; i++) {
 			if (frm.elements[i].name == "mail_id") {
 				if (!frm.elements[i].value) {
-					alert("텍스트박스에 값을 입력하세요!");
+					alert("아이디  입력하세요!");
 					frm.elements[i].focus();
-					return;
+					return false;
+				}
+			}
+			if (frm.elements[i].name == "mail_pwd") {
+				if (!frm.elements[i].value) {
+					alert("비밀번호  입력하세요!");
+					frm.elements[i].focus();
+					return false;
 				}
 			}
 		}
@@ -341,7 +369,7 @@ function insRow() {
 	</section> <!-- 테이블 -->
 	
 	<div style="padding-left:17px">
-		<form name="settingForm" method="post" action="DispatcherServlet">
+		<form name="settingForm" method="post" action="DispatcherServlet" onsubmit =  "return frmCheck()">
 		<input type="hidden" name="command" value="regist">
 			<table width="600" border="0" cellspacing="0" cellpadding="0">
 				<tr>
@@ -368,7 +396,7 @@ function insRow() {
 				</tr>
 			</table>
 			
-			<input type="submit" value="등록하기">
+			<input type="submit" value="등록하기" >
 			
 		</form>
 	</div>

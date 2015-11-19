@@ -63,6 +63,9 @@ public class NaverMail implements Mail{
     private String attachmentPath;
     
     private BoardService service = BoardService.getInstance();
+ 
+    BASE64Encoder base64Encoder = new BASE64Encoder();
+    BASE64Decoder base64Decoder = new BASE64Decoder();
     
     public NaverMail(int accId , String accAddr , String accPwd , String file_Path) throws Exception {
     	accountId = accId;
@@ -100,8 +103,6 @@ public class NaverMail implements Mail{
             Message messages[] = uf.getMessagesByUID(previousUID + 1, UIDFolder.LASTUID);
         //    mails = new MailContent[messages.length - 1]();
             System.out.println(messages.length);
-            BASE64Encoder base64Encoder = new BASE64Encoder();
-            BASE64Decoder base64Decoder = new BASE64Decoder();
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             
             for (int i = messages.length - 1 ; i  >= 0  ; i--) {
@@ -148,7 +149,18 @@ public class NaverMail implements Mail{
                     
                     msg.setFlag(Flags.Flag.SEEN, false);
                 }
-                
+                //여기서 저장후에 htmlPath WebContent 제거 후 다시 저장
+               
+                int startIndex = mail.getMainHtmlPath().indexOf("Web") ;
+               String path = mail.getMainHtmlPath().substring(0 , startIndex);
+               int lastIndex = startIndex + 12;
+              
+               path = path + mail.getMainHtmlPath().substring(lastIndex , mail.getMainHtmlPath().length());
+               path = path.replace("c:\\\\web\\\\", "http://localhost:9090\\\\").replace("\\\\", "/"); 
+               
+               // localhost:9090/SUMTEST/temp/ 등으로 바꿔야할듯
+               
+               mail.setMainHtmlPath(path);
                 mail.setContentImgPath(contentImgPath);
                 mail.setAttachmentPath(attachmentPath);
                 
@@ -278,22 +290,19 @@ public class NaverMail implements Mail{
     	return strBuffer.toString();
     }
     
-    public String getSubject(String subject) throws UnsupportedEncodingException{
+    public String getSubject(String subject) throws IOException{
     	String title = subject;
-    	if(title.equals(null))
+    	if(title.equals(""))
     	{
     		return "제목없음";
     	}
-    	byte [] bytes = null;
+    	
     	if(title.startsWith("\"")){
-    	/*	title = URLEncoder.encode(title,"UTF-8");
-    		System.out.println("1: " + title);
-    		title = URLDecoder.decode(title,"UTF-8");
-    		System.out.println("2: " + title);*/
-    		
-    		bytes = title.getBytes("utf-8");
-    		title = new String(bytes , "utf-8");
-    		
+    		int firstIndex = title.indexOf("B?");
+        	int lastIndex = title.lastIndexOf("?");
+        	String temp = title.substring(firstIndex + 2 , lastIndex);
+    		temp = new String(base64Decoder.decodeBuffer(temp));
+    		return temp;
     	}
     	return title;
     }

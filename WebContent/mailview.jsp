@@ -51,9 +51,9 @@
 
 </head>
 <script>
-window.onload=function(){
+/* window.onload=function(){
 	  alert("${loginInfo}");
-}
+} */
 </script>
 <body>
 	<% int count=0; %>

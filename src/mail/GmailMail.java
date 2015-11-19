@@ -92,8 +92,6 @@ public class GmailMail implements Mail {
                 Object getContent = msg.getContent();
                 Multipart mp = null;
 
-            //    mp = (Multipart)getContent;		 
-                System.out.println(accountAddr + " : " + msg.getSubject());
                 if(getContent instanceof String)
                 {
                 	String content = (String)getContent;
