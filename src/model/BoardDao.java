@@ -54,7 +54,7 @@ public class BoardDao {
 		ResultSet rs=null;
 		try{
 		con=DriverManager.getConnection(OracleConfig.URL, OracleConfig.USER, OracleConfig.PASS);
-		String sql="select mail_info.title, mail_info.recvdate, mail_info.RECVADDR, html_path, img_num, file_num from mail_info, mail_detail where mail_info.mail_no = mail_detail.mail_no and  mail_info.mail_no=?";
+		String sql="select mail_info.title, mail_info.recvdate, mail_info.RECVADDR, html_path, img_num, file_num,mail_info.mail_no from mail_info, mail_detail where mail_info.mail_no = mail_detail.mail_no and  mail_info.mail_no=?";
 		pstmt=con.prepareStatement(sql);
 		pstmt.setInt(1, mail_no);
 		rs=pstmt.executeQuery();
@@ -62,7 +62,8 @@ public class BoardDao {
 		
 		if(rs.next()){
 			System.out.println("안녕하세요***********************************");
-			vo=new BoardVO(rs.getString(1),rs.getString(2), rs.getString(3), rs.getString(4),rs.getInt(5),rs.getInt(6));
+			vo=new BoardVO(rs.getString(1),rs.getString(2), rs.getString(3), rs.getString(4),rs.getInt(5),rs.getInt(6),rs.getInt(7));
+			
 		}
 		}finally{
 			closeAll(rs, pstmt, con);
@@ -193,13 +194,40 @@ public class BoardDao {
 		return registCount;
 	}
 	
+	// id 중복
+	public int checkId(String usrid) throws Exception{
+		   Connection con = null;
+		   PreparedStatement pstmt = null;
+		   int re = 0;
+		   try{
+			con=DriverManager.getConnection(OracleConfig.URL, OracleConfig.USER, OracleConfig.PASS);
+		    String selectSQL="select * from member where mb_id=?";
+		    pstmt = con.prepareStatement(selectSQL);
+		    pstmt.setString(1,usrid);
+		    ResultSet rs = pstmt.executeQuery();
+		    if(rs.next()){
+		     re = 1;
+		    }
+		   }finally{
+			  closeAll(pstmt,con);
+		   }
+		   return re;
+		 }
+	
+	
+	
+	
 	public ArrayList login(String user_id,String user_pwd)throws SQLException{
 		Connection con=null;
 		CallableStatement cs = null;
 		BoardVO vo = null;
+		BoardVO vo2 = null;
 		ArrayList list=new ArrayList();
+		ArrayList list2=new ArrayList();
 		PreparedStatement pstmt=null;
+		PreparedStatement pstmt2=null;
 		ResultSet rs=null;
+		ResultSet rs2=null;
 		try{
 			con=DriverManager.getConnection(OracleConfig.URL, OracleConfig.USER, OracleConfig.PASS);
 
@@ -227,13 +255,24 @@ public class BoardDao {
 			String sql="select acc_id, acc_addr,acc_site_name , acc_pwd  from account where mb_id="+p3value;
 			pstmt=con.prepareStatement(sql);
 			rs=pstmt.executeQuery();
-			System.out.println("***리스트값"+list);
+			
+			String sql2="select mail_no, title, recvdate, recvaddr, site_name from (select mail_info.mail_no mail_no, account.mb_id mb_id, title, recvaddr, recvdate, account.acc_site_name site_name from mail_info, account where mail_info.acc_id = account.acc_id and account.mb_id="+p3value+"order by recvdate desc) where rownum <= 5";
+			pstmt2=con.prepareStatement(sql2);
+			rs2=pstmt2.executeQuery();
+			
 			if(p6value!=null){
 				while(rs.next()){
 					vo=new BoardVO(rs.getInt(1),rs.getString(2),rs.getString(3),rs.getString(4),p3value,p1value);
-					System.out.println("*****보드다오 로그인" + vo);
 					list.add(vo);
+					
+					System.out.println("*****보드다오 로그인" + vo);
 				}
+				while(rs2.next()){
+					vo2=new BoardVO(rs2.getInt(1),rs2.getString(2),rs2.getString(3),rs2.getString(4),rs2.getString(5));
+					list2.add(vo2);
+					System.out.println("*******리스트2 값 " + vo2);
+				}
+				
 				System.out.println(list);
 			}
 			else{
@@ -286,6 +325,26 @@ public class BoardDao {
 		}
 		finally{
 			closeAll(cs,con);
+		}
+		return list;
+	}
+	
+	public ArrayList getRecent() throws SQLException{
+		ArrayList list=new ArrayList();
+		Connection con=null;
+		PreparedStatement pstmt=null;
+		ResultSet rs=null;
+		try{
+			
+			con=DriverManager.getConnection(OracleConfig.URL, OracleConfig.USER, OracleConfig.PASS);
+			String sql="select mail_no, title, recvdate, recvaddr, site_name from (select mail_info.mail_no mail_no, account.mb_id mb_id, title, recvaddr, recvdate, account.acc_site_name site_name from mail_info, account where mail_info.acc_id = account.acc_id and account.mb_id="+p3value+"order by recvdate desc) where rownum <= 5";
+			pstmt=con.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				list.add(new BoardVO(rs.getInt(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5)));
+			}
+		}finally{
+			closeAll(rs, pstmt, con);
 		}
 		return list;
 	}

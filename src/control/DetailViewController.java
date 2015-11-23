@@ -25,6 +25,7 @@ public class DetailViewController implements Controller {
          BoardVO vo = service.getDetailView(mail_no);
          request.setAttribute("detail", vo);
          request.setAttribute("html_path", vo.getHtml_path());
+         
          System.out.println(vo.getHtml_path());
          mv.setPath("detailview.jsp");
       } catch (SQLException e) {

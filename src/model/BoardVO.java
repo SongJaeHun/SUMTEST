@@ -149,14 +149,15 @@ public class BoardVO {
 	
 	
 	
-	public BoardVO(String title, String recv_date, String recv_addr , String html_path, int img_num, int file_num) {
+	public BoardVO(String title, String recv_date, String recv_addr , String html_path, int img_num, int file_num,int mail_no) {
 		super();
 		this.title= title;
 		this.recv_date = recv_date;
 		this.recv_addr = recv_addr;
-		this.html_path = html_path;
+		this.html_path = html_path  ;
 		this.img_num = img_num;
 		this.file_num = file_num;
+		this.mail_no = mail_no;
 	}
 	
 	public BoardVO(int file_no, int mail_no, String file_path) {
@@ -218,6 +219,17 @@ public class BoardVO {
 	
 	public BoardVO(String user_id){
 		this.user_id = user_id;
+	}
+	
+	
+	
+	public BoardVO(int mail_no, String title, String recv_date, String recv_addr, String acc_site_name) {
+		super();
+		this.mail_no = mail_no;
+		this.title = title;
+		this.recv_date = recv_date;
+		this.recv_addr = recv_addr;
+		this.acc_site_name = acc_site_name;
 	}
 	
 	

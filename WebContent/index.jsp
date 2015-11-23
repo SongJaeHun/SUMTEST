@@ -26,8 +26,6 @@
 		<!-- custom css -->
 		<link rel="stylesheet" href="css/templatemo-style.css">
 	<script type="text/javascript">
-
-	
 	
 		function checkRegister(){
 			var r=document.registerForm;
@@ -50,8 +48,18 @@
 			}
 		}
 		
+		
+<%-- 	<% Object id = request.getAttribute("flag"); %>		--%>
 		function checkLogin(){
 			var r=document.LoginForm;
+
+			
+			/*alert( ${flag} );
+			 if("${flag}"){
+				alert("로그인 실패");
+			} */
+			
+			
 			if(r.user_id.value==""){
 				alert("아이디를 입력하세요");
 				r.user_id.focus();
@@ -63,10 +71,87 @@
 			}
 		}
 		
-		 
+		//*********************************************************************************************
+		function checkId() {
+			  if (checkFirst == false) {
+			   //0.5초 후에 sendKeyword()함수 실행
+			   setTimeout("sendId();", 500);
+			   loopSendKeyword = true;
+			  }
+			  checkFirst = true;
+			 }
+			 
+			 function checkPwd(){
+			  var f1 = document.LoginForm;
+			  var pw1 = f1.user_pwd.value;
+			  var pw2 = f1.pwd_check.value;
+			  if(pw1!=pw2){
+			   document.getElementById('checkPwd').style.color = "red";
+			   document.getElementById('checkPwd').innerHTML = "동일한 암호를 입력하세요."; 
+			  }else{
+			   document.getElementById('checkPwd').style.color = "black";
+			   document.getElementById('checkPwd').innerHTML = "암호가 확인 되었습니다."; 
+			   
+			  }
+			  
+			 }
+			 
+			 
+			 function sendId() {
+			  if (loopSendKeyword == false) return;
+			  
+			  var keyword = document.search.user_id.value;
+			  if (keyword == '') {
+			   lastKeyword = '';
+			   document.getElementById('checkMsg').style.color = "black";
+			   document.getElementById('checkMsg').innerHTML = "아이디를 입력하세요.";
+			  } else if (keyword != lastKeyword) {
+			   lastKeyword = keyword;
+			   
+			   if (keyword != '') {
+			    var params = "id="+encodeURIComponent(keyword);
+			    sendRequest("id_check.jsp", params, displayResult, 'POST');
+			   } else {
+			   }
+			  }
+			  setTimeout("sendId();", 500);
+			 }
+			 
+			 
+			 function displayResult() {
+			  if (httpRequest.readyState == 4) {
+			   if (httpRequest.status == 200) {
+			    var resultText = httpRequest.responseText;
+			    var listView = document.getElementById('checkMsg');
+			    if(resultText==0){
+			     listView.innerHTML = "사용 할 수 있는 ID 입니다";
+			     listView.style.color = "blue";
+			    }else{
+			     listView.innerHTML = "이미 등록된 ID 입니다";
+			     listView.style.color = "red";
+			    }
+			   } else {
+			    alert("에러 발생: "+httpRequest.status);
+			   }
+			  }
+			 }
+
+
 	
 		
 	</script>
+	
+	<style type="text/css">
+	
+		#checkMsg{
+		  font-size: 12px;
+		}
+		#checkPwd{
+		  color : red;
+		  font-size: 12px;
+		}
+	</style>
+	
 	</head>
 	<body>
 		<!-- start preloader -->
@@ -84,7 +169,10 @@
 						<span class="icon icon-bar"></span>
 						<span class="icon icon-bar"></span>
 					</button>
-					<a href="index.jsp" class="navbar-brand">Mail</a>
+					<a href="index.jsp" class="navbar-brand">Mail
+					<input type="button" value="안녕">
+					
+					</a>
 				</div>
 				<div class="collapse navbar-collapse">
 					<ul class="nav navbar-nav navbar-right text-uppercase">
@@ -164,6 +252,7 @@
                                     <div class="col-md-12">
 										<input type="password" class="form-control" placeholder="Password" id="user_pwd" name="user_pwd">
 									</div>
+									
 									<div class="col-md-6">
 										<input type="submit" class="form-control text-uppercase" value="Login">
 									</div>
@@ -200,11 +289,19 @@
 								<form action="DispatcherServlet" method="post" name="registerForm" onsubmit="return checkRegister()">
 	                            <input type="hidden" name="command" value="register">
                                     <div class="col-md-12">
-										<input type="text" class="form-control" placeholder="ID" name="user_id">
+										<input type="text" class="form-control" placeholder="ID" name="user_id" onkeydown="checkId()">
+										<div id = "checkMsg">아이디를 입력하세요</div>
 									</div>
+									
 									<div class="col-md-12">
 										<input type="password" class="form-control" placeholder="Password" name="user_pwd">
 									</div>
+									
+									<div class="col-md-12">
+									<input type="password" name="pwd_check" onkeyup="checkPwd()"></input>
+       								<div id="checkPwd">동일한 암호를 입력하세요.</div>
+									</div>
+
 									<div class="col-md-12">
 										<input type="text" class="form-control" placeholder="NAME" name="user_name">
 									</div>

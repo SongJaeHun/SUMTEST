@@ -51,10 +51,6 @@
 
 </head>
 <script>
-window.onload=function(){
-	  alert("${detail.html_path}");
-
-}
 </script>
 <body>
 	<% int count=0; %>
@@ -74,7 +70,9 @@ window.onload=function(){
 	</div>
 
 	<!--logo start--> <a href="DispatcherServlet?command=home" class="logo">Team<span
-		class="lite"> SC</span></a> <!--logo end--> <!--  search form start -->
+		class="lite"> SC</span></a> <!--logo end--> 
+		
+		<!--  search form start -->
 	<div class="nav search-row" id="top_menu">
 		<ul class="nav top-menu">
 			<li>
@@ -228,24 +226,9 @@ window.onload=function(){
 					<span>Home</span>
 				</a>
 			</li>
-				<!-- <input type="submit" value="home">
-		</form> -->
+				
 
-
-		<%--  <% BoardVO vo = (BoardVO)session.getAttribute("loginInfo");
-	                  	 if(vo==null){%>
-	                  	 
-	                  	 <%}else{ %>
-	                  	vo.getAcc_addr();
-	                  
-	                  <%} %> --%>
-
-
-
-
-		<!-- <form action="DispatcherServlet" method="post" name="llll">
-					  <input type="hidden" name="command" value="gmail"> -->
-			<li class="sub-menu"><a href="javascript:;" class=""> <!-- <a href="gmail.html" class=""> -->
+			<li class="sub-menu"><a href="javascript:;" class="">
 					<i class="icon_document_alt"></i> <span>Gmail</span> 
 					<span class="menu-arrow arrow_carrot-right"></span>
 			</a>
@@ -405,8 +388,15 @@ window.onload=function(){
 	<div style="padding-top:50px">
 		<table border=1 align="center">
 				<tr>
-					<td align="center" width=150px height=5px style="table-layout:fixed">바로 위 메일</td>
-					<td align="center" width=150px height=5px style="table-layout:fixed">바로 아래 메일</td>
+					<td align="center" width=150px height=5px style="table-layout:fixed">
+						<c:set var="mail_no_minus" value="${detail.mail_no-1}"></c:set>
+						<a href="DispatcherServlet?command=detailView&mail_no=${mail_no_minus}">이전메일</a>
+						</td>
+					<td align="center" width=150px height=5px style="table-layout:fixed">현재 메일 = ${detail.mail_no}</td>
+					<td align="center" width=150px height=5px style="table-layout:fixed">
+						<c:set var="mail_no_plus" value="${detail.mail_no+1}"></c:set>
+						<a href="DispatcherServlet?command=detailView&mail_no=${mail_no_plus}">다음메일</a>
+						</td>
 				</tr>	
 		
 		</table>	
