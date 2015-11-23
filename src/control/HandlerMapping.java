@@ -39,11 +39,25 @@ public class HandlerMapping {
 		}else if(command.equals("hotmailAll")){
 			c=new HotmailController();
 		}else if(command.equals("accCheck")){
-			System.out.println("??");
 			c = new AccCheckController();
 		}else if(command.equals("search")){
 			c = new SearchController();
+		}else if(command.equals("accountAdd")){
+			c = new AccountAddController();
+		}else if(command.equals("accountDel")){
+			c = new AccountDelController();
+		}else if(command.equals("accountChg")){
+			c = new AccountChgController();
+		}else if(command.equals("memberInfo")){
+			c = new MemberInfoController();
+		}else if(command.equals("removeAcc")){
+			c = new RemoveAccController();
+		}else if(command.equals("memInfo")){
+			c = new MemInfoController();
+		}else if(command.equals("down")){
+			c = new DownController();
 		}
+		
 		return c;
 	}
 }

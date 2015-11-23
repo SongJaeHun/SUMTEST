@@ -51,16 +51,18 @@
 
 </head>
 <script>
-/* window.onload=function(){
-	  alert("${detail.html_path}");
+/*  window.onload=function(){
+	  alert(count);
 
-} */
+}  */
 </script>
 <body>
 	<% int count=0; %>
 	<c:forEach items="${loginInfo}" var="loginInfo" >
 		<%count++; %>
 	</c:forEach>
+	
+	<% String[] filePaths = (String[])request.getAttribute("filePaths") ; %>
 	
 	
 	<!-- container section start -->
@@ -205,7 +207,7 @@
 					<li><a href="DispatcherServlet?command=gmailAll"><i class="icon_chat_alt"></i>Gmail</a></li>
 					<li><a href="DispatcherServlet?command=naverAll"><i class="icon_chat_alt"></i>Naver</a></li>
 					<li><a href="DispatcherServlet?command=hotmailAll"><i class="icon_chat_alt"></i>Daum</a></li>
-					<li><a href="index.html"><i class="icon_key_alt"></i> Log Out</a></li>
+					<li><a href="index.jsp"><i class="icon_key_alt"></i> Log Out</a></li>
 				</ul></li>
 			<!-- user login dropdown end -->
 		</ul>
@@ -396,14 +398,31 @@
 								
 					</td>
 				</tr>
-		
+				
+				<%if(filePaths != null ){ %>
+				
+					<% for(int i = 0 ; i < filePaths.length ; i++) { %>
+					<tr>
+					<td>첨부파일<%= i+1 %> :  <a href="DispatcherServlet?command=down&file_path=<%= filePaths[i]%>"><%= filePaths[i] %></a></td>
+					<%} %>
+				</tr>								
+				<%} %>
+
+
 		</tbody>
 	</table>
 	<div style="padding-top:50px">
 		<table border=1 align="center">
 				<tr>
-					<td align="center" width=150px height=5px style="table-layout:fixed">바로 위 메일</td>
-					<td align="center" width=150px height=5px style="table-layout:fixed">바로 아래 메일</td>
+					<td align="center" width=150px height=5px style="table-layout:fixed">
+						<c:set var="mail_no_minus" value="${detail.mail_no-1}"></c:set>
+						<a href="DispatcherServlet?command=detailView&mail_no=${mail_no_minus}">이전메일</a>
+						</td>
+					<td align="center" width=150px height=5px style="table-layout:fixed">현재 메일 = ${detail.mail_no}</td>
+					<td align="center" width=150px height=5px style="table-layout:fixed">
+						<c:set var="mail_no_plus" value="${detail.mail_no+1}"></c:set>
+						<a href="DispatcherServlet?command=detailView&mail_no=${mail_no_plus}">다음메일</a>
+						</td>
 				</tr>	
 		
 		</table>	

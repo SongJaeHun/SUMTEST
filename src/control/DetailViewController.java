@@ -25,6 +25,22 @@ public class DetailViewController implements Controller {
          BoardVO vo = service.getDetailView(mail_no);
          request.setAttribute("detail", vo);
          request.setAttribute("html_path", vo.getHtml_path());
+         String filePaths[] = vo.getFilePaths();
+      /*   if(filePaths != null){
+        	 for(int i = 0 ; i < filePaths.length ; i++){
+        	     int startIndex = filePaths[i].indexOf("Web") ;
+                 String path = filePaths[i].substring(0 , startIndex);
+                 int lastIndex = startIndex + 12;
+                
+                 path = path + filePaths[i].substring(lastIndex , filePaths[i].length());
+                 path = path.replace("c:\\\\web\\\\", "http://localhost:9090\\\\").replace("\\\\", "/"); 
+                 
+                 filePaths[i] = path.trim();
+                 System.out.println(filePaths[i]);
+        	 }
+         }*/
+         
+         request.setAttribute("filePaths", filePaths);
          System.out.println(vo.getHtml_path());
          mv.setPath("detailview.jsp");
       } catch (SQLException e) {

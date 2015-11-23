@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8" import="model.BoardVO"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %> 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
@@ -50,11 +51,26 @@
     <![endif]-->
 
 </head>
-<!-- <script>
-	window.onload=function(){
-	  alert("${loginInfo}");
-}
-</script> -->
+<script>
+	 /*  window.onload=function(){
+	  alert("${home}");
+} */ 
+/* function logout(){
+	session.invalidate();
+	alert("로그아웃 되었습니다.");
+	System.out.println("안녕");
+	response.sendRedirect("");
+
+	System.out.println("하세요");
+} */
+function logout(){
+	 var con = confirm("접속을 종료하시겠습니까");
+	 if(con == true){
+		session.invalidate(); 
+	  	location.href="index.jsp";
+	  	}else{}
+	}
+</script>
 <body>
 
 <% int count=0; %>
@@ -65,7 +81,7 @@
 	</c:forEach>
 
 	<%-- <c:set var="user_id" value="${user_id}"></c:set> --%>
-	<c:set var="name" value="${user_id}" scope="session"></c:set>
+	<c:set var="name" value="${user_id}" scope="application"></c:set>
 	
 
 	<!-- container section start -->
@@ -112,8 +128,10 @@
 			<!-- task notificatoin start 자기가 등록한 메일로가기-->
 			<li id="task_notificatoin_bar" class="dropdown">
 			
-			<a data-toggle="dropdown" class="dropdown-toggle" href="#"> <span
-					class="icon-task-l"></i> <span class="badge bg-important">6</span></a>
+			<a data-toggle="dropdown" class="dropdown-toggle" href="#">
+			
+				<span class="icon-task-l"></i> <span class="badge bg-important">${fn:length(loginInfo)}</span></a>
+			
 				<ul class="dropdown-menu extended tasks-bar">
 					<div class="notify-arrow notify-arrow-blue"></div>
 					<li>
@@ -165,50 +183,41 @@
 
 			<!-- inbox notificatoin start-->
 			<li id="mail_notificatoin_bar" class="dropdown"><a
-				data-toggle="dropdown" class="dropdown-toggle" href="#"> <i
-					class="icon-envelope-l"></i> <span class="badge bg-important">최근메일 5개</span>
+				data-toggle="dropdown" class="dropdown-toggle"  href="#"> <i
+					class="icon-envelope-l"></i> <span class="badge bg-important">${fn:length(recent)}</span>
 			</a>
 				<ul class="dropdown-menu extended inbox">
 					<div class="notify-arrow notify-arrow-blue"></div>
 					<li>
-						<p class="blue">최근 메일 다섯개(적으면 적은데로)</p>
+						<p class="blue">최근 메일 다섯개</p>
 					</li>
-					<li><a href="#"> <span class="photo">다음, 지메일, 네이버
-								로고 만들어놓고 그 사진 넣어놓기<img alt="avatar" src="./img2/avatar-mini.jpg">
-						</span> <span class="subject"> <span class="from">보낸사람 주소</span> <span
-								class="time">몇분전에 왔는지</span>
-						</span> <span class="message"> 요약본 or 첨부파일G </span>
-					</a></li>
-					<li><a href="#"> <span class="photo">다음, 지메일, 네이버
-								로고 만들어놓고 그 사진 넣어놓기<img alt="avatar" src="./img2/avatar-mini.jpg">
-						</span> <span class="subject"> <span class="from">보낸사람 주소</span> <span
-								class="time">몇분전에 왔는지</span>
-						</span> <span class="message"> 요약본 or 첨부파일 </span>
-					</a></li>
-					<li><a href="#"> <span class="photo">다음, 지메일, 네이버
-								로고 만들어놓고 그 사진 넣어놓기<img alt="avatar" src="./img2/avatar-mini.jpg">
-						</span> <span class="subject"> <span class="from">보낸사람 주소</span> <span
-								class="time">몇분전에 왔는지</span>
-						</span> <span class="message"> 요약본 or 첨부파일 </span>
-					</a></li>
-					<li><a href="#"> <span class="photo">다음, 지메일, 네이버
-								로고 만들어놓고 그 사진 넣어놓기<img alt="avatar" src="./img2/avatar-mini.jpg">
-						</span> <span class="subject"> <span class="from">보낸사람 주소</span> <span
-								class="time">몇분전에 왔는지</span>
-						</span> <span class="message"> 요약본 or 첨부파일 </span>
-					</a></li>
-					<li><a href="#"> <span class="photo">다음, 지메일, 네이버
-								로고 만들어놓고 그 사진 넣어놓기<img alt="avatar" src="./img2/avatar-mini.jpg">
-						</span> <span class="subject"> <span class="from">보낸사람 주소</span> <span
-								class="time">몇분전에 왔는지</span>
-						</span> <span class="message"> 요약본 or 첨부파일 </span>
-					</a></li>
+					
+					<c:forEach items="${recent}" var="recent">
+						<li>
+							<a href="DispatcherServlet?command=detailView&mail_no=${recent.mail_no}"> 
+								
+								<div class="photo" style="text-overflow:ellipsis;overflow:hidden;vertical-align:middle;"><nobr style="padding-left:8px">${recent.title}</nobr>
+								<c:if test="${recent.acc_site_name eq 'NAVER'}"><img alt="avatar" src="./img2/naver.jpg"></c:if>
+								<c:if test="${recent.acc_site_name eq 'GMAIL'}"><img alt="avatar" src="./img2/google.jpg"></c:if>
+								<c:if test="${recent.acc_site_name eq 'NATE'}"><img alt="avatar" src="./img2/nate.jpg"></c:if>
+								</div>
+								
+								<div class="from" style="text-overflow:ellipsis;overflow:hidden;text-align:right"><nobr>${recent.recv_addr }</nobr></div> 
+								<div class="time" style="text-overflow:ellipsis;overflow:hidden;text-align:right"><nobr>${recent.recv_date}</nobr></div>
+								
+								<%-- <div class="message" style="text-overflow:ellipsis;overflow:hidden;"><nobr>${recent.title}</nobr></div> --%>
+							</a>
+						</li>
+					</c:forEach>
+					
+					
+					
 				</ul></li>
 			<!-- inbox notificatoin end -->
 			
 			
 			<!-- alert notification start-->
-			<li id="alert_notificatoin_bar" class="dropdown"><a href="setting.jsp">설정
+			<li id="alert_notificatoin_bar" class="dropdown"><a href="setting.jsp">
 					<i class="icon-bell-l"></i> <span class="badge bg-important"><%=count %></span>
 			</a></li>
 			<!-- alert notification end-->
@@ -227,7 +236,7 @@
 					<li><a href="DispatcherServlet?command=gmailAll"><i class="icon_chat_alt"></i>Gmail</a></li>
 					<li><a href="DispatcherServlet?command=naverAll"><i class="icon_chat_alt"></i>Naver</a></li>
 					<li><a href="DispatcherServlet?command=hotmailAll"><i class="icon_chat_alt"></i>Daum</a></li>
-					<li><a href="index.html"><i class="icon_key_alt"></i> Log Out</a></li>
+					<li><a href="index.jsp" onClick="return logout();"><i class="icon_key_alt"></i> Log Out</a></li>
 				</ul></li>
 			<!-- user login dropdown end -->
 			
@@ -297,7 +306,8 @@
 	
 			<li class="sub-menu">
 				<a href="javascript:;" class="">
-					<i class="icon_document_alt"></i> <span>HotMail</span>
+					<i class="icon_document_alt"></i> 
+					<span>HotMail</span>
 					<span class="menu-arrow arrow_carrot-right"></span>
 				</a> 
 				
@@ -311,8 +321,16 @@
 			</li>
 	
 	
-			<li><a class="" href="setting.jsp"> <i class="icon_piechart"></i>
+			<li class="sub-menu">
+				<a class="" href="javascript:;"> <i class="icon_piechart"></i>
 					<span>설정</span>
+					<span class="menu-arrow arrow_carrot-right"></span>
+					
+					<ul class="sub">
+						<li><a class="" href="accountAdd.jsp">계정 추가 </a></li>
+						<li><a class="" href="accountDel.jsp">계정 삭제 </a></li>
+						<li><a class="" href="DispatcherServlet?command=memberInfo">회원 정보 수정</a></li>
+					</ul>
 	
 			</a></li>
 		</ul>
@@ -339,20 +357,20 @@
 	<table style="text-align:center; align:center" border=2 align="center">
 		<thead>
 			<tr>
-				<td>메일번호</td>
+				<td style="width:100px; height:40px">메일번호</td>
 				<td>제목</td>
 				<td>보낸 사람</td>
 				<td>받은 시간</td>
 			</tr>
 		</thead>
 		<tbody align="center">
-			<c:forEach items="${requestScope.home}" var="allview">
+			<c:forEach items="${home}" var="home">
 				<tr>
-					<td align="center">${allview.mail_no}</td>
+					<td align="center">${home.mail_no}</td>
 					<td align="center"><a
-						href="DispatcherServlet?command=detailView&mail_no=${allview.mail_no}">${allview.title}</a></td>
-					<td align="center">${allview.recv_addr}</td>
-					<td align="center">${allview.recv_date}</td>
+						href="DispatcherServlet?command=detailView&mail_no=${home.mail_no}">${home.title}</a></td>
+					<td align="center">${home.recv_addr}</td>
+					<td align="center">${home.recv_date}</td>
 				</tr>
 			</c:forEach>
 		</tbody>

@@ -1,10 +1,13 @@
 package control;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import mail.AddAccInfo;
 import model.BoardService;
 
 public class RegistAccController implements Controller {
@@ -14,14 +17,18 @@ public class RegistAccController implements Controller {
 			HttpServletResponse response) {
 		BoardService service = BoardService.getInstance();
 		ModelAndView mv = new ModelAndView();
-		String [] mails = request.getParameterValues("mail_id");
-		String [] sites = request.getParameterValues("siteAdd");
-		String [] pwds = request.getParameterValues("mail_pwd");
-		
+		ArrayList accList = new ArrayList();
+		AddAccInfo accInfo = new AddAccInfo(
+										request.getParameterValues("mail_id"),
+										request.getParameterValues("siteAdd"),
+										request.getParameterValues("mail_pwd"));
 		
 		try{
-			int isRegist = service.getRegistResult(mails,pwds,sites);
-			mv.setPath("home.jsp");
+			accList = service.getRegistResult(accInfo);
+			HttpSession session=request.getSession();
+			session.setAttribute("loginInfo",accList);
+			mv.setPath("DispatcherServlet?command=home");
+			
 		}catch(SQLException e){
 			e.printStackTrace();
 		}

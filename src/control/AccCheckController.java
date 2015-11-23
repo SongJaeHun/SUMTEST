@@ -28,9 +28,8 @@ public class AccCheckController implements Controller {
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
-		
 		return mv;	
-		
 	}
 
 }
+

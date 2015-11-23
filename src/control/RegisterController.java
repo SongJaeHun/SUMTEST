@@ -21,7 +21,7 @@ public class RegisterController implements Controller {
 		String user_pwd = request.getParameter("user_pwd");
 		String user_name = request.getParameter("user_name");
 		String cf_email = request.getParameter("cf_email");
-		
+		boolean flagR = true;
 		
 		BoardVO vo = new BoardVO(user_id,user_pwd,user_name,cf_email);
 		ArrayList list = null;
@@ -29,11 +29,19 @@ public class RegisterController implements Controller {
 		try{
 			list = service.register(vo);	//로그인 된 계정 목록들..
 			
-			
-			if(vo!=null){
-				mv.setPath("index.html");
+			System.out.println("***회원가입컨트롤러 리스트 ");
+			if(list.isEmpty()==false){
+				flagR = true;
+				request.setAttribute("flagR", flagR);
+				HttpSession session=request.getSession();
+				System.out.println("회원가입 성공!!");
+				mv.setPath("index.jsp");
 			}else{
-				mv.setPath("register_fail.jsp");
+				System.out.println("회원가입 실패!!!");
+				flagR = false;
+				request.setAttribute("flagR", flagR);
+				
+				mv.setPath("index2.jsp");
 			}
 			
 			/*if(list != null){

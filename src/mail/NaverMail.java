@@ -7,13 +7,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
+import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Properties;
 
+import javax.mail.AuthenticationFailedException;
 import javax.mail.BodyPart;
 import javax.mail.Flags;
 import javax.mail.Folder;
@@ -62,6 +61,9 @@ public class NaverMail implements Mail{
     private String contentImgPath;
     private String attachmentPath;
     
+    private Date lastReceivedDate ;
+    //private 
+    
     private BoardService service = BoardService.getInstance();
  
     BASE64Encoder base64Encoder = new BASE64Encoder();
@@ -72,7 +74,7 @@ public class NaverMail implements Mail{
     	accountAddr = accAddr ;
     	accountPwd = accPwd;
     	filePath = file_Path ;
-
+    	lastReceivedDate = service.getLastReceivedDate(accountId);
     }
 
     public  void doit() throws Exception {
@@ -95,6 +97,8 @@ public class NaverMail implements Mail{
             												993, "" ,
             												accountAddr,accountPwd);
             
+            
+            
             store = new IMAPStore(session,urlName);
             store.connect();
             folder = store.getFolder("Inbox");
@@ -103,13 +107,28 @@ public class NaverMail implements Mail{
             Message messages[] = uf.getMessagesByUID(previousUID + 1, UIDFolder.LASTUID);
         //    mails = new MailContent[messages.length - 1]();
             System.out.println(messages.length);
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-            
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            // acc_id 를 디비에 질의해서 가장 receivedDate 가 마지막인거 찾기
+            int compare = 1;
             for (int i = messages.length - 1 ; i  >= 0  ; i--) {
                 Message msg = messages[i];
+                
+                if( lastReceivedDate == null) {
+                	lastReceivedDate = new Date(msg.getReceivedDate().getTime());
+                	System.out.println("메일 없을때 1번만 실행되야함");
+                }
+                if(compare == 0){
+                	break;
+                }
+                
+                compare = lastReceivedDate.compareTo(msg.getReceivedDate()); // 메일 없을때 0
+                if(i == messages.length - 1){
+                	compare = 1;
+                }
+                
                 contentImgPath = "";
                 attachmentPath = "";
-                mail = new MailContent(accountId , getSubject(msg.getSubject()) , getSender(msg) , format.format(msg.getReceivedDate()));;
+                mail = new MailContent(accountId , getSubject(msg.getSubject()) , getSender(msg) , format.parse(format.format(msg.getReceivedDate())));;
                 Object getContent = msg.getContent();
                 Multipart mp = null;
                 
@@ -160,14 +179,24 @@ public class NaverMail implements Mail{
                
                // localhost:9090/SUMTEST/temp/ 등으로 바꿔야할듯
                
-               mail.setMainHtmlPath(path);
+                mail.setMainHtmlPath(path);
                 mail.setContentImgPath(contentImgPath);
                 mail.setAttachmentPath(attachmentPath);
                 
                 service.registContent(mail);
 
             }
-        } finally {
+            
+            // DELETEFLAG업데이트  accountId 전달하여 메서드 실행
+            service.updateDeleteFlag(accountId);
+            
+        }catch(AuthenticationFailedException e){
+        	//존재하지 않는 아이디 혹인 비밀번호 즉 걸려있는 계정으로 메일 못받을시
+        	//여기 걸려있는 애들도 DELETEFLAG1로 설정해주기
+        	  service.updateDeleteFlag(accountId);
+        	System.out.println("계정 오류");
+        	
+        } finally{
             if (folder != null) {
                 folder.close(true);
             }
@@ -360,6 +389,7 @@ public class NaverMail implements Mail{
             output.close();
             mail.setMainHtmlPath(filePath + fileName + "-1.html");
             temp = contentImgCount(filePath + fileName+ "-1.html");
+            
             if(temp != 0){
             	str = new ArrayList<String>();
             }
@@ -372,6 +402,7 @@ public class NaverMail implements Mail{
         BufferedOutputStream out = null;
         BufferedInputStream in = null;
         String fileFullPath = "";
+        BASE64Decoder base64Decoder = new BASE64Decoder();
         try {		//첨부파일 html 인지 메일 html 인지 구분해줘야해...
         	if (part.isMimeType("text/html")) {
         		if(number != 2 ){
@@ -381,10 +412,24 @@ public class NaverMail implements Mail{
         			return;
         		}
         	} else {
+        		String x = part.getDataHandler().getName();
+        		if(x == null){
+        			
+        		}
+        		else{
+        			if(x.contains("UTF")){
+        				int firstIndex = x.indexOf("B?");
+        				int lastIndex = x.lastIndexOf("?");
+        				String c = x.substring(firstIndex + 2 , lastIndex);
+        				c = new String(base64Decoder.decodeBuffer(c));
+        				x = c;
+        			}
+        		}
+        		fileName = fileName + "-" + numOfAttachment + x;
 
         		if (part.isMimeType("text/plain")) {
-        			if(number != 2)
-        				fileName = fileName+ "-" + numOfAttachment  + ".txt";
+        			if(number != 2){}
+        		//		fileName = fileName+ "-" + numOfAttachment  + ".txt";
         			else{
         				number --;
         				return;
@@ -393,47 +438,53 @@ public class NaverMail implements Mail{
                  } 
                  
                  else if(part.isMimeType("image/jpeg")){
-                	 fileName = fileName+ "-" + numOfAttachment + ".jpg" ;    
+              //  	 fileName = fileName+ "-" + numOfAttachment + ".jpg" ;    
+                	 if(temp != 0){
                 		 str.add(".jpg");
+                	 }
                  }
          		
                  else if(part.isMimeType("image/gif")){
-                	 fileName = fileName + "-" + numOfAttachment + ".gif";
+                //	 fileName = fileName + "-" + numOfAttachment + ".gif";
+                  	 if(temp != 0){
                 		 str.add(".gif");
+                	 }
                  }
                  
                  else if(part.isMimeType("application/pdf")){
-                	 fileName = fileName+ "-" + numOfAttachment  + ".pdf";
+                //	 fileName = fileName+ "-" + numOfAttachment  + ".pdf";
                  }
                  
                  else if(part.isMimeType("application/octet-stream") || part.isMimeType("APPLICATION/HAANSOFTHWP") || part.isMimeType("application/x-hwp") ){
-                	 fileName = fileName+ "-" + numOfAttachment  + ".hwp";
+                //	 fileName = fileName+ "-" + numOfAttachment  + ".hwp";
                  }
                  
                  else if(part.isMimeType("application/excel") || part.isMimeType("application/vnd.ms-excel") ){
-                	 fileName = fileName+ "-" + numOfAttachment  + ".xls";
+               // 	 fileName = fileName+ "-" + numOfAttachment  + ".xls";
                  }
                  
                  else if(part.isMimeType("application/powerpoint")){
-                	 fileName = fileName+ "-" + numOfAttachment  + ".ppt";
+               // 	 fileName = fileName+ "-" + numOfAttachment  + ".ppt";
                  }
                  
                  else if(part.isMimeType("application/zip")){
-                	 fileName = fileName+ "-" + numOfAttachment  + ".zip";
+                //	 fileName = fileName+ "-" + numOfAttachment  + ".zip";
                  }
         		
                  else if(part.isMimeType("image/PNG")){
-                	 fileName = fileName+ "-" + numOfAttachment  + ".PNG";
+              //  	 fileName = fileName+ "-" + numOfAttachment  + ".PNG";
+                  	 if(temp != 0){
                 		 str.add(".PNG");
+                	 }
                  }
         		
                  else if(part.isMimeType("application/x-zip-compressed")){
-                	 fileName = fileName+ "-" + numOfAttachment  + ".zip";
+              //  	 fileName = fileName+ "-" + numOfAttachment  + ".zip";
                  }
                  //기타 확장자들 MimeType에 따라 걸러서 확장자 추가해주면 됨
                  
                  else {
-                     fileName = fileName + "-" + part.getDataHandler().getName();	
+            //         fileName = fileName + "-" + part.getDataHandler().getName();	
                  }
                  fileFullPath = filePath + fileName;
              }

@@ -1,8 +1,10 @@
 package model;
 
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import mail.AddAccInfo;
 import mail.MailContent;
 
 public class BoardService {
@@ -14,8 +16,8 @@ public class BoardService {
 	BoardDao dao=BoardDao.getInstance();
 	
 	public ArrayList getAllBoard() throws SQLException{
-		ArrayList list=dao.getAllBoard();
-		return list;
+		return dao.getAllBoard();
+		
 	}
 	
 	public int registContent(MailContent mail) throws SQLException{
@@ -49,6 +51,10 @@ public class BoardService {
 		return list;
 	}
 	
+	public ArrayList getRecent() throws SQLException{
+		ArrayList getRecent = dao.getRecent();
+		return getRecent;
+	}
 	
 	public ArrayList getNaverBoard() throws SQLException{
 		ArrayList list=dao.getNaverBoard();
@@ -73,8 +79,8 @@ public class BoardService {
 		return dao.login(vo.getUser_id(),vo.getUser_pwd());
 	}
 	
-	public int getRegistResult(String [] mails, String[] pwds, String[] sites) throws SQLException{
-		return dao.getRegistResult(mails,pwds,sites);
+	public ArrayList getRegistResult(AddAccInfo addInfo) throws SQLException{
+		return dao.getRegistResult(addInfo);
 	}
 	
 	
@@ -99,6 +105,27 @@ public class BoardService {
 	public boolean getAccCheck(String mail_id) throws SQLException {
 		// TODO Auto-generated method stub
 		return dao.getAccCheck(mail_id);
+	}
+	public boolean removeAcc(int acc_id) throws SQLException {
+		// TODO Auto-generated method stub
+		return dao.removeAcc(acc_id);
+	}
+	public void updateDeleteFlag(int accountId) throws SQLException {
+		// TODO Auto-generated method stub
+		 dao.updateDeleteFlag(accountId);
+		
+	}
+	public ArrayList getLoninInfo() throws SQLException {
+		// TODO Auto-generated method stub
+		return dao.loginInfo();
+	}
+	public BoardVO getMemberInfo() throws SQLException {
+		// TODO Auto-generated method stub
+		return dao.getMemberInfo();
+	}
+	public Date getLastReceivedDate(int accountId) throws SQLException {
+		// TODO Auto-generated method stub
+		return dao.getLastReceivedDate(accountId);
 	}
 		
 }

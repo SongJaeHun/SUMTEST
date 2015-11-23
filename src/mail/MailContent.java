@@ -1,12 +1,14 @@
 package mail;
 
+import java.util.Date;
+
 public class MailContent {
 	int acc_id;		//	db
 	String subject;	//	msg.getSubject();
 	String sender;	//	getSender
-	String receivedDate ; // msg.getReceivedDate()
+	Date receivedDate ; // msg.getReceivedDate()
 
-	public String getReceivedDate() {
+	public Date getReceivedDate() {
 		return receivedDate;
 	}
 
@@ -14,7 +16,7 @@ public class MailContent {
 	String contentImgPath ;
 	String attachmentPath;
 
-	public MailContent(int acc_id, String subject, String sender , String receivedDate) {
+	public MailContent(int acc_id, String subject, String sender , Date receivedDate) {
 		super();
 		this.acc_id = acc_id;
 		this.subject = subject;

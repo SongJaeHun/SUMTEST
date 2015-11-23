@@ -16,6 +16,13 @@ public class BoardVO {
 	String cf_email;	//사용자 비밀번호 찾을때 쓰는 메일
 	String search;
 	
+	String[] filePaths ;
+	public String[] getFilePaths() {
+		return filePaths;
+	}
+	public void setFilePaths(String[] filePaths) {
+		this.filePaths = filePaths;
+	}
 	//attached_file 
 	int file_no;
 	String file_path;
@@ -25,8 +32,6 @@ public class BoardVO {
 	String html_path;
 	int img_num;
 	int file_num;
-	
-	
 	
 	
 	public String getSearch() {
@@ -149,7 +154,7 @@ public class BoardVO {
 	
 	
 	
-	public BoardVO(String title, String recv_date, String recv_addr , String html_path, int img_num, int file_num) {
+	public BoardVO(String title, String recv_date, String recv_addr , String html_path, int img_num, int file_num,int mail_no) {
 		super();
 		this.title= title;
 		this.recv_date = recv_date;
@@ -157,6 +162,7 @@ public class BoardVO {
 		this.html_path = html_path;
 		this.img_num = img_num;
 		this.file_num = file_num;
+		this.mail_no = mail_no;
 	}
 	
 	public BoardVO(int file_no, int mail_no, String file_path) {
@@ -204,6 +210,15 @@ public class BoardVO {
 		this.acc_site_name = acc_site_name;
 	}
 	
+	public BoardVO(int mb_id , int acc_id , String acc_addr , String acc_pwd , String acc_site_name , boolean f)
+	{
+		this.mb_id = mb_id;
+		this.acc_id = acc_id ;
+		this.acc_addr = acc_addr;
+		this.acc_pwd = acc_pwd;
+		this.acc_site_name = acc_site_name;
+	}
+	
 	public BoardVO(int mail_no, String title, String recv_date, String recv_addr) {
 		super();
 		this.mail_no = mail_no;
@@ -218,6 +233,15 @@ public class BoardVO {
 	
 	public BoardVO(String user_id){
 		this.user_id = user_id;
+	}
+	
+	public BoardVO(int mail_no, String title, String recv_date, String recv_addr, String acc_site_name) {
+		super();
+		this.mail_no = mail_no;
+		this.title = title;
+		this.recv_date = recv_date;
+		this.recv_addr = recv_addr;
+		this.acc_site_name = acc_site_name;
 	}
 	
 	
@@ -241,7 +265,6 @@ public class BoardVO {
 	public BoardVO(){
 		
 	}
-	
 	@Override
 	public String toString() {
 		return "BoardVO [user_id=" + user_id + ", user_pwd=" + user_pwd + ", mail_no=" + mail_no + ", acc_id=" + acc_id
@@ -251,6 +274,11 @@ public class BoardVO {
 				+ ", file_path=" + file_path + ", html_path=" + html_path + ", img_num=" + img_num + ", file_num="
 				+ file_num + "]";
 	}
+	
+	
+	
+	
+	
 	
 	
 	

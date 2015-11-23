@@ -1,12 +1,13 @@
 package control;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 
 import model.BoardService;
 import model.BoardVO;
@@ -22,19 +23,27 @@ public class LoginController implements Controller {
 		String user_pwd = request.getParameter("user_pwd");
 		
 		BoardVO vo = new BoardVO(user_id,user_pwd);
-		ArrayList list = null;
+		
+		ArrayList list=null;
+		ArrayList list2=null;
 		try{
 			list = service.login(vo);	//로그인 된 계정 목록들..
-			
-			
-			if(vo!=null){
+			list2 = service.getRecent();
+			System.out.println(list+"리스트값");
+			if(list.isEmpty()==false){
 				request.setAttribute("user_id", user_id);
+				
 				HttpSession session=request.getSession();
 				session.setAttribute("loginInfo",list);
+				session.setAttribute("recent",list2);
+				System.out.println("리스트2****" + list2);
 				mv.setPath("DispatcherServlet?command=home");
+				System.out.println("로그인성공!!");
 			}else{
-				mv.setPath("login_fail.jsp");
+				mv.setPath("index2.jsp");
+				System.out.println("로그인실패!!!");
 			}
+
 			
 			if(list != null){
 				//list 를 넘겨서 메일 받을수 있게 함수 작성 할 것. service.getMail(Arraylist list);
