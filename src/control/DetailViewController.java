@@ -26,6 +26,15 @@ public class DetailViewController implements Controller {
          request.setAttribute("detail", vo);
          request.setAttribute("html_path", vo.getHtml_path());
          String filePaths[] = vo.getFilePaths();
+         
+         for(int i = 0 ; i < filePaths.length ; i++){
+     		String temp = filePaths[i].substring(
+     				filePaths[i].indexOf("-") + 1 , filePaths[i].length());
+    		
+     		filePaths[i] = temp.substring(
+    				temp.indexOf("-") + 1 , temp.length());
+         }
+         
       /*   if(filePaths != null){
         	 for(int i = 0 ; i < filePaths.length ; i++){
         	     int startIndex = filePaths[i].indexOf("Web") ;

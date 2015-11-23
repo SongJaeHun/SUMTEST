@@ -321,18 +321,19 @@ function logout(){
 			</li>
 	
 	
+		
 			<li class="sub-menu">
 				<a class="" href="javascript:;"> <i class="icon_piechart"></i>
 					<span>설정</span>
 					<span class="menu-arrow arrow_carrot-right"></span>
-					
+					</a>		
 					<ul class="sub">
 						<li><a class="" href="accountAdd.jsp">계정 추가 </a></li>
 						<li><a class="" href="accountDel.jsp">계정 삭제 </a></li>
-						<li><a class="" href="DispatcherServlet?command=memberInfo">회원 정보 수정</a></li>
+						<!-- <li><a class="" href="member_mod.jsp">회원 정보 수정</a></li> -->
+						<li><a class="" href="DispatcherServlet?command=memInfo">회원정보 수정</a></li>
 					</ul>
-	
-			</a></li>
+			</li>
 		</ul>
 		
 		

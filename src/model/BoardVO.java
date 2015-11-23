@@ -159,7 +159,7 @@ public class BoardVO {
 		this.title= title;
 		this.recv_date = recv_date;
 		this.recv_addr = recv_addr;
-		this.html_path = html_path;
+		this.html_path = html_path  ;
 		this.img_num = img_num;
 		this.file_num = file_num;
 		this.mail_no = mail_no;

@@ -51,9 +51,13 @@
 
 </head>
 <script>
+<<<<<<< HEAD
 /* window.onload=function(){
 	  alert("${loginInfo}");
 } */
+=======
+
+>>>>>>> branch 'master' of https://github.com/SongJaeHun/SUMTEST.git
 </script>
 <body>
 	<% int count=0; %>

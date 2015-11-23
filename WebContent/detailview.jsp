@@ -51,10 +51,13 @@
 
 </head>
 <script>
+<<<<<<< HEAD
 /*  window.onload=function(){
 	  alert(count);
 
 }  */
+=======
+>>>>>>> branch 'master' of https://github.com/SongJaeHun/SUMTEST.git
 </script>
 <body>
 	<% int count=0; %>
@@ -76,7 +79,9 @@
 	</div>
 
 	<!--logo start--> <a href="DispatcherServlet?command=home" class="logo">Team<span
-		class="lite"> SC</span></a> <!--logo end--> <!--  search form start -->
+		class="lite"> SC</span></a> <!--logo end--> 
+		
+		<!--  search form start -->
 	<div class="nav search-row" id="top_menu">
 		<ul class="nav top-menu">
 			<li>
@@ -230,24 +235,9 @@
 					<span>Home</span>
 				</a>
 			</li>
-				<!-- <input type="submit" value="home">
-		</form> -->
+				
 
-
-		<%--  <% BoardVO vo = (BoardVO)session.getAttribute("loginInfo");
-	                  	 if(vo==null){%>
-	                  	 
-	                  	 <%}else{ %>
-	                  	vo.getAcc_addr();
-	                  
-	                  <%} %> --%>
-
-
-
-
-		<!-- <form action="DispatcherServlet" method="post" name="llll">
-					  <input type="hidden" name="command" value="gmail"> -->
-			<li class="sub-menu"><a href="javascript:;" class=""> <!-- <a href="gmail.html" class=""> -->
+			<li class="sub-menu"><a href="javascript:;" class="">
 					<i class="icon_document_alt"></i> <span>Gmail</span> 
 					<span class="menu-arrow arrow_carrot-right"></span>
 			</a>
@@ -403,7 +393,9 @@
 				
 					<% for(int i = 0 ; i < filePaths.length ; i++) { %>
 					<tr>
-					<td>첨부파일<%= i+1 %> :  <a href="DispatcherServlet?command=down&file_path=<%= filePaths[i]%>"><%= filePaths[i] %></a></td>
+					<td>
+						<img src="http://publicdomainvectors.org/photos/Icon_Documents.png" width=40 height=30> 
+						<a href="DispatcherServlet?command=down&file_path=<%= filePaths[i]%>">&nbsp;&nbsp;&nbsp;<%= filePaths[i] %></a></td>
 					<%} %>
 				</tr>								
 				<%} %>

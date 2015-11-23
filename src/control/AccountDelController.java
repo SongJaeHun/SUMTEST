@@ -17,7 +17,7 @@ public class AccountDelController implements Controller {
 		ModelAndView mv=new ModelAndView();
 		try {
 			ArrayList list=service.getAllBoard();
-			request.setAttribute("home", list);
+			request.setAttribute("del", list);
 			mv.setPath("home.jsp");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

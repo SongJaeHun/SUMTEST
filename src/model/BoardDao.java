@@ -55,8 +55,8 @@ public class BoardDao {
 		ResultSet rs=null;
 		try{
 		con=DriverManager.getConnection(OracleConfig.URL, OracleConfig.USER, OracleConfig.PASS);
-		String sql="select mail_info.title, mail_info.recvdate, mail_info.RECVADDR, html_path, img_num, file_num from mail_info, mail_detail where mail_info.mail_no = mail_detail.mail_no and  mail_info.mail_no=?";
 							// 1 - 타이틀			2 - 받은날짜				3 - 보낸사람			4-본문경로  5 - 이미지 갯수 6 - 첨부파일 갯수
+		String sql="select mail_info.title, mail_info.recvdate, mail_info.RECVADDR, html_path, img_num, file_num,mail_info.mail_no from mail_info, mail_detail where mail_info.mail_no = mail_detail.mail_no and  mail_info.mail_no=?";
 		pstmt=con.prepareStatement(sql);
 		pstmt.setInt(1, mail_no);
 		rs=pstmt.executeQuery();
@@ -329,6 +329,8 @@ public class BoardDao {
 		return accList;
 	}
 	
+	
+	// id 중복
 	public int checkId(String usrid) throws Exception{
 		   Connection con = null;
 		   PreparedStatement pstmt = null;
@@ -347,6 +349,7 @@ public class BoardDao {
 		   }
 		   return re;
 		 }
+	
 	
 	
 	

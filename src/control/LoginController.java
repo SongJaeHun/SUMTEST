@@ -46,10 +46,9 @@ public class LoginController implements Controller {
 
 			
 			if(list != null){
-				//list 를 넘겨서 메일 받을수 있게 함수 작성 할 것. service.getMail(Arraylist list);
 				service.getMail(list);
 			}
-			
+
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
