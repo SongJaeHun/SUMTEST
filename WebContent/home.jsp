@@ -51,18 +51,8 @@
     <![endif]-->
 
 </head>
-<script>
-	 /*  window.onload=function(){
-	  alert("${home}");
-} */ 
-/* function logout(){
-	session.invalidate();
-	alert("로그아웃 되었습니다.");
-	System.out.println("안녕");
-	response.sendRedirect("");
 
-	System.out.println("하세요");
-} */
+<script>
 function logout(){
 	 var con = confirm("접속을 종료하시겠습니까");
 	 if(con == true){
@@ -80,7 +70,6 @@ function logout(){
 		<%count++; %>
 	</c:forEach>
 
-	<%-- <c:set var="user_id" value="${user_id}"></c:set> --%>
 	<c:set var="name" value="${user_id}" scope="application"></c:set>
 	
 
@@ -95,7 +84,9 @@ function logout(){
 	</div>
 
 	<!--logo start--> <a href="DispatcherServlet?command=home" class="logo">Team<span
-		class="lite"> SC</span></a> <!--logo end--> 
+		class="lite"> SC</span></a> 
+		
+		<!--logo end--> 
 		
 		
 		<!--  search form start -->
@@ -169,7 +160,7 @@ function logout(){
 							<div class="task-info">
 								<div class="desc">Hotmail - 
 									<c:forEach items="${loginInfo}" var="list">
-										<c:if test="${list.acc_site_name eq 'HOTMAIL'}">
+										<c:if test="${list.acc_site_name eq 'NATE'}">
 											<p>${list.acc_addr}</p>
 										</c:if>
 									</c:forEach>
@@ -251,8 +242,6 @@ function logout(){
 	<div id="sidebar" class="nav-collapse ">
 		<!-- sidebar menu start-->
 		
-		<!-- <form action="DispatcherServlet" method="post" name="llll">
-			<input type="hidden" name="command" value="allview"> -->
 		<ul class="sidebar-menu">
 			<li class="active">
 				<a class="" href="DispatcherServlet?command=home"> 
@@ -260,22 +249,8 @@ function logout(){
 					<span>Home</span>
 				</a>
 			</li>
-				<!-- <input type="submit" value="home">
-		</form> -->
-
-
-		<%--  <% BoardVO vo = (BoardVO)session.getAttribute("loginInfo");
-	                  	 if(vo==null){%>
-	                  	 
-	                  	 <%}else{ %>
-	                  	vo.getAcc_addr();
-	                  
-	                  <%} %> --%>
-
-
-		<!-- <form action="DispatcherServlet" method="post" name="llll">
-					  <input type="hidden" name="command" value="gmail"> -->
-			<li class="sub-menu"><a href="javascript:;" class=""> <!-- <a href="gmail.html" class=""> -->
+			
+			<li class="sub-menu"><a href="javascript:;" class="">
 					<i class="icon_document_alt"></i> <span>Gmail</span> 
 					<span class="menu-arrow arrow_carrot-right"></span>
 			</a>
@@ -330,17 +305,15 @@ function logout(){
 					<ul class="sub">
 						<li><a class="" href="accountAdd.jsp">계정 추가 </a></li>
 						<li><a class="" href="accountDel.jsp">계정 삭제 </a></li>
-						<!-- <li><a class="" href="member_mod.jsp">회원 정보 수정</a></li> -->
-						<li><a class="" href="DispatcherServlet?command=memInfo">회원정보 수정</a></li>
+						<li><a class="" href="member_mod.jsp">회원 정보 수정</a></li>
 					</ul>
 			</li>
 		</ul>
 		
-		
-		
-		<!-- sidebar menu end-->
 	</div>
-	</aside> <!--sidebar end--> <!--main content start--> <section
+	</aside> <!--sidebar end--> 
+	
+	<!--main content start--> <section
 		id="main-content"> <section class="wrapper"> <!--overview start-->
 	<div class="row">
 		<div class="col-lg-12">
@@ -348,7 +321,7 @@ function logout(){
 				<i class="fa fa-laptop"></i> Dashboard
 			</h3>
 			<ol class="breadcrumb">
-				<li><i class="fa fa-home"></i><a href="home.html">Home</a></li>
+				<li><i class="fa fa-home"></i><a href="home.jsp">Home</a></li>
 				<li><i class="fa fa-laptop"></i>Dashboard</li>
 			</ol>
 		</div>

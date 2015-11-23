@@ -170,10 +170,7 @@
 						<span class="icon icon-bar"></span>
 						<span class="icon icon-bar"></span>
 					</button>
-					<a href="index.jsp" class="navbar-brand">Mail
-					<input type="button" value="안녕">
-					
-					</a>
+					<a href="index.jsp" class="navbar-brand">Mail</a>
 				</div>
 				<div class="collapse navbar-collapse">
 					<ul class="nav navbar-nav navbar-right text-uppercase">

@@ -13,6 +13,7 @@
 String id = request.getParameter("user_id");
 BoardDao dao = new BoardDao();
 int re = dao.checkId(id);
+System.out.println(re);
 %>
 <%=re%>
 </body>
