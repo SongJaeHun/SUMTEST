@@ -81,8 +81,9 @@
 			  checkFirst = true;
 			 }
 			 
-			 function checkPwd(){
-			  var f1 = document.LoginForm;
+		
+		function checkPwd(){
+			  var f1 = document.registerForm;
 			  var pw1 = f1.user_pwd.value;
 			  var pw2 = f1.pwd_check.value;
 			  if(pw1!=pw2){
@@ -92,12 +93,12 @@
 			   document.getElementById('checkPwd').style.color = "black";
 			   document.getElementById('checkPwd').innerHTML = "암호가 확인 되었습니다."; 
 			   
-			  }
+			}
 			  
 			 }
 			 
 			 
-			 function sendId() {
+		function sendId() {
 			  if (loopSendKeyword == false) return;
 			  
 			  var keyword = document.search.user_id.value;
@@ -118,7 +119,7 @@
 			 }
 			 
 			 
-			 function displayResult() {
+		function displayResult() {
 			  if (httpRequest.readyState == 4) {
 			   if (httpRequest.status == 200) {
 			    var resultText = httpRequest.responseText;
@@ -275,7 +276,7 @@
         
         <!-- start join -->
     <section id="join">
-	<div class="overlay">
+		<div class="overlay">
 				<div class="container">
 					<div class="row">
 						<div class="col-md-6 wow fadeInUp" data-wow-delay="0.6s">
@@ -298,22 +299,26 @@
 									</div>
 									
 									<div class="col-md-12">
-									<input type="password" name="pwd_check" onkeyup="checkPwd()"></input>
-       								<div id="checkPwd">동일한 암호를 입력하세요.</div>
+										<input type="password" class="form-control" placeholder="Password" name="pwd_check" onkeyup="checkPwd()">
+       									<div id="checkPwd">동일한 암호를 입력하세요.</div>
 									</div>
 
 									<div class="col-md-12">
 										<input type="text" class="form-control" placeholder="NAME" name="user_name">
 									</div>
+									
                                     <div class="col-md-12">
 										<input type="email" class="form-control" placeholder="EMAIL" name="cf_email">
 									</div>
+									
 									<div class="col-md-6">
 										<input type="submit" class="form-control text-uppercase" value="회원가입">
 									</div>
+									
                                     <div class="col-md-6">
 										<input type="reset" class="form-control text-uppercase" value="취소">
 									</div>
+									
 								</form>
 							</div>
 						</div>
