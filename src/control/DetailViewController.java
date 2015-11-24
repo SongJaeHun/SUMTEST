@@ -41,7 +41,6 @@ public class DetailViewController implements Controller {
          }
          
          
-         
          request.setAttribute("fileNames", fileNames);
          
          mv.setPath("detailview.jsp");

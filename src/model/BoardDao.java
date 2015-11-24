@@ -331,15 +331,15 @@ public class BoardDao {
 	
 	
 	// id 중복
-	public int checkId(String usrid) throws Exception{
+	public int checkId(String user_id) throws Exception{
 		   Connection con = null;
 		   PreparedStatement pstmt = null;
 		   int re = 0;
 		   try{
 			con=DriverManager.getConnection(OracleConfig.URL, OracleConfig.USER, OracleConfig.PASS);
-		    String selectSQL="select * from member where mb_id=?";
+		    String selectSQL="select * from member where user_id='?'";
 		    pstmt = con.prepareStatement(selectSQL);
-		    pstmt.setString(1,usrid);
+		    pstmt.setString(1,user_id);
 		    ResultSet rs = pstmt.executeQuery();
 		    if(rs.next()){
 		     re = 1;
