@@ -245,7 +245,6 @@
 				<ul class="sub">
 					<c:forEach items="${loginInfo}" var="list">
 						<c:if test="${list.acc_site_name eq 'GMAIL'}">
-						acc_id = ${list.acc_id }
 							<li><a class="" href="DispatcherServlet?command=gmail&acc_id=${list.acc_id }">${list.acc_addr }</a></li>
 						</c:if>
 					</c:forEach>
@@ -259,7 +258,6 @@
 			</a> 
 				<ul class="sub">
 					<c:forEach items="${loginInfo}" var="list">
-					acc_id = ${list.acc_id }
 						<c:if test="${list.acc_site_name eq 'NAVER'}">
 							<li><a class="" href="DispatcherServlet?command=naver&acc_id=${list.acc_id }">${list.acc_addr }</a></li>
 						</c:if>

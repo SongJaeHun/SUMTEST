@@ -40,14 +40,14 @@ public class LoginController implements Controller {
 				mv.setPath("DispatcherServlet?command=home");
 				System.out.println("로그인성공!!");
 			}else{
-				mv.setPath("index2.jsp");
+				mv.setPath("index.jsp");
 				System.out.println("로그인실패!!!");
 			}
 
 			
-			if(list != null){
+			/*if(list != null){
 				service.getMail(list);
-			}
+			}*/
 
 		}catch(SQLException e){
 			e.printStackTrace();

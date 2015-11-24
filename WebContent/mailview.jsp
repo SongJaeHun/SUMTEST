@@ -373,7 +373,7 @@ function logout(){
 				<tr>
 					<td align="center">${allview.mail_no}</td>
 					<td align="center"><a
-						href="DispatcherServlet?command=gmail&acc_id=${allview.mail_no}">${allview.title}</a></td>
+						href="DispatcherServlet?command=detailView&mail_no=${allview.mail_no}">${allview.title}</a></td>
 					<td align="center">${allview.recv_addr}</td>
 					<td align="center">${allview.recv_date}</td>
 				</tr>
@@ -386,7 +386,7 @@ function logout(){
 				<tr>
 					<td align="center">${allview.mail_no}</td>
 					<td align="center"><a
-						href="DispatcherServlet?command=naver&acc_id=${allview.mail_no}">${allview.title}</a></td>
+						href="DispatcherServlet?command=detailView&mail_no=${allview.mail_no}">${allview.title}</a></td>
 					<td align="center">${allview.recv_addr}</td>
 					<td align="center">${allview.recv_date}</td>
 				</tr>
@@ -398,7 +398,7 @@ function logout(){
 				<tr>
 					<td align="center">${allview.mail_no}</td>
 					<td align="center"><a
-						href="DispatcherServlet?command=hotmail&acc_id=${allview.mail_no}">${allview.title}</a></td>
+						href="DispatcherServlet?command=detailView&mail_no=${allview.mail_no}">${allview.title}</a></td>
 					<td align="center">${allview.recv_addr}</td>
 					<td align="center">${allview.recv_date}</td>
 				</tr>
@@ -410,7 +410,7 @@ function logout(){
 				<tr>
 					<td align="center">${allview.mail_no}</td>
 					<td align="center"><a
-						href="DispatcherServlet?command=gmail&acc_id=${allview.mail_no}">${allview.title}</a></td>
+						href="DispatcherServlet?command=detailView&mail_no=${allview.mail_no}">${allview.title}</a></td>
 					<td align="center">${allview.recv_addr}</td>
 					<td align="center">${allview.recv_date}</td>
 				</tr>
@@ -420,7 +420,7 @@ function logout(){
 				<tr>
 					<td align="center">${allview.mail_no}</td>
 					<td align="center"><a
-						href="DispatcherServlet?command=gmail&acc_id=${allview.mail_no}">${allview.title}</a></td>
+						href="DispatcherServlet?command=detailView&mail_no=${allview.mail_no}">${allview.title}</a></td>
 					<td align="center">${allview.recv_addr}</td>
 					<td align="center">${allview.recv_date}</td>
 				</tr>
@@ -430,7 +430,7 @@ function logout(){
 				<tr>
 					<td align="center">${allview.mail_no}</td>
 					<td align="center"><a
-						href="DispatcherServlet?command=gmail&acc_id=${allview.mail_no}">${allview.title}</a></td>
+						href="DispatcherServlet?command=detailView&mail_no=${allview.mail_no}">${allview.title}</a></td>
 					<td align="center">${allview.recv_addr}</td>
 					<td align="center">${allview.recv_date}</td>
 				</tr>
@@ -441,7 +441,7 @@ function logout(){
 				<tr>
 					<td align="center">${allview.mail_no}</td>
 					<td align="center"><a
-						href="DispatcherServlet?command=gmail&acc_id=${allview.mail_no}">${allview.title}</a></td>
+						href="DispatcherServlet?command=detailView&mail_no=${allview.mail_no}">${allview.title}</a></td>
 					<td align="center">${allview.recv_addr}</td>
 					<td align="center">${allview.recv_date}</td>
 				</tr>
@@ -452,7 +452,7 @@ function logout(){
 		</tbody>
 	</table>
 	<input type="button" border="0" value="홈으로"
-		onclick="location.href='\'"> </section> <!--main content end-->
+		onclick="location.href='\index.jsp'"> </section> <!--main content end-->
 	</section>
 	<!-- container section start -->
 

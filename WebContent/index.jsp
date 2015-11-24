@@ -49,17 +49,9 @@
 		}
 		
 		
-<%-- 	<% Object id = request.getAttribute("flag"); %>		--%>
 		function checkLogin(){
 			var r=document.LoginForm;
 
-			
-			/*alert( ${flag} );
-			 if("${flag}"){
-				alert("로그인 실패");
-			} */
-			
-			
 			if(r.user_id.value==""){
 				alert("아이디를 입력하세요");
 				r.user_id.focus();
@@ -81,39 +73,26 @@
 			  checkFirst = true;
 			 }
 			 
-		
-		function checkPwd(){
-			  var f1 = document.registerForm;
-			  var pw1 = f1.user_pwd.value;
-			  var pw2 = f1.pwd_check.value;
-			  if(pw1!=pw2){
-			   document.getElementById('checkPwd').style.color = "red";
-			   document.getElementById('checkPwd').innerHTML = "동일한 암호를 입력하세요."; 
-			  }else{
-			   document.getElementById('checkPwd').style.color = "black";
-			   document.getElementById('checkPwd').innerHTML = "암호가 확인 되었습니다."; 
-			   
-			}
-			  
-			 }
 			 
 			 
 		function sendId() {
 			  if (loopSendKeyword == false) return;
 			  
-			  var keyword = document.search.user_id.value;
+			  var keyword = document.registerForm.user_id.value;
 			  if (keyword == '') {
-			   lastKeyword = '';
-			   document.getElementById('checkMsg').style.color = "black";
-			   document.getElementById('checkMsg').innerHTML = "아이디를 입력하세요.";
-			  } else if (keyword != lastKeyword) {
-			   lastKeyword = keyword;
-			   
-			   if (keyword != '') {
-			    var params = "id="+encodeURIComponent(keyword);
-			    sendRequest("id_check.jsp", params, displayResult, 'POST');
-			   } else {
-			   }
+				   lastKeyword = '';
+				   document.getElementById('checkMsg').style.color = "black";
+				   document.getElementById('checkMsg').innerHTML = "아이디를 입력하세요.";
+				   }
+			  else if (keyword != lastKeyword) {
+					lastKeyword = keyword;
+					   
+					if (keyword != '') {
+						    var params = "user_id="+encodeURIComponent(keyword);
+						    sendRequest("id_check.jsp", params, displayResult, 'POST');
+						}
+					else {
+					}
 			  }
 			  setTimeout("sendId();", 500);
 			 }
@@ -138,6 +117,20 @@
 			 }
 
 
+		
+		function checkPwd(){
+			  var f1 = document.registerForm;
+			  var pw1 = f1.user_pwd.value;
+			  var pw2 = f1.pwd_check.value;
+			  if(pw1!=pw2){
+				   document.getElementById('checkPwd').style.color = "red";
+				   document.getElementById('checkPwd').innerHTML = "동일한 암호를 입력하세요."; 
+			  }else{
+				   document.getElementById('checkPwd').style.color = "black";
+				   document.getElementById('checkPwd').innerHTML = "암호가 확인 되었습니다."; 
+			   
+			  }
+			  }
 	
 		
 	</script>
@@ -287,8 +280,8 @@
 								<form action="DispatcherServlet" method="post" name="registerForm" onsubmit="return checkRegister()">
 	                            <input type="hidden" name="command" value="register">
                                     <div class="col-md-12">
-										<input type="text" class="form-control" placeholder="ID" name="user_id" onkeydown="checkId()">
-										<div id = "checkMsg">아이디를 입력하세요</div>
+										<input type="text" class="form-control" placeholder="ID" name="user_id" id="user_id" onkeydown="checkId()">
+										<div id="checkMsg">아이디를 입력하세요</div>
 									</div>
 									
 									<div class="col-md-12">
