@@ -779,16 +779,8 @@ public class BoardDao {
 			String savePathDirectory = "c:\\\\web\\\\SUMTEST\\\\WebContent\\\\temp\\\\" + vo.getMb_id() ;
 			System.out.println("저장경로 : " + savePathDirectory);
 			File saveDirectory = new File(savePathDirectory);
-		/*	if(saveDirectory.exists())
-			{
-				File files[] = saveDirectory.listFiles();
-				for(File file : files){
-					file.delete();
-				}			
-				//saveDirectory.delete();
-			}*/
-			
 			saveDirectory.mkdir();
+
 			if(vo.getAcc_site_name().equals("NAVER")){
 				try {
 					NaverMail nm = new NaverMail(vo.getAcc_id() ,vo.getAcc_addr(),vo.getAcc_pwd(),savePathDirectory + "\\\\"+ vo.getAcc_id() + "-");

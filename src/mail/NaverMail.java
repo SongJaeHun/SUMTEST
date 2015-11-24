@@ -389,7 +389,6 @@ public class NaverMail implements Mail{
             output.close();
             mail.setMainHtmlPath(filePath + fileName + "-1.html");
             temp = contentImgCount(filePath + fileName+ "-1.html");
-            
             if(temp != 0){
             	str = new ArrayList<String>();
             }

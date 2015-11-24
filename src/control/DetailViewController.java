@@ -25,32 +25,25 @@ public class DetailViewController implements Controller {
          BoardVO vo = service.getDetailView(mail_no);
          request.setAttribute("detail", vo);
          request.setAttribute("html_path", vo.getHtml_path());
-         String filePaths[] = vo.getFilePaths();
+         String fileNames[] = vo.getFilePaths();
          
-         for(int i = 0 ; i < filePaths.length ; i++){
-     		String temp = filePaths[i].substring(
-     				filePaths[i].indexOf("-") + 1 , filePaths[i].length());
-    		
-     		filePaths[i] = temp.substring(
-    				temp.indexOf("-") + 1 , temp.length());
+         if(fileNames != null){
+       	   String filePaths[] = new String[fileNames.length] ;
+        	 for(int i = 0 ; i < fileNames.length ; i++){
+            	 filePaths[i] = new String(fileNames[i]);
+          		String temp = filePaths[i].substring(
+          				filePaths[i].indexOf("-") + 1 , filePaths[i].length());
+         		
+          		filePaths[i] = temp.substring(
+         				temp.indexOf("-") + 1 , temp.length());
+             }
+        	 request.setAttribute("filePaths", filePaths);
          }
          
-      /*   if(filePaths != null){
-        	 for(int i = 0 ; i < filePaths.length ; i++){
-        	     int startIndex = filePaths[i].indexOf("Web") ;
-                 String path = filePaths[i].substring(0 , startIndex);
-                 int lastIndex = startIndex + 12;
-                
-                 path = path + filePaths[i].substring(lastIndex , filePaths[i].length());
-                 path = path.replace("c:\\\\web\\\\", "http://localhost:9090\\\\").replace("\\\\", "/"); 
-                 
-                 filePaths[i] = path.trim();
-                 System.out.println(filePaths[i]);
-        	 }
-         }*/
          
-         request.setAttribute("filePaths", filePaths);
-         System.out.println(vo.getHtml_path());
+         
+         request.setAttribute("fileNames", fileNames);
+         
          mv.setPath("detailview.jsp");
       } catch (SQLException e) {
          // TODO Auto-generated catch block

@@ -7,9 +7,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Properties;
 
+import javax.mail.AuthenticationFailedException;
 import javax.mail.BodyPart;
 import javax.mail.Flags;
 import javax.mail.Folder;
@@ -21,6 +25,8 @@ import javax.mail.Store;
 import javax.mail.UIDFolder;
 import javax.mail.URLName;
 import javax.mail.internet.MimeBodyPart;
+
+import model.BoardService;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -50,11 +56,28 @@ public class GmailMail implements Mail {
     private String accountAddr;
     private String accountPwd;
     private int accountId;
+    
+
+    private MailContent mail ;
+    
+    private String contentImgPath;
+    private String attachmentPath;
+    
+    private Date lastReceivedDate ;
+    
+    private BoardService service = BoardService.getInstance();
+    
+    BASE64Encoder base64Encoder = new BASE64Encoder();
+    BASE64Decoder base64Decoder = new BASE64Decoder();
+    
+    
     public GmailMail(int accId , String accAddr , String accPwd , String file_Path) throws Exception {
     	accountId = accId;
     	accountAddr = accAddr ;
     	accountPwd = accPwd;
     	filePath = file_Path ;
+    	lastReceivedDate = service.getLastReceivedDate(accountId);
+    	
     }
 
     public  void doit() throws Exception {
@@ -84,11 +107,30 @@ public class GmailMail implements Mail {
             UIDFolder uf = (UIDFolder) folder;	
             Message messages[] = uf.getMessagesByUID(previousUID + 1, UIDFolder.LASTUID);
             System.out.println(messages.length);
-            BASE64Encoder base64Encoder = new BASE64Encoder();
-            BASE64Decoder base64Decoder = new BASE64Decoder();
+
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            int compare = 1;
+            
             for (int i = messages.length - 1 ; i  >= 0  ; i--) {
                 Message msg = messages[i];
-
+                
+                if( lastReceivedDate == null) {
+                	lastReceivedDate = new Date(msg.getReceivedDate().getTime());
+                	System.out.println("메일 없을때 1번만 실행되야함");
+                }
+                if(compare == 0){
+                	break;
+                }
+                
+                compare = lastReceivedDate.compareTo(msg.getReceivedDate()); // 메일 없을때 0
+                if(i == messages.length - 1){
+                	compare = 1;
+                }
+                mail = new MailContent(accountId , getSubject(msg.getSubject()) , getSender(msg) , format.parse(format.format(msg.getReceivedDate())));;
+                
+                contentImgPath = "";
+                attachmentPath = "";
+                
                 Object getContent = msg.getContent();
                 Multipart mp = null;
 
@@ -127,8 +169,30 @@ public class GmailMail implements Mail {
                     
                     msg.setFlag(Flags.Flag.SEEN, false);
                 }
+                
+                
+                int startIndex = mail.getMainHtmlPath().indexOf("Web") ;
+               String path = mail.getMainHtmlPath().substring(0 , startIndex);
+               int lastIndex = startIndex + 12;
+              
+               path = path + mail.getMainHtmlPath().substring(lastIndex , mail.getMainHtmlPath().length());
+               path = path.replace("c:\\\\web\\\\", "http://localhost:9090\\\\").replace("\\\\", "/"); 
+               
+               
+                mail.setMainHtmlPath(path);
+                mail.setContentImgPath(contentImgPath);
+                mail.setAttachmentPath(attachmentPath);
+                
+                service.registContent(mail);
 
             }
+            
+        }catch(AuthenticationFailedException e){
+        	//존재하지 않는 아이디 혹인 비밀번호 즉 걸려있는 계정으로 메일 못받을시
+        	//여기 걸려있는 애들도 DELETEFLAG1로 설정해주기
+        	  service.updateDeleteFlag(accountId);
+        	System.out.println("계정 오류");
+        	
         } finally {
             if (folder != null) {
                 folder.close(true);
@@ -165,57 +229,60 @@ public class GmailMail implements Mail {
     }
 
     private  void contentImgParsing(String htmlPath ){
- 	   	  File input = null;
- 	      FileWriter writer = null; 
- 	      int num_Of_Content_Img = 1;
- 	     
- 	      try
- 	      {
- 	    	 int pathIndex = htmlPath.lastIndexOf("-");
- 	    	 String path = htmlPath.substring(0,pathIndex) + "-1.html";
- 	         input = new File(path);
- 	         int index = path.indexOf("1.html");
- 	         String filePath = path.substring(0,index);
- 	         Document doc = Jsoup.parse(input, "utf-8"); 
- 	         Elements elements = doc.select("img");
- 	         
- 	         int i = 0 ;
- 	        
- 	         for(Element e : elements) {
-  	 
- 	             String cid = e.attr("src" );
- 	             if(cid.contains("cid")){
- 	                 num_Of_Content_Img++;
- 	                 e.attr("src", filePath + num_Of_Content_Img + str.get(i++));
- 	             }
- 	         }
- 	         
- 	         String temp = doc.toString();
- 	         writer = new FileWriter(input); 
- 	         writer.write(temp);
- 	      }
- 	      catch(NullPointerException ne) {
- 	         ne.printStackTrace();
- 	      }
- 	      catch(FileNotFoundException fe) {
- 	         fe.printStackTrace();
- 	      }
- 	      catch(IOException ie) {
- 	         ie.printStackTrace();
- 	      }
- 	      
- 	      finally {
- 	          try {
- 	             writer.close();
- 	             System.gc();
- 	             
- 	          } catch (IOException e) {
- 	             e.printStackTrace();
- 	          }
- 	       }
-    
+	   	  File input = null;
+	      FileWriter writer = null; 
+	      int num_Of_Content_Img = 1;
+	     
+	      try
+	      {
+	    	 int pathIndex = htmlPath.lastIndexOf("-");
+	    	 String path = htmlPath.substring(0,pathIndex) + "-1.html";
+	         input = new File(path);
+	         int index = path.indexOf("1.html");
+	         String filePath = path.substring(0,index);
+	         Document doc = Jsoup.parse(input, "utf-8"); 
+	         Elements elements = doc.select("img");
+	         
+	         int i = 0 ;
+	        
+	         for(Element e : elements) {
+	 
+	             String cid = e.attr("src" );
+	             if(cid.contains("cid")){
+	                 num_Of_Content_Img++;
+	                 e.attr("src", filePath + num_Of_Content_Img + str.get(i++));
+	                 contentImgPath += filePath + num_Of_Content_Img + str.get(i - 1) + " ; ";
+	             }
+	         }
+	         
+	         String temp = doc.toString();
+	         writer = new FileWriter(input); 
+	         writer.write(temp);
+	      }
+	      catch(NullPointerException ne) {
+	         ne.printStackTrace();
+	      }
+	      catch(FileNotFoundException fe) {
+	         fe.printStackTrace();
+	      }
+	      catch(IOException ie) {
+	         ie.printStackTrace();
+	      }
+	      
+	      finally {
+	    	  try {
+	    		  if(writer != null)
+	    			  writer.close();
+	    		  System.gc();
+
+	    	  } catch (IOException e) {
+	    		  e.printStackTrace();
+	    	  }
+	      }
+
     }
-    
+
+
 
     public  String multipartToString(Multipart mp) throws MessagingException, IOException{
     	
@@ -249,6 +316,23 @@ public class GmailMail implements Mail {
     	return strBuffer.toString();
     }
     
+    public String getSubject(String subject) throws IOException{
+    	String title = subject;
+    	if(title.equals(""))
+    	{
+    		return "제목없음";
+    	}
+    	
+    	if(title.startsWith("\"")){
+    		int firstIndex = title.indexOf("B?");
+        	int lastIndex = title.lastIndexOf("?");
+        	String temp = title.substring(firstIndex + 2 , lastIndex);
+    		temp = new String(base64Decoder.decodeBuffer(temp));
+    		return temp;
+    	}
+    	return title;
+    }
+    
     public  String getSender(Message msg) throws MessagingException {
         String from = "unknown";
         if (msg.getReplyTo().length >= 1) {
@@ -256,12 +340,10 @@ public class GmailMail implements Mail {
         } else if (msg.getFrom().length >= 1) {
             from = msg.getFrom()[0].toString();
         }
-        
         if(from.startsWith("=")){					// euc-kr or utf-8 일 경우 짤라서 sender 저장
         	int index = from.lastIndexOf("<");
-        	from = from.substring(index , from.length());
+        	from = from.substring(index+1 , from.length()-1);
         }
-        
         return from;
     }
     	
@@ -302,7 +384,8 @@ public class GmailMail implements Mail {
             FileOutputStream output = new FileOutputStream(filePath + fileName+ "-1.html");		// String part 의 본문 html 
             output.write(content.toString().getBytes());
             output.close();
-           temp = contentImgCount(filePath + fileName+ "-1.html");
+            mail.setMainHtmlPath(filePath + fileName + "-1.html");
+            temp = contentImgCount(filePath + fileName+ "-1.html");
             if(temp != 0){
             	str = new ArrayList<String>();
             }
@@ -324,10 +407,25 @@ public class GmailMail implements Mail {
         			return;
         		}
         	} else {
-
+        		
+        		String x = part.getDataHandler().getName();
+        		if(x == null){
+        			
+        		}
+        		else{
+        			if(x.contains("UTF")){
+        				int firstIndex = x.indexOf("B?");
+        				int lastIndex = x.lastIndexOf("?");
+        				String c = x.substring(firstIndex + 2 , lastIndex);
+        				c = new String(base64Decoder.decodeBuffer(c));
+        				x = c;
+        			}
+        		}
+        		fileName = fileName + "-" + numOfAttachment + x;
+        		
         		if (part.isMimeType("text/plain")) {
-        			if(number != 2)
-        				fileName = fileName+ "-" + numOfAttachment  + ".txt";
+        			if(number != 2){}
+        	//			fileName = fileName+ "-" + numOfAttachment  + ".txt";
         			else{
         				number --;
         				return;
@@ -336,82 +434,101 @@ public class GmailMail implements Mail {
                  } 
                  
                  else if(part.isMimeType("image/jpeg")){
-                	 fileName = fileName+ "-" + numOfAttachment + ".jpg" ;    
-                   	 if(str != null)
+               // 	 fileName = fileName+ "-" + numOfAttachment + ".jpg" ;    
+                   	 if(temp != 0){
                 		 str.add(".jpg");
-                	 
+                   	 }
                  }
         		
                  else if(part.isMimeType("image/gif")){
-                	 fileName = fileName + "-" + numOfAttachment + ".gif";
-                  	 if(str != null)
+                //	 fileName = fileName + "-" + numOfAttachment + ".gif";
+                	 if(temp != 0){
                 		 str.add(".gif");
+                	 }
                  }
                  
                  else if(part.isMimeType("application/pdf")){
-                	 fileName = fileName+ "-" + numOfAttachment  + ".pdf";
+            //    	 fileName = fileName+ "-" + numOfAttachment  + ".pdf";
                  }
                  
                  else if(part.isMimeType("application/octet-stream") || part.isMimeType("APPLICATION/HANDSOFTHWP") || part.isMimeType("application/x-hwp")
                 		 	|| part.isMimeType("APPLICATION/HAANSOFTHWP")){
-                	 fileName = fileName+ "-" + numOfAttachment  + ".hwp";
+              //  	 fileName = fileName+ "-" + numOfAttachment  + ".hwp";
                  }
                  
                  else if(part.isMimeType("application/excel") || part.isMimeType("application/vnd.ms-excel")){
-                	 fileName = fileName+ "-" + numOfAttachment  + ".xls";
+               // 	 fileName = fileName+ "-" + numOfAttachment  + ".xls";
                  }
                  
                  else if(part.isMimeType("application/powerpoint") || part.isMimeType("APPLICATION/VND.MS-POWERPOINT")){
-                	 fileName = fileName+ "-" + numOfAttachment  + ".ppt";
+             //   	 fileName = fileName+ "-" + numOfAttachment  + ".ppt";
                  }
         		
                  else if(part.isMimeType("APPLICATION/VND.OPENXMLFORMATS-OFFICEDOCUMENT.PRESENTATIONML.PRESENTATION")
                 		 			|| part.isMimeType("APPLICATION/HAANSOFTPPTX") ){
-                	 fileName = fileName + "-" + numOfAttachment + ".pptx";
+                //	 fileName = fileName + "-" + numOfAttachment + ".pptx";
                  }
         		
                  else if(part.isMimeType("message/rfc822")){
-                	 fileName = fileName + "-" + numOfAttachment + ".sln";
+              //  	 fileName = fileName + "-" + numOfAttachment + ".sln";
                  }
         		
                  else if(part.isMimeType("text/x-csrc")){
-                	 fileName = fileName + "-" + numOfAttachment + ".c";
+              //  	 fileName = fileName + "-" + numOfAttachment + ".c";
                  }
                  
                  else if(part.isMimeType("application/zip") || part.isMimeType("MESSAGE/DELIVERY-STATUS")){
-                	 fileName = fileName+ "-" + numOfAttachment  + ".zip";
+                //	 fileName = fileName+ "-" + numOfAttachment  + ".zip";
                  }
         		
                  else if(part.isMimeType("text/css")){
-                	 fileName = fileName + "-" + numOfAttachment + ".css";
+                //	 fileName = fileName + "-" + numOfAttachment + ".css";
                  }
         		
                  else if(part.isMimeType("APPLICATION/VND.OPENXMLFORMATS-OFFICEDOCUMENT.WORDPROCESSINGML.DOCUMENT")){
-                	 fileName = fileName + "-" + numOfAttachment + ".docx";
+                //	 fileName = fileName + "-" + numOfAttachment + ".docx";
                  }
         		
                  else if(part.isMimeType("APPLICATION/MSWORD")){
-                	 fileName = fileName + "-" + numOfAttachment + ".doc";
+                //	 fileName = fileName + "-" + numOfAttachment + ".doc";
                  }
         		
                  else if(part.isMimeType("image/PNG")){
-                	 fileName = fileName+ "-" + numOfAttachment  + ".PNG";
-                   	 if(str != null)
+                	 //	 fileName = fileName+ "-" + numOfAttachment  + ".PNG";
+                	 if(temp != 0){
                 		 str.add(".PNG");
+                	 }
                  }
-        		
+        
                  else if(part.isMimeType("application/x-zip-compressed")){
-                	 fileName = fileName+ "-" + numOfAttachment  + ".zip";
+              //  	 fileName = fileName+ "-" + numOfAttachment  + ".zip";
                  }
                  //기타 확장자들 MimeType에 따라 걸러서 확장자 추가해주면 됨
                  
                  else {
-                	 System.out.println(part.getContentType());
-                     fileName = fileName + "-" + part.getDataHandler().getName();	
+                //	 System.out.println(part.getContentType());
+              //       fileName = fileName + "-" + part.getDataHandler().getName();	
                  }
+        		
+        		
+        		if(fileName.contains("EUC")){
+            		int firstIndex = fileName.indexOf("B?");
+                	int lastIndex = fileName.lastIndexOf("?");
+                	String temp = fileName.substring(firstIndex + 2 , lastIndex);
+/*            		temp = new String(base64Decoder.decodeBuffer(temp));
+            		fileName = temp;*/
+        			
+        			byte decodeBytes [] = Base64.getDecoder().decode(temp.getBytes());
+        			
+        			String txt = new String( decodeBytes, "euc-kr" );
+        			
+        			fileName = txt;
+        			
+            	}
+        		
                  fileFullPath = filePath + fileName;
              }
-        	 
+        	
             try {
                 Thread.sleep(1);
             } catch (Exception e) {
@@ -426,6 +543,17 @@ public class GmailMail implements Mail {
             
             if(temp == (numOfAttachment - 1)){
             	contentImgParsing(fileFullPath );
+            }
+            
+            int t = temp;
+            
+            if(numOfAttachment > 1){
+            	//여기서 attachmentPath 에 추가해줘야 할듯..
+            	if( t > 0){
+            		t --;
+            	}else{
+            		attachmentPath += fileFullPath + " ; " ;
+            	}
             }
             
             

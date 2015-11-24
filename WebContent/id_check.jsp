@@ -10,9 +10,10 @@
 </head>
 <body>
 <%
-String id = request.getParameter("user_id");
+String user_id = request.getParameter("user_id");
 BoardDao dao = new BoardDao();
-int re = dao.checkId(id);
+int re = dao.checkId(user_id);
+
 %>
 <%=re%>
 </body>

@@ -51,13 +51,10 @@
 
 </head>
 <script>
-<<<<<<< HEAD
 /*  window.onload=function(){
 	  alert(count);
 
 }  */
-=======
->>>>>>> branch 'master' of https://github.com/SongJaeHun/SUMTEST.git
 </script>
 <body>
 	<% int count=0; %>
@@ -66,7 +63,7 @@
 	</c:forEach>
 	
 	<% String[] filePaths = (String[])request.getAttribute("filePaths") ; %>
-	
+	<% String[] fileNames = (String[])request.getAttribute("fileNames") ;%>
 	
 	<!-- container section start -->
 	<section id="container" class=""> <header
@@ -395,7 +392,7 @@
 					<tr>
 					<td>
 						<img src="http://publicdomainvectors.org/photos/Icon_Documents.png" width=40 height=30> 
-						<a href="DispatcherServlet?command=down&file_path=<%= filePaths[i]%>">&nbsp;&nbsp;&nbsp;<%= filePaths[i] %></a></td>
+						<a href="DispatcherServlet?command=down&file_path=<%= fileNames[i]%>">&nbsp;&nbsp;&nbsp;<%= filePaths[i] %></a></td>
 					<%} %>
 				</tr>								
 				<%} %>

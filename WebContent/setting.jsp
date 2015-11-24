@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8" import="model.BoardVO"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %> 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
@@ -50,12 +51,17 @@
     <![endif]-->
 
 </head>
+
 <script type="text/javascript" src="${pageContext.request.contextPath }/httpRequest.js"></script>
 <script>
-/* window.onload=function(){
-	  alert("${loginInfo}");
-} */
-
+function logout(){
+	 var con = confirm("접속을 종료하시겠습니까");
+	 if(con == true){
+		session.invalidate(); 
+	  	location.href="index.jsp";
+	  	}else{}
+	}
+	
 function checkChange(){
 	var doc = document.settingForm;
 	doc.mail_site.value = doc.mail_id.value + "@" + doc.siteAdd.value;
@@ -151,17 +157,32 @@ function insRow() {
 	</div>
 
 	<!--logo start--> <a href="DispatcherServlet?command=home" class="logo">Team<span
-		class="lite"> SC</span></a> <!--logo end--> <!--  search form start -->
-	<div class="nav search-row" id="top_menu">
-		<ul class="nav top-menu">
-			<li>
-				<form class="navbar-form">
-					<input class="form-control" placeholder="Search" type="text">
-				</form>
-			</li>
-		</ul>
-	</div>
+		class="lite"> SC</span></a> 
+		
+		<!--logo end--> 
+		
+		<!--  search form start -->
+			<div class="nav search-row" id="top_menu">
+				<ul class="nav top-menu">
+					<li>
+						<form class="navbar-form" action="DispatcherServlet" method="post">
+							<input class="form-control" placeholder="Search" type="text" name="searchText">
+							<input type="hidden" name="command" value="search">
+							
+							<select id="search" name="search" class="form-control">
+								<option value="">검색값 선택</option>
+								<option value="mailsearch">일반메일검색</option>
+								<option value="attachsearch">첨부파일검색</option>
+								<option value="mailidsearch">메일주소검색</option>
+								<option value="daysearch">수신기간검색</option>
+							</select>
+							<input type="submit" value="검색" class="form-control">
+						</form>
+					</li>
+				</ul>
+			</div>
 	<!--  search form end -->
+	
 
 	<div class="top-nav notification-row">
 		<!-- notificatoin dropdown start-->
@@ -171,7 +192,8 @@ function insRow() {
 			<li id="task_notificatoin_bar" class="dropdown">
 			
 			<a data-toggle="dropdown" class="dropdown-toggle" href="#"> <span
-					class="icon-task-l"></i> <span class="badge bg-important">6</span></a>
+					class="icon-task-l"></i> <span class="badge bg-important">${fn:length(loginInfo)}</span></a>
+					
 				<ul class="dropdown-menu extended tasks-bar">
 					<div class="notify-arrow notify-arrow-blue"></div>
 					<li>
@@ -206,9 +228,9 @@ function insRow() {
 					
 					<li class="active"><a href="DispatcherServlet?command=hotmailAll">
 							<div class="task-info">
-								<div class="desc">Hotmail - 
+								<div class="desc">Nate - 
 									<c:forEach items="${loginInfo}" var="list">
-										<c:if test="${list.acc_site_name eq 'HOTMAIL'}">
+										<c:if test="${list.acc_site_name eq 'NATE'}">
 											<p>${list.acc_addr}</p>
 										</c:if>
 									</c:forEach>
@@ -222,52 +244,46 @@ function insRow() {
 
 			<!-- inbox notificatoin start-->
 			<li id="mail_notificatoin_bar" class="dropdown"><a
-				data-toggle="dropdown" class="dropdown-toggle" href="#"> <i
-					class="icon-envelope-l"></i> <span class="badge bg-important">최근
-						메일 5개</span>
+				data-toggle="dropdown" class="dropdown-toggle"  href="#"> <i
+					class="icon-envelope-l"></i> <span class="badge bg-important">${fn:length(recent)}</span>
 			</a>
 				<ul class="dropdown-menu extended inbox">
 					<div class="notify-arrow notify-arrow-blue"></div>
 					<li>
-						<p class="blue">최근 메일 다섯개(적으면 적은데로)</p>
+						<p class="blue">최근 메일 다섯개</p>
 					</li>
-					<li><a href="#"> <span class="photo">다음, 지메일, 네이버
-								로고 만들어놓고 그 사진 넣어놓기<img alt="avatar" src="./img2/avatar-mini.jpg">
-						</span> <span class="subject"> <span class="from">보낸사람 주소</span> <span
-								class="time">몇분전에 왔는지</span>
-						</span> <span class="message"> 요약본 or 첨부파일G </span>
-					</a></li>
-					<li><a href="#"> <span class="photo">다음, 지메일, 네이버
-								로고 만들어놓고 그 사진 넣어놓기<img alt="avatar" src="./img2/avatar-mini.jpg">
-						</span> <span class="subject"> <span class="from">보낸사람 주소</span> <span
-								class="time">몇분전에 왔는지</span>
-						</span> <span class="message"> 요약본 or 첨부파일 </span>
-					</a></li>
-					<li><a href="#"> <span class="photo">다음, 지메일, 네이버
-								로고 만들어놓고 그 사진 넣어놓기<img alt="avatar" src="./img2/avatar-mini.jpg">
-						</span> <span class="subject"> <span class="from">보낸사람 주소</span> <span
-								class="time">몇분전에 왔는지</span>
-						</span> <span class="message"> 요약본 or 첨부파일 </span>
-					</a></li>
-					<li><a href="#"> <span class="photo">다음, 지메일, 네이버
-								로고 만들어놓고 그 사진 넣어놓기<img alt="avatar" src="./img2/avatar-mini.jpg">
-						</span> <span class="subject"> <span class="from">보낸사람 주소</span> <span
-								class="time">몇분전에 왔는지</span>
-						</span> <span class="message"> 요약본 or 첨부파일 </span>
-					</a></li>
-					<li><a href="#"> <span class="photo">다음, 지메일, 네이버
-								로고 만들어놓고 그 사진 넣어놓기<img alt="avatar" src="./img2/avatar-mini.jpg">
-						</span> <span class="subject"> <span class="from">보낸사람 주소</span> <span
-								class="time">몇분전에 왔는지</span>
-						</span> <span class="message"> 요약본 or 첨부파일 </span>
-					</a></li>
+					
+					<c:forEach items="${recent}" var="recent">
+						<li>
+							<a href="DispatcherServlet?command=detailView&mail_no=${recent.mail_no}"> 
+								
+								<div class="photo" style="text-overflow:ellipsis;overflow:hidden;vertical-align:middle;"><nobr style="padding-left:8px">${recent.title}</nobr>
+								<c:if test="${recent.acc_site_name eq 'NAVER'}"><img alt="avatar" src="./img2/naver.jpg"></c:if>
+								<c:if test="${recent.acc_site_name eq 'GMAIL'}"><img alt="avatar" src="./img2/google.jpg"></c:if>
+								<c:if test="${recent.acc_site_name eq 'NATE'}"><img alt="avatar" src="./img2/nate.jpg"></c:if>
+								</div>
+								
+								<div class="from" style="text-overflow:ellipsis;overflow:hidden;text-align:right"><nobr>${recent.recv_addr }</nobr></div> 
+								<div class="time" style="text-overflow:ellipsis;overflow:hidden;text-align:right"><nobr>${recent.recv_date}</nobr></div>
+								
+								<%-- <div class="message" style="text-overflow:ellipsis;overflow:hidden;"><nobr>${recent.title}</nobr></div> --%>
+							</a>
+						</li>
+					</c:forEach>
+					
+					
+					
 				</ul></li>
 			<!-- inbox notificatoin end -->
+			
+			
 			<!-- alert notification start-->
-			<li id="alert_notificatoin_bar" class="dropdown"><a href="setting.jsp"> 설정
+			<li id="alert_notificatoin_bar" class="dropdown"><a href="setting.jsp">
 					<i class="icon-bell-l"></i> <span class="badge bg-important"><%= count %></span>
 			</a></li>
 			<!-- alert notification end-->
+			
+			
 			<!-- user login dropdown start-->
 			<li class="dropdown"><a data-toggle="dropdown"
 				class="dropdown-toggle" href="#"> <span class="profile-ava">
@@ -280,8 +296,8 @@ function insRow() {
 					<li class="eborder-top"><a href="setting.jsp"><i class="icon_profile"></i>설정하러가기</a></li>
 					<li><a href="DispatcherServlet?command=gmailAll"><i class="icon_chat_alt"></i>Gmail</a></li>
 					<li><a href="DispatcherServlet?command=naverAll"><i class="icon_chat_alt"></i>Naver</a></li>
-					<li><a href="DispatcherServlet?command=hotmailAll"><i class="icon_chat_alt"></i>Daum</a></li>
-					<li><a href="index.html"><i class="icon_key_alt"></i> Log Out</a></li>
+					<li><a href="DispatcherServlet?command=hotmailAll"><i class="icon_chat_alt"></i>Nate</a></li>
+					<li><a href="index.jsp" onClick="return logout();"><i class="icon_key_alt"></i> Log Out</a></li>
 				</ul></li>
 			<!-- user login dropdown end -->
 		</ul>
@@ -293,6 +309,8 @@ function insRow() {
 	<!--sidebar start--> 
 	<aside>
 	<div id="sidebar" class="nav-collapse ">
+		<!-- sidebar menu start-->
+		
 		<ul class="sidebar-menu">
 			<li class="active">
 				<a class="" href="DispatcherServlet?command=home"> 
@@ -300,8 +318,8 @@ function insRow() {
 					<span>Home</span>
 				</a>
 			</li>
-
-			<li class="sub-menu"><a href="javascript:;" class=""> <!-- <a href="gmail.html" class=""> -->
+			
+			<li class="sub-menu"><a href="javascript:;" class="">
 					<i class="icon_document_alt"></i> <span>Gmail</span> 
 					<span class="menu-arrow arrow_carrot-right"></span>
 			</a>
@@ -309,19 +327,19 @@ function insRow() {
 				<ul class="sub">
 					<c:forEach items="${loginInfo}" var="list">
 						<c:if test="${list.acc_site_name eq 'GMAIL'}">
-						acc_id = ${list.acc_id }
 							<li><a class="" href="DispatcherServlet?command=gmail&acc_id=${list.acc_id }">${list.acc_addr }</a></li>
 						</c:if>
 					</c:forEach>
 				</ul></li>
 				
+				</li>
+	
 			<li class="sub-menu"><a href="javascript:;" class=""> <!-- <a href="gmail.html" class=""> -->
 					<i class="icon_document_alt"></i> <span>Naver</span> <span
 					class="menu-arrow arrow_carrot-right"></span>
 			</a> 
 				<ul class="sub">
 					<c:forEach items="${loginInfo}" var="list">
-					acc_id = ${list.acc_id }
 						<c:if test="${list.acc_site_name eq 'NAVER'}">
 							<li><a class="" href="DispatcherServlet?command=naver&acc_id=${list.acc_id }">${list.acc_addr }</a></li>
 						</c:if>
@@ -332,27 +350,44 @@ function insRow() {
 	
 			<li class="sub-menu">
 				<a href="javascript:;" class="">
-					<i class="icon_document_alt"></i> <span>HotMail</span>
+					<i class="icon_document_alt"></i> 
+					<span>HotMail</span>
 					<span class="menu-arrow arrow_carrot-right"></span>
 				</a> 
 				
 				<ul class="sub">
 					<c:forEach items="${loginInfo}" var="list">
 						<c:if test="${list.acc_site_name eq 'HOTMAIL'}">
-						acc_id = ${list.acc_id }
 							<li><a class="" href="DispatcherServlet?command=hotmail&acc_id=${list.acc_id }">${list.acc_addr }</a></li>
 						</c:if>
 					</c:forEach>
-				</ul></li>
+				</ul>
+			</li>
 	
-			<li><a class="" href="setting.jsp"> <i class="icon_piechart"></i>
+	
+		
+			<li class="sub-menu">
+				<a class="" href="javascript:;"> <i class="icon_piechart"></i>
 					<span>설정</span>
-	
-			</a></li>
+					<span class="menu-arrow arrow_carrot-right"></span>
+					</a>		
+					<ul class="sub">
+						<li><a class="" href="accountAdd.jsp">계정 추가 </a></li>
+						<li><a class="" href="accountDel.jsp">계정 삭제 </a></li>
+						<li><a class="" href="member_mod.jsp">회원 정보 수정</a></li>
+					</ul>
+			</li>
 		</ul>
-		<!-- sidebar menu end-->
+		
 	</div>
-	</aside> <!--sidebar end--> <!--main content start--> <section
+	</aside> <!--sidebar end--> 
+		
+		
+		
+	</div>
+	</aside> <!--sidebar end--> 
+	
+	<!--main content start--> <section
 		id="main-content"> <section class="wrapper"> <!--overview start-->
 	<div class="row">
 		<div class="col-lg-12">
@@ -360,7 +395,7 @@ function insRow() {
 				<i class="fa fa-laptop"></i> Dashboard
 			</h3>
 			<ol class="breadcrumb">
-				<li><i class="fa fa-home"></i><a href="home.html">Home</a></li>
+				<li><i class="fa fa-home"></i><a href="home.jsp">Home</a></li>
 				<li><i class="fa fa-laptop"></i>Dashboard</li>
 			</ol>
 		</div>
