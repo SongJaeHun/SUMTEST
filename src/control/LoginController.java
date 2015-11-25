@@ -37,17 +37,16 @@ public class LoginController implements Controller {
 				session.setAttribute("loginInfo",list);
 				session.setAttribute("recent",list2);
 				System.out.println("리스트2****" + list2);
-				mv.setPath("DispatcherServlet?command=home");
-				System.out.println("로그인성공!!");
+				System.out.println("걸린 계정 있음!!");
 			}else{
-				mv.setPath("index.jsp");
-				System.out.println("로그인실패!!!");
+				System.out.println("걸린 계정 없음!!!");
 			}
-
 			
-			/*if(list != null){
+			mv.setPath("DispatcherServlet?command=home");
+			
+			if(list != null){
 				service.getMail(list);
-			}*/
+			}
 
 		}catch(SQLException e){
 			e.printStackTrace();

@@ -111,25 +111,37 @@ public class GmailMail implements Mail {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             int compare = 1;
             
+            if( lastReceivedDate == null) {
+            	lastReceivedDate = new Date(messages[messages.length - 1].getReceivedDate().getTime());
+            	System.out.println("메일 없을때 1번만 실행되야함");
+            }
+            
+            
             for (int i = messages.length - 1 ; i  >= 0  ; i--) {
                 Message msg = messages[i];
                 
-                if( lastReceivedDate == null) {
-                	lastReceivedDate = new Date(msg.getReceivedDate().getTime());
-                	System.out.println("메일 없을때 1번만 실행되야함");
+                compare = lastReceivedDate.compareTo(msg.getReceivedDate()); // 메일 없을때 0
+            
+                if(i == messages.length - 1){
+                	
+                	boolean existFlag = service.getExistFlag(accountId);
+                	
+                	if(existFlag){
+                		
+                	}else{
+                		compare = 1;
+                		System.out.println("메일 없을때 1번만 실행되야함 ~~");
+                	}
                 }
-                if(compare == 0){
+                
+                if(compare == 1){
                 	break;
                 }
                 
-                compare = lastReceivedDate.compareTo(msg.getReceivedDate()); // 메일 없을때 0
-                if(i == messages.length - 1){
-                	compare = 1;
-                }
-                mail = new MailContent(accountId , getSubject(msg.getSubject()) , getSender(msg) , format.parse(format.format(msg.getReceivedDate())));;
-                
                 contentImgPath = "";
                 attachmentPath = "";
+
+                mail = new MailContent(accountId , getSubject(msg.getSubject()) , getSender(msg) , format.parse(format.format(msg.getReceivedDate())));;
                 
                 Object getContent = msg.getContent();
                 Multipart mp = null;
@@ -344,6 +356,20 @@ public class GmailMail implements Mail {
         	int index = from.lastIndexOf("<");
         	from = from.substring(index+1 , from.length()-1);
         }
+        
+        if(from.contains("facebook")){
+        	from = "Facebook";
+        }
+        
+        if(from.contains("ebates")){
+        	from = "Ebates";
+        }
+        
+        if(from.contains("\""))
+        {
+        	from = from.replaceAll("\"", "");
+        }
+        
         return from;
     }
     	
