@@ -244,7 +244,6 @@ public class BoardVO {
 		this.acc_site_name = acc_site_name;
 	}
 	
-	
 	public BoardVO(int acc_id, String acc_addr, String acc_site_name, String acc_pwd, int mb_id) {
 		this.acc_id = acc_id;
 		this.acc_addr = acc_addr;

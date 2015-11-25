@@ -16,10 +16,12 @@ public class GmailAllController implements Controller {
 			HttpServletResponse response) {
 		BoardService service=BoardService.getInstance();
 		ModelAndView mv=new ModelAndView();
+		String gmailOK="gmailOK";
 		System.out.println("gmailAll컨트롤러");
 		try {
 			ArrayList list=service.getGmailBoard();
 			request.setAttribute("gmailAll", list);
+			request.setAttribute("gmailOK", gmailOK);
 			mv.setPath("mailview.jsp");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

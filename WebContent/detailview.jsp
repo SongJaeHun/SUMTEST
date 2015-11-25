@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8" import="model.BoardVO"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %> 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
@@ -42,28 +43,34 @@
 <link href="css2/style-responsive.css" rel="stylesheet" />
 <link href="css2/xcharts.min.css" rel=" stylesheet">
 <link href="css2/jquery-ui-1.10.4.min.css" rel="stylesheet">
-<!-- HTML5 shim and Respond.js IE8 support of HTML5 -->
-<!--[if lt IE 9]>
-      <script src="js/html5shiv.js"></script>
-      <script src="js/respond.min.js"></script>
-      <script src="js/lte-ie7.js"></script>
-    <![endif]-->
-
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"> 
+ 
+ <script type="text/javascript" src="//code.jquery.com/jquery-2.1.3.js"></script>  
+ <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
+ <link rel="stylesheet" type="text/css" href="/css/result-light.css">
+ <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+ 
 </head>
 <script>
-<<<<<<< HEAD
-/*  window.onload=function(){
-	  alert(count);
+   window.onload=function(){
+	  alert("${acc_addr_gmailOK}");
 
-}  */
-=======
->>>>>>> branch 'master' of https://github.com/SongJaeHun/SUMTEST.git
+}   
+function logout(){
+	 var con = confirm("접속을 종료하시겠습니까");
+	 if(con == true){
+		session.invalidate(); 
+	  	location.href="index.jsp";
+	  	}else{}
+	}
 </script>
+
 <body>
 	<% int count=0; %>
 	<c:forEach items="${loginInfo}" var="loginInfo" >
 		<%count++; %>
 	</c:forEach>
+	
 	
 	<% String[] filePaths = (String[])request.getAttribute("filePaths") ; %>
 	
@@ -83,14 +90,24 @@
 		
 		<!--  search form start -->
 	<div class="nav search-row" id="top_menu">
-		<ul class="nav top-menu">
-			<li>
-				<form class="navbar-form">
-					<input class="form-control" placeholder="Search" type="text">
-				</form>
-			</li>
-		</ul>
-	</div>
+				<ul class="nav top-menu">
+					<li>
+						<form class="navbar-form" action="DispatcherServlet" method="post">
+							<input class="form-control" placeholder="Search" type="text" name="searchText">
+							<input type="hidden" name="command" value="search">
+							
+							<select id="search" name="search" class="form-control">
+								<option value="">검색값 선택</option>
+								<option value="mailsearch">일반메일검색</option>
+								<option value="attachsearch">첨부파일검색</option>
+								<option value="mailidsearch">메일주소검색</option>
+								<option value="daysearch">수신기간검색</option>
+							</select>
+							<input type="submit" value="검색" class="form-control">
+						</form>
+					</li>
+				</ul>
+			</div>
 	<!--  search form end -->
 
 
@@ -102,7 +119,7 @@
 			<li id="task_notificatoin_bar" class="dropdown">
 			
 			<a data-toggle="dropdown" class="dropdown-toggle" href="#"> <span
-					class="icon-task-l"></i> <span class="badge bg-important">6</span></a>
+					class="icon-task-l"></i> <span class="badge bg-important">${fn:length(loginInfo)}</span></a>
 				<ul class="dropdown-menu extended tasks-bar">
 					<div class="notify-arrow notify-arrow-blue"></div>
 					<li>
@@ -153,52 +170,44 @@
 
 			<!-- inbox notificatoin start-->
 			<li id="mail_notificatoin_bar" class="dropdown"><a
-				data-toggle="dropdown" class="dropdown-toggle" href="#"> <i
-					class="icon-envelope-l"></i> <span class="badge bg-important">최근
-						메일 5개</span>
+				data-toggle="dropdown" class="dropdown-toggle"  href="#"> <i
+					class="icon-envelope-l"></i> <span class="badge bg-important">${fn:length(recent)}</span>
 			</a>
 				<ul class="dropdown-menu extended inbox">
 					<div class="notify-arrow notify-arrow-blue"></div>
 					<li>
-						<p class="blue">최근 메일 다섯개(적으면 적은데로)</p>
+						<p class="blue">최근 메일 다섯개</p>
 					</li>
-					<li><a href="#"> <span class="photo">다음, 지메일, 네이버
-								로고 만들어놓고 그 사진 넣어놓기<img alt="avatar" src="./img2/avatar-mini.jpg">
-						</span> <span class="subject"> <span class="from">보낸사람 주소</span> <span
-								class="time">몇분전에 왔는지</span>
-						</span> <span class="message"> 요약본 or 첨부파일G </span>
-					</a></li>
-					<li><a href="#"> <span class="photo">다음, 지메일, 네이버
-								로고 만들어놓고 그 사진 넣어놓기<img alt="avatar" src="./img2/avatar-mini.jpg">
-						</span> <span class="subject"> <span class="from">보낸사람 주소</span> <span
-								class="time">몇분전에 왔는지</span>
-						</span> <span class="message"> 요약본 or 첨부파일 </span>
-					</a></li>
-					<li><a href="#"> <span class="photo">다음, 지메일, 네이버
-								로고 만들어놓고 그 사진 넣어놓기<img alt="avatar" src="./img2/avatar-mini.jpg">
-						</span> <span class="subject"> <span class="from">보낸사람 주소</span> <span
-								class="time">몇분전에 왔는지</span>
-						</span> <span class="message"> 요약본 or 첨부파일 </span>
-					</a></li>
-					<li><a href="#"> <span class="photo">다음, 지메일, 네이버
-								로고 만들어놓고 그 사진 넣어놓기<img alt="avatar" src="./img2/avatar-mini.jpg">
-						</span> <span class="subject"> <span class="from">보낸사람 주소</span> <span
-								class="time">몇분전에 왔는지</span>
-						</span> <span class="message"> 요약본 or 첨부파일 </span>
-					</a></li>
-					<li><a href="#"> <span class="photo">다음, 지메일, 네이버
-								로고 만들어놓고 그 사진 넣어놓기<img alt="avatar" src="./img2/avatar-mini.jpg">
-						</span> <span class="subject"> <span class="from">보낸사람 주소</span> <span
-								class="time">몇분전에 왔는지</span>
-						</span> <span class="message"> 요약본 or 첨부파일 </span>
-					</a></li>
+					
+					<c:forEach items="${recent}" var="recent">
+						<li>
+							<a href="DispatcherServlet?command=detailView&mail_no=${recent.mail_no}"> 
+								
+								<div class="photo" style="text-overflow:ellipsis;overflow:hidden;vertical-align:middle;"><nobr style="padding-left:8px">${recent.title}</nobr>
+								<c:if test="${recent.acc_site_name eq 'NAVER'}"><img alt="avatar" src="./img2/naver.jpg"></c:if>
+								<c:if test="${recent.acc_site_name eq 'GMAIL'}"><img alt="avatar" src="./img2/google.jpg"></c:if>
+								<c:if test="${recent.acc_site_name eq 'NATE'}"><img alt="avatar" src="./img2/nate.jpg"></c:if>
+								</div>
+								
+								<div class="from" style="text-overflow:ellipsis;overflow:hidden;text-align:right"><nobr>${recent.recv_addr }</nobr></div> 
+								<div class="time" style="text-overflow:ellipsis;overflow:hidden;text-align:right"><nobr>${recent.recv_date}</nobr></div>
+								
+								<%-- <div class="message" style="text-overflow:ellipsis;overflow:hidden;"><nobr>${recent.title}</nobr></div> --%>
+							</a>
+						</li>
+					</c:forEach>
+					
+					
+					
 				</ul></li>
 			<!-- inbox notificatoin end -->
+			
 			<!-- alert notification start-->
-			<li id="alert_notificatoin_bar" class="dropdown"><a href="setting.jsp"> 설정
+			<li id="alert_notificatoin_bar" class="dropdown"><a href="setting.jsp">
 					<i class="icon-bell-l"></i> <span class="badge bg-important"><%= count %></span>
 			</a></li>
 			<!-- alert notification end-->
+			
 			<!-- user login dropdown start-->
 			<li class="dropdown"><a data-toggle="dropdown"
 				class="dropdown-toggle" href="#"> <span class="profile-ava">
@@ -212,7 +221,7 @@
 					<li><a href="DispatcherServlet?command=gmailAll"><i class="icon_chat_alt"></i>Gmail</a></li>
 					<li><a href="DispatcherServlet?command=naverAll"><i class="icon_chat_alt"></i>Naver</a></li>
 					<li><a href="DispatcherServlet?command=hotmailAll"><i class="icon_chat_alt"></i>Daum</a></li>
-					<li><a href="index.jsp"><i class="icon_key_alt"></i> Log Out</a></li>
+					<li><a href="index.jsp" onClick="return logout();"><i class="icon_key_alt"></i> Log Out</a></li>
 				</ul></li>
 			<!-- user login dropdown end -->
 		</ul>
@@ -283,70 +292,20 @@
 	
 	
 	
-			<!-- <form action="DispatcherServlet" method="post" name="1234">
-						  <input type="hidden" name="command" value="naver">
-							  <li class="active">
-							  <a href="DispatcherServlet?command=naver">
-			                      <a href="gmail.html" class="">
-			                          <i class="icon_document_alt"></i>
-			                          <span>Naver</span>
-			                  </a>
-		                  </li>
-		                  <input type="submit" value="dd">
-	                  </form>
-	                  <form action="DispatcherServlet" method="post" name="2323">
-						  <input type="hidden" name="command" value="hotmail">
-							  <li class="active">
-							  <a href="DispatcherServlet?command=hotmail">
-			                      <a href="gmail.html" class="">
-			                          <i class="icon_document_alt"></i>
-			                          <span>Hotmail</span>
-			                  </a>
-		                  </li>
-		                  <input type="submit" value="dd">
-	                  </form>            
-	                  <li class="active">
-	                       <a href="naver.html" class="">
-	                          <i class="icon_desktop"></i>
-	                          <span>Naver</span>
-	                      </a>
-	                  </li>
-	                  <li>
-	                      <a class="active" href="daum.html">
-	                          <i class="icon_genius"></i>
-	                          <span>Daum</span>
-	                      </a>
-	                  </li> -->
-			<li><a class="" href="setting.jsp"> <i class="icon_piechart"></i>
+			
+			<li class="sub-menu">
+				<a class="" href="javascript:;"> <i class="icon_piechart"></i>
 					<span>설정</span>
-	
-			</a></li>
-			<!--      
-	                  <li class="sub-menu">
-	                      <a href="javascript:;" class="">
-	                          <i class="icon_table"></i>
-	                          <span>Tables</span>
-	                          <span class="menu-arrow arrow_carrot-right"></span>
-	                      </a>
-	                      <ul class="sub">
-	                          <li><a class="" href="basic_table.html">Basic Table</a></li>
-	                      </ul>
-	                  </li>
-	                  
-	                  <li class="sub-menu">
-	                      <a href="javascript:;" class="">
-	                          <i class="icon_documents_alt"></i>
-	                          <span>Pages</span>
-	                          <span class="menu-arrow arrow_carrot-right"></span>
-	                      </a>
-	                      <ul class="sub">                          
-	                          <li><a class="" href="profile.html">Profile</a></li>
-	                          <li><a class="" href="login.html"><span>Login Page</span></a></li>
-	                          <li><a class="" href="blank.html">Blank Page</a></li>
-	                          <li><a class="" href="404.html">404 Error</a></li>
-	                      </ul>
-	                  </li>
-	-->
+					<span class="menu-arrow arrow_carrot-right"></span>
+					</a>		
+					<ul class="sub">
+						<li><a class="" href="accountAdd.jsp">계정 추가 </a></li>
+						<li><a class="" href="accountDel.jsp">계정 삭제 </a></li>
+						<!-- <li><a class="" href="member_mod.jsp">회원 정보 수정</a></li> -->
+						<li><a class="" href="DispatcherServlet?command=memInfo">회원정보 수정</a></li>
+					</ul>
+			</li>
+			
 		</ul>
 		<!-- sidebar menu end-->
 	</div>
@@ -355,11 +314,14 @@
 	<div class="row">
 		<div class="col-lg-12">
 			<h3 class="page-header">
-				<i class="fa fa-laptop"></i> Dashboard
+				<i class="fa fa-laptop"></i> Team SC
 			</h3>
 			<ol class="breadcrumb">
-				<li><i class="fa fa-home"></i><a href="home.html">Home</a></li>
-				<li><i class="fa fa-laptop"></i>Dashboard</li>
+				<li><i class="fa fa-home"></i><a href="DispatcherServlet?command=home">Home</a></li>
+				<li><i class="fa fa-laptop"></i>
+									${acc_addr_gmailOK }
+							
+				</li>
 			</ol>
 		</div>
 	</div>

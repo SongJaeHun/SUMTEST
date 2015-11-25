@@ -14,7 +14,7 @@
 	content="Creative, Dashboard, Admin, Template, Theme, Bootstrap, Responsive, Retina, Minimal">
 <link rel="shortcut icon" href="img2/favicon.png">
 
-<title>Creative - Bootstrap Admin Template</title>
+<title>Team SC - 메일 통합 관리</title>
 
 <!-- Bootstrap CSS -->
 <link href="css2/bootstrap.min.css" rel="stylesheet">
@@ -49,7 +49,171 @@
       <script src="js/respond.min.js"></script>
       <script src="js/lte-ie7.js"></script>
     <![endif]-->
+    
+    
+    
+ <meta http-equiv="content-type" content="text/html; charset=UTF-8"> 
+ 
+ <script type="text/javascript" src="//code.jquery.com/jquery-2.1.3.js"></script>  
+ <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
+ <link rel="stylesheet" type="text/css" href="/css/result-light.css">
+ <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+ 
+<style type="text/css">
+/* 	.paging-nav { */
+/* 	    text-align: center; */
+/* 	    padding-top: 2px; */
+/* 	} */
+/* 	.paging-nav a { */
+/* 	    margin: auto 1px; */
+/* 	    text-decoration: none; */
+/* 	    display: inline-block; */
+/* 	    padding: 1px 7px; */
+/* 	    background: #91b9e6; */
+/* 	    color: white; */
+/* 	    border-radius: 3px; */
+/* 	} */
+/* 	.paging-nav .selected-page { */
+/* 	    background: #187ed5; */
+/* 	    font-weight: bold; */
+/* 	} */
 
+
+    .paging-nav {
+    text-align: center;
+    padding-top: 2px;
+}
+.paging-nav a {
+    margin: auto 1px;
+    text-decoration: none;
+    display: inline-block;
+    padding: 1px 7px;
+    background: #91b9e6;
+    color: white;
+    border-radius: 3px;
+}
+.paging-nav .selected-page {
+    background: #187ed5;
+    font-weight: bold;
+}
+  
+</style>
+<script>
+
+window.onload=function(){
+	  alert("${home}");
+
+}   
+</script>
+<script>
+$(window).load(function(){
+(function ($) {
+    $(function () {
+        $.widget("zpd.paging", {
+            options: {
+                limit: 20,
+                limitPaging: 10,
+                rowDisplayStyle: 'block',
+                activePage: 0,
+                rows: []
+            },
+            _create: function () {
+                var rows = $("tbody", this.element).children();
+                this.options.rows = rows;
+                this.options.rowDisplayStyle = rows.css('display');
+                var nav = this._getNavBar();
+                this.element.after(nav);
+                this.showPage(0);
+            },
+            _getNavBar: function () {
+                var rows = this.options.rows;
+                var nav = $('<div>', {
+                    class: 'paging-nav'
+                });
+                var displayVal;
+                for (var i = 0; i < Math.ceil(rows.length / this.options.limit); i++) {
+                    displayVal = 'display:inline-block';
+                    if (i > this.options.limitPaging) displayVal = 'display:none';
+
+                    this._on($('<a>', {
+                        href: '#',
+                        text: (i + 1),
+                            "data-page": (i),
+                        style: displayVal
+                    }).appendTo(nav), {
+                        click: "pageClickHandler"
+                    });
+
+                }
+                //create previous link
+                this._on($('<a>', {
+                    href: '#',
+                    text: '<<',
+                        "data-direction": -1
+                }).prependTo(nav), {
+                    click: "pageStepHandler"
+                });
+                //create next link
+                this._on($('<a>', {
+                    href: '#',
+                    text: '>>',
+                        "data-direction": +1
+                }).appendTo(nav), {
+                    click: "pageStepHandler"
+                });
+                return nav;
+            },
+            showPage: function (pageNum) {
+                var num = pageNum * 1; //it has to be numeric
+                this.options.activePage = num;
+                var rows = this.options.rows;
+                var limit = this.options.limit;
+                for (var i = 0; i < rows.length; i++) {
+                    if (i >= limit * num && i < limit * (num + 1)) {
+                        $(rows[i]).css('display', this.options.rowDisplayStyle);
+                    } else {
+                        $(rows[i]).css('display', 'none');
+                    }
+                }
+            },
+            pageClickHandler: function (event) {
+                event.preventDefault();
+                $(event.target).siblings().attr('class', "");
+                $(event.target).attr('class', "selected-page");
+                var pageNum = $(event.target).attr('data-page');
+                var itemsOnEachSide = this.options.limitPaging / 2;
+                var startPage = Math.floor(parseInt(pageNum) - itemsOnEachSide + 1); // Plus 1 because the array of links starts in "1" index and not "0". "0" index is the next (">>") button 
+                var endPage = Math.ceil(parseInt(pageNum) + itemsOnEachSide + 1);
+                var pagingLinks = $(event.target).parent().children();
+                for (var i = 1; i < pagingLinks.length - 1; i++) {
+                    if (i >= startPage && i <= endPage) $(pagingLinks[i]).css('display', 'inline-block');
+                    else $(pagingLinks[i]).css('display', 'none');
+                }
+
+                this.showPage(pageNum);
+            },
+            pageStepHandler: function (event) {
+                event.preventDefault();
+                //get the direction and ensure it's numeric
+                var dir = $(event.target).attr('data-direction') * 1;
+                var pageNum = this.options.activePage + dir;
+                //if we're in limit, trigger the requested pages link
+                if (pageNum >= 0 && pageNum < this.options.rows.length) {
+                    $("a[data-page=" + pageNum + "]", $(event.target).parent()).click();
+                }
+            }
+        });
+    });
+
+    $('#table-demo').paging({
+        limit: 20,
+        limitPaging: 10
+    });
+})(jQuery);
+});
+
+
+</script>
 </head>
 
 <script>
@@ -62,6 +226,9 @@ function logout(){
 	}
 </script>
 <body>
+
+
+
 
 <% int count=0; %>
 	<c:forEach items="${loginInfo}" var="loginInfo" >
@@ -258,14 +425,13 @@ function logout(){
 				<ul class="sub">
 					<c:forEach items="${loginInfo}" var="list">
 						<c:if test="${list.acc_site_name eq 'GMAIL'}">
-							<li><a class="" href="DispatcherServlet?command=gmail&acc_id=${list.acc_id }">${list.acc_addr }</a></li>
+							<li><a class="" href="DispatcherServlet?command=gmail&acc_id=${list.acc_id}">${list.acc_addr }</a></li>
 						</c:if>
 					</c:forEach>
 				</ul></li>
 				
-				</li>
 	
-			<li class="sub-menu"><a href="javascript:;" class=""> <!-- <a href="gmail.html" class=""> -->
+			<li class="sub-menu"><a href="javascript:;" class="">
 					<i class="icon_document_alt"></i> <span>Naver</span> <span
 					class="menu-arrow arrow_carrot-right"></span>
 			</a> 
@@ -313,42 +479,42 @@ function logout(){
 	</div>
 	</aside> <!--sidebar end--> 
 	
-	<!--main content start--> <section
-		id="main-content"> <section class="wrapper"> <!--overview start-->
+	<!--main content start--> 
+	<section id="main-content"> <section class="wrapper"> <!--overview start-->
 	<div class="row">
 		<div class="col-lg-12">
 			<h3 class="page-header">
-				<i class="fa fa-laptop"></i> Dashboard
+				<i class="fa fa-laptop"></i> Team SC
 			</h3>
 			<ol class="breadcrumb">
-				<li><i class="fa fa-home"></i><a href="home.jsp">Home</a></li>
-				<li><i class="fa fa-laptop"></i>Dashboard</li>
+				<li><i class="fa fa-home"></i><a href="DispatcherServlet?command=home">Home</a></li>
 			</ol>
 		</div>
 	</div>
 
 	</section> <!-- 테이블 -->
-	<table style="text-align:center; align:center" border=2 align="center">
-		<thead>
+	<table style="align:center; width:1500px; TABLE-layout:fixed" border="2" align="center" id ="table-demo" class="table table-striped">
+		<thead style="border:1px solid black;">
 			<tr>
-				<td style="width:100px; height:40px">메일번호</td>
-				<td>제목</td>
-				<td>보낸 사람</td>
-				<td>받은 시간</td>
+				<td align="center" style=" width:100px; height:40px">메일번호</td>
+				<td align="center" style="width:900px;">제목</td>
+				<td align="center"style="width:300px;">보낸 사람</td>
+				<td align="center" style="width:200px;">받은 시간</td>
 			</tr>
 		</thead>
-		<tbody align="center">
+		<tbody >
 			<c:forEach items="${home}" var="home">
 				<tr>
 					<td align="center">${home.mail_no}</td>
-					<td align="center"><a
-						href="DispatcherServlet?command=detailView&mail_no=${home.mail_no}">${home.title}</a></td>
-					<td align="center">${home.recv_addr}</td>
+					<td style="text-overflow:ellipsis; overflow:hidden; padding-left:22px"><nobr>
+						<a href="DispatcherServlet?command=detailView&mail_no=${home.mail_no}">${home.title}</a></nobr></td>
+					<td align="center" style="width:400px;text-overflow:ellipsis; overflow:hidden;"><nobr>${home.recv_addr}</nobr></td>
 					<td align="center">${home.recv_date}</td>
 				</tr>
 			</c:forEach>
 		</tbody>
-	</table>
+	</table> 
+
 	<input type="button" border="0" value="홈으로"
 		onclick="location.href='\index.jsp'"> </section> <!--main content end-->
 	</section>
@@ -441,10 +607,6 @@ function logout(){
 	    }
 	  });
 	});
-
-
-
   </script>
-
 </body>
 </html>

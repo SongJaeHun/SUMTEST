@@ -16,9 +16,11 @@ public class NaverAllController implements Controller {
 		BoardService service=BoardService.getInstance();
 		ModelAndView mv=new ModelAndView();
 		System.out.println("naverAll컨트롤러");
+		String naverOK="naverOK";
 		try {
 			ArrayList list=service.getNaverBoard();
 			request.setAttribute("naverAll", list);
+			request.setAttribute("naverOK", naverOK);
 			mv.setPath("mailview.jsp");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

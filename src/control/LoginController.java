@@ -23,16 +23,14 @@ public class LoginController implements Controller {
 		String user_pwd = request.getParameter("user_pwd");
 		
 		BoardVO vo = new BoardVO(user_id,user_pwd);
-		
 		ArrayList list=null;
 		ArrayList list2=null;
 		try{
 			list = service.login(vo);	//로그인 된 계정 목록들..
 			list2 = service.getRecent();
-			System.out.println(list+"리스트값");
+			System.out.println("리스트값******"+list);
 			if(list.isEmpty()==false){
 				request.setAttribute("user_id", user_id);
-				
 				HttpSession session=request.getSession();
 				session.setAttribute("loginInfo",list);
 				session.setAttribute("recent",list2);

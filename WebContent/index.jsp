@@ -25,6 +25,7 @@
 
 		<!-- custom css -->
 		<link rel="stylesheet" href="css/templatemo-style.css">
+		
 	<script type="text/javascript">
 	
 		function checkRegister(){

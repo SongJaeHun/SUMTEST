@@ -542,7 +542,6 @@ public class BoardDao {
 			rs=pstmt.executeQuery();
 			while(rs.next()){
 				list.add(new BoardVO(rs.getInt(1),rs.getString(3),rs.getString(4),rs.getString(6)));
-				
 			}
 		}finally{
 			closeAll(rs, pstmt, con);

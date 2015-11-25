@@ -15,12 +15,14 @@ public class NaverController implements Controller {
 			HttpServletResponse response) {
 		BoardService service=BoardService.getInstance();
 		ModelAndView mv=new ModelAndView();
+		String naverOK="naverOK";
 		int acc_id=0;
 		acc_id=Integer.parseInt(request.getParameter("acc_id"));
 		System.out.println("naver컨트롤러"+acc_id+"***");
 		try {
 			ArrayList list=service.getNaverBoard(acc_id);
 			request.setAttribute("naver", list);
+			request.setAttribute("naverOK", naverOK);
 			mv.setPath("mailview.jsp");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
