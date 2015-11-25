@@ -54,6 +54,9 @@
 <script>
    window.onload=function(){
 	  alert("${acc_addr_gmailOK}");
+<script>
+/*  window.onload=function(){
+	  alert(count);
 
 }   
 function logout(){
@@ -63,6 +66,7 @@ function logout(){
 	  	location.href="index.jsp";
 	  	}else{}
 	}
+}  */
 </script>
 
 <body>
@@ -73,7 +77,7 @@ function logout(){
 	
 	
 	<% String[] filePaths = (String[])request.getAttribute("filePaths") ; %>
-	
+	<% String[] fileNames = (String[])request.getAttribute("fileNames") ;%>
 	
 	<!-- container section start -->
 	<section id="container" class=""> <header
@@ -355,7 +359,7 @@ function logout(){
 					<tr>
 					<td>
 						<img src="http://publicdomainvectors.org/photos/Icon_Documents.png" width=40 height=30> 
-						<a href="DispatcherServlet?command=down&file_path=<%= filePaths[i]%>">&nbsp;&nbsp;&nbsp;<%= filePaths[i] %></a></td>
+						<a href="DispatcherServlet?command=down&file_path=<%= fileNames[i]%>">&nbsp;&nbsp;&nbsp;<%= filePaths[i] %></a></td>
 					<%} %>
 				</tr>								
 				<%} %>

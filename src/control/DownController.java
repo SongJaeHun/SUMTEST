@@ -3,12 +3,12 @@ package control;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import model.BoardService;
 
 public class DownController implements Controller {
 
@@ -19,28 +19,45 @@ public class DownController implements Controller {
 		ModelAndView mv = new ModelAndView();
 		
 		String attachmentPath = request.getParameter("file_path");
-		System.out.println("첨부파일 경로 : " + attachmentPath);
+		System.out.println("첨부파일 경로1 : " + attachmentPath);
 		
-		String saveDir = "C:\\\\Users\\\\sjh\\\\Downloads\\\\";
-		System.out.println(saveDir);
-		
-		
-		
-		String temp = attachmentPath.substring(
+//		attachmentPath = attachmentPath.replaceAll("\\", "\\");
+	//	System.out.println("첨부파일 경로2 : " + attachmentPath);
+		//String saveFileName = attachmentPath;
+		attachmentPath = attachmentPath.trim();
+		String saveFileName = attachmentPath.substring(
 				attachmentPath.indexOf("-") + 1 , attachmentPath.length());
-		
-		String saveFileName = temp.substring(
-				temp.indexOf("-") + 1 , temp.length());
 
+
+		saveFileName = saveFileName.substring(saveFileName.indexOf("-") + 1 , saveFileName.length());
+		System.out.println("인코딩 전 : " + saveFileName);
+		try {
+			saveFileName = URLEncoder.encode(saveFileName,"UTF-8");
+			System.out.println("인코딩 후 : " + saveFileName);
+		} catch (UnsupportedEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+/*		String saveFileName = temp.substring(
+				temp.indexOf("-") + 1 , temp.length());
+*/
 		
-		System.out.println("saveFileName : " + saveFileName);
 		
 		try {
 			
-			response.setHeader("Content-Disposition", "attachment;filename=\""+ saveFileName + "\";");
+
 			
 			FileInputStream fileInputStream = new FileInputStream(attachmentPath);
-		
+
+			//response.setHeader("Content-Disposition", "attachment;filename=\""+ saveFileName + "\";");
+			response.setHeader("Content-Disposition", "attachment;filename="+ saveFileName + ";");
+			
+			response.setHeader("Content-Type", "application/octet-stream");
+			
+			response.setHeader("Content-Transfer-Encoding", "binary;");
+			response.setHeader("Pragma", "no-cache;");
+			response.setHeader("Expires", "-1;");
+			
 			ServletOutputStream servletOutputStream = response.getOutputStream();
 			
 			byte b[] = new byte[1024];
@@ -62,9 +79,9 @@ public class DownController implements Controller {
 			e.printStackTrace();
 		}
 		
-		mv.setPath("detailview.jsp");
+		//mv.setPath("detailview.jsp");
 		
-		return mv;
+		return null;
 	}
 
 }

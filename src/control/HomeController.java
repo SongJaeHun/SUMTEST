@@ -17,10 +17,7 @@ public class HomeController implements Controller {
 		BoardService service=BoardService.getInstance();
 		ModelAndView mv=new ModelAndView();
 		try {
-			HttpSession session=request.getSession();
-			System.out.println("홈컨트롤러 로그인인포 값 " + session.getAttribute("loginInfo"));
 			ArrayList list=service.getAllBoard();
-			System.out.println("home컨트롤러 ********" + list);
 			request.setAttribute("home", list);
 			mv.setPath("home.jsp");
 		} catch (SQLException e) {

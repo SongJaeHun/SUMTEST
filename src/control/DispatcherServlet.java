@@ -35,7 +35,12 @@ public class DispatcherServlet extends HttpServlet {
 		System.out.println(request.getParameter("count"));
 		System.out.println("command = " + command);
 		ct=mapping.create(command);
+		
 		ModelAndView mv=ct.execute(request, response);
+		if( mv == null ) {
+			return;
+		}
+		
 		if(mv.isRedirect()){
 			response.sendRedirect(mv.getPath());
 		}else{

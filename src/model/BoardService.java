@@ -126,5 +126,9 @@ public class BoardService {
 		// TODO Auto-generated method stub
 		return dao.getLastReceivedDate(accountId);
 	}
+	public boolean getExistFlag(int accountId) throws SQLException {
+		// TODO Auto-generated method stub
+		return dao.getExistFlag(accountId);
+	}
 		
 }

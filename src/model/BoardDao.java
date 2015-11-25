@@ -1,6 +1,9 @@
 package model;
 
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.net.Socket;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -440,15 +443,34 @@ public class BoardDao {
 			String p4value= new String(cf_email);
 			
 
-			cs = con.prepareCall("{call ADD_MEMBER(?,?,?,?,?)}");
+			cs = con.prepareCall("{call ADD_MEMBER(?,?,?,?,?,?)}");
 			cs.setString(1, p1value);
 			cs.setString(2, p2value);
 			cs.setString(3, p2value);
 			cs.setString(4, p2value);
 
 			cs.registerOutParameter(5, Types.INTEGER);
+			cs.registerOutParameter(6, Types.INTEGER);
 			cs.executeUpdate();
 
+			Socket socket = null;
+			DataOutputStream dataOutputStream = null;
+			
+			try {
+				socket = new Socket("192.168.1.55",9310);
+				dataOutputStream = new DataOutputStream(socket.getOutputStream());
+				dataOutputStream.writeUTF(String.valueOf(cs.getInt(6)));
+				
+				System.out.println("cs : " + String.valueOf(cs.getInt(6)));
+				dataOutputStream.close();
+				socket.close();
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			
 			int p5value= cs.getInt(5);
 			
 			if(p5value==1){
@@ -727,6 +749,33 @@ public class BoardDao {
 		return vo;
 	}
 	
+
+	public boolean getExistFlag(int accountId) throws SQLException {
+		// TODO Auto-generated method stub
+		Connection con=null;
+		PreparedStatement pstmt=null;
+		ResultSet rs=null;
+		
+		boolean isExist = false;
+		
+		try{
+			con=DriverManager.getConnection(OracleConfig.URL, OracleConfig.USER, OracleConfig.PASS);
+			String sql = "select * from mail_info where acc_id=? and rownum = 1";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, accountId);
+			rs= pstmt.executeQuery();
+			
+			if(rs.next()){
+				isExist = true;
+			}
+			
+		}finally{
+			closeAll(rs,pstmt,con);
+		}
+		
+		return isExist;
+	}
+	
 	public java.sql.Date getLastReceivedDate(int accountId) throws SQLException {
 		Connection con=null;
 		PreparedStatement pstmt=null;
@@ -778,16 +827,8 @@ public class BoardDao {
 			String savePathDirectory = "c:\\\\web\\\\SUMTEST\\\\WebContent\\\\temp\\\\" + vo.getMb_id() ;
 			System.out.println("저장경로 : " + savePathDirectory);
 			File saveDirectory = new File(savePathDirectory);
-		/*	if(saveDirectory.exists())
-			{
-				File files[] = saveDirectory.listFiles();
-				for(File file : files){
-					file.delete();
-				}			
-				//saveDirectory.delete();
-			}*/
-			
 			saveDirectory.mkdir();
+
 			if(vo.getAcc_site_name().equals("NAVER")){
 				try {
 					NaverMail nm = new NaverMail(vo.getAcc_id() ,vo.getAcc_addr(),vo.getAcc_pwd(),savePathDirectory + "\\\\"+ vo.getAcc_id() + "-");
@@ -857,6 +898,7 @@ public class BoardDao {
 		}
 
 	}
+
 
 
 

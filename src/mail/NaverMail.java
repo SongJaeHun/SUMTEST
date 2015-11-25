@@ -110,20 +110,33 @@ public class NaverMail implements Mail{
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             // acc_id 를 디비에 질의해서 가장 receivedDate 가 마지막인거 찾기
             int compare = 1;
+            
+            if( lastReceivedDate == null) {
+            	lastReceivedDate = new Date(messages[messages.length - 1].getReceivedDate().getTime());
+            }
+            
+            
+            
             for (int i = messages.length - 1 ; i  >= 0  ; i--) {
                 Message msg = messages[i];
                 
-                if( lastReceivedDate == null) {
-                	lastReceivedDate = new Date(msg.getReceivedDate().getTime());
-                	System.out.println("메일 없을때 1번만 실행되야함");
-                }
-                if(compare == 0){
-                	break;
+                compare = lastReceivedDate.compareTo(msg.getReceivedDate()); // 메일 없을때 0
+         
+                // lastReceivedDate 가 더 나중이면 1 return 같으면 0 return 빠르면 -1
+                if(i == messages.length - 1){
+                	
+                	boolean existFlag = service.getExistFlag(accountId);
+                	
+                	if(existFlag){
+                		
+                	}else{
+                		compare = 1;
+                		System.out.println("메일 없을때 1번만 실행되야함 ~~");
+                	}
                 }
                 
-                compare = lastReceivedDate.compareTo(msg.getReceivedDate()); // 메일 없을때 0
-                if(i == messages.length - 1){
-                	compare = 1;
+                if(compare != 1){
+                	break;
                 }
                 
                 contentImgPath = "";
@@ -347,6 +360,16 @@ public class NaverMail implements Mail{
         	int index = from.lastIndexOf("<");
         	from = from.substring(index+1 , from.length()-1);
         }
+        
+        if(from.contains("facebook")){
+        	from = "Facebook";
+        }
+        
+        if(from.contains("\""))
+        {
+        	from = from.replaceAll("\"", "");
+        }
+        
         return from;
     }
     	
@@ -389,7 +412,6 @@ public class NaverMail implements Mail{
             output.close();
             mail.setMainHtmlPath(filePath + fileName + "-1.html");
             temp = contentImgCount(filePath + fileName+ "-1.html");
-            
             if(temp != 0){
             	str = new ArrayList<String>();
             }
