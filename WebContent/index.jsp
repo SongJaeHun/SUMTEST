@@ -181,7 +181,7 @@
 		
         
         <!-- start home -->
-		<section id="home">
+		<section id="home" style="background:url('./images/test.jpg') no-repeat fixed; background-size:cover">
 			<div class="overlay">
 				<div class="container">
 					<div class="row">
@@ -206,7 +206,7 @@
          
          
          <!-- start video -->
-         <section id="video">
+         <section id="video" style="background:url('./images/test.jpg') no-repeat fixed; background-size:cover;">
 				<!-- <div class="container"> 
 					<div class="row"> -->
 						<div class="col-md-6 wow fadeInUp col-lg-12" data-wow-delay="0.6s">
@@ -222,7 +222,7 @@
         
         <!-- start login -->
         
-        <section id="login">
+        <section id="login" style="background:url('./images/test.jpg') no-repeat fixed; background-size:cover">
 			<div class="overlay">
 				<div class="container">
 					<div class="row">
@@ -266,7 +266,7 @@
         
         
         <!-- start join -->
-    <section id="join">
+    <section id="join" style="background:url('./images/test.jpg') no-repeat fixed; background-size:cover;">
 		<div class="overlay">
 				<div class="container">
 					<div class="row">
@@ -317,7 +317,7 @@
 				</div>
 			</div>
 		</section>
-		<section id="about">
+		<section id="about" style="background:'./images/test.jpg' no-repeat fixed; background-size:cover">
 			<div class="overlay">
 				<div class="container">
 					<div class="row">
@@ -331,7 +331,7 @@
 				</div>
 			</div>
 		</section>
-		<footer>
+		<footer style="background:'./images/5fifth.jpg' no-repeat fixed; background-size:cover">
 			<div class="container">
 				<div class="row">
 					<p>Copyright © 2015 Team SC</p>

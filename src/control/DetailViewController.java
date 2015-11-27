@@ -4,6 +4,7 @@ import java.sql.SQLException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import model.BoardService;
 import model.BoardVO;
@@ -19,8 +20,7 @@ public class DetailViewController implements Controller {
       int mail_no=0;
          mail_no=Integer.parseInt(request.getParameter("mail_no"));
       
-      System.out.println("mail_no 컨트롤"+ mail_no +"*1**");
-      
+         System.out.println("ㅋㅋㅋㅋㅋㅋㅋ" + mail_no);
       try {
          BoardVO vo = service.getDetailView(mail_no);
          request.setAttribute("detail", vo);

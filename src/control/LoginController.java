@@ -29,9 +29,11 @@ public class LoginController implements Controller {
 			list = service.login(vo);	//로그인 된 계정 목록들..
 			list2 = service.getRecent();
 			System.out.println("리스트값******"+list);
+			
 			if(list.isEmpty()==false){
-				request.setAttribute("user_id", user_id);
 				HttpSession session=request.getSession();
+				session.setAttribute("user_id", user_id);
+				session.setAttribute("mb_id", service.getMb_id());
 				session.setAttribute("loginInfo",list);
 				session.setAttribute("recent",list2);
 				System.out.println("리스트2****" + list2);

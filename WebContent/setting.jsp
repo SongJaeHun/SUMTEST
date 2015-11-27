@@ -163,24 +163,23 @@ function insRow() {
 		
 		<!--  search form start -->
 			<div class="nav search-row" id="top_menu">
-				<ul class="nav top-menu">
-					<li>
-						<form class="navbar-form" action="DispatcherServlet" method="post">
-							<input class="form-control" placeholder="Search" type="text" name="searchText">
-							<input type="hidden" name="command" value="search">
+			<ul class="nav top-menu">
+				<li>
+					<form class="navbar-form" action="DispatcherServlet" method="post">
+						<input class="form-control" placeholder="Search" type="text" name="searchText" id="searchText">
+						<input type="hidden" name="command" value="search">
 							
-							<select id="search" name="search" class="form-control">
-								<option value="">검색값 선택</option>
-								<option value="mailsearch">일반메일검색</option>
-								<option value="attachsearch">첨부파일검색</option>
-								<option value="mailidsearch">메일주소검색</option>
-								<option value="daysearch">수신기간검색</option>
-							</select>
-							<input type="submit" value="검색" class="form-control">
-						</form>
-					</li>
-				</ul>
-			</div>
+						<select id="searchCon" name="searchCon" class="form-control">
+							<option value="">조건</option>
+							<option value="allSearch">전체 검색</option>
+							<option value="mailSearch">일반메일검색</option>
+							<option value="attachSearch">첨부파일검색</option>
+						</select>
+						<input type="button" value="검색" onClick="return search1()">
+					</form>
+				</li>
+			</ul>
+	</div>
 	<!--  search form end -->
 	
 
@@ -288,7 +287,7 @@ function insRow() {
 			<li class="dropdown"><a data-toggle="dropdown"
 				class="dropdown-toggle" href="#"> <span class="profile-ava">
 						<img alt="" src="img2/avatar1_small.jpg">
-				</span> <span class="username"><c:out value="${name}"></c:out></span> <b class="caret"></b>
+				</span> <span class="username">${user_id }</span> <b class="caret"></b>
 			</a>
 				<ul class="dropdown-menu extended logout">
 					<div class="log-arrow-up"></div>

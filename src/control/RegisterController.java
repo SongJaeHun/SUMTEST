@@ -27,7 +27,7 @@ public class RegisterController implements Controller {
 		
 		try{
 			list = service.register(vo);	//로그인 된 계정 목록들..
-			
+
 			System.out.println("***회원가입컨트롤러 리스트 ");
 			if(list.isEmpty()==false){
 				System.out.println("회원가입 성공!!");

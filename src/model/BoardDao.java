@@ -353,7 +353,9 @@ public class BoardDao {
 		   return re;
 		 }
 	
-	
+	public int getMb_id(){
+		return p3value;
+	}
 	
 	
 	public ArrayList login(String user_id,String user_pwd)throws SQLException{

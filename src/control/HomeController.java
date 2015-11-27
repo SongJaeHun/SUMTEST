@@ -17,6 +17,7 @@ public class HomeController implements Controller {
 		BoardService service=BoardService.getInstance();
 		ModelAndView mv=new ModelAndView();
 		try {
+			
 			ArrayList list=service.getAllBoard();
 			request.setAttribute("home", list);
 			mv.setPath("home.jsp");

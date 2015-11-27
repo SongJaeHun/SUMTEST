@@ -5,8 +5,8 @@ import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-import mail.MailContent;
 import model.BoardService;
 
 public class AccountChgController implements Controller {

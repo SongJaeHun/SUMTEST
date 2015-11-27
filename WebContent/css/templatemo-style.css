@@ -178,7 +178,7 @@ img
 /* start home */       
 #home
     {
-    background: url('../images/back2.jpg') no-repeat fixed;
+    background: url('./images/test.jpg') no-repeat fixed;
     background-size: cover;
     color: #fff;
     margin-top: 70px;
@@ -219,10 +219,11 @@ img
 /* start video */
 #video
     {
-   		background: url('../images/back2.jpg') no-repeat fixed;
+   		background: url('./images/2second.jpg') no-repeat fixed;
     	color: #fff;
     	background-size: cover;
 		padding-bottom: 500px;
+    	width: 100%;
     }
 /* end video */
 
@@ -231,9 +232,9 @@ img
 /* start login */
 #login
     {
-/*    	background: url('../images/back2.jpg') no-repeat fixed; */
-		background:#7FFFC1;
+    	background: url('./images/3third.jpg') no-repeat fixed; 
     	background-size: cover;
+   		width: 100%;
 
     }
 
@@ -280,9 +281,9 @@ img
 /* start join */
 #join
     {
-/*    	background: url('../images/back2.jpg') no-repeat fixed; */
-		background:#FF7C7F;
+    	background: url('./images/4forth.jpg') no-repeat fixed; 
     	background-size: cover;
+    	width: 100%;
 
     }
 
@@ -328,11 +329,11 @@ img
 /* start about */
 #about
     {
-        background: #61E384;
-/*    	background: url('../images/back2.jpg') no-repeat fixed; */
+    	background: url('../images/test.jpg') no-repeat fixed;
 
     	background-size: cover;
         text-align: center;
+    	width: 100%;
     }
 
 	#about
@@ -348,7 +349,8 @@ img
 /* start footer */
 footer
     {
-        background: #fff;
+    	background: url('../images/test.jpg') no-repeat fixed;
+    	width: 100%;
         font-weight: 400;
         text-align: center;
         padding: 20px;

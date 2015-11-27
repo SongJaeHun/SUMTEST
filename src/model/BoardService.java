@@ -20,6 +20,11 @@ public class BoardService {
 		
 	}
 	
+	public int getMb_id(){
+		int mb_id = dao.getMb_id();
+		return mb_id;
+	}
+	
 	public int registContent(MailContent mail) throws SQLException{
 		int updateCount = dao.registCount(mail);
 		return updateCount;

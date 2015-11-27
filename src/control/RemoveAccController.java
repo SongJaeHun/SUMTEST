@@ -23,7 +23,7 @@ public class RemoveAccController implements Controller {
 			isRemove = service.removeAcc(Integer.parseInt(acc_id));
 			accList = service.getLoninInfo();
 			HttpSession session = request.getSession();
-			
+
 			
 			if(isRemove){
 				//삭제 성공 --> accountDel.jsp 이동

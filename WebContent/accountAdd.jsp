@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8" import="model.BoardVO"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %> 
+<%@ page import="org.json.simple.*" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
@@ -49,8 +50,637 @@
       <script src="js/respond.min.js"></script>
       <script src="js/lte-ie7.js"></script>
     <![endif]-->
+    
+    
+ <script type="text/javascript" src="//code.jquery.com/jquery-2.1.3.js"></script>  
+ <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
+ <link rel="stylesheet" type="text/css" href="/css/result-light.css">
+ <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+ <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
+
+<!-- 페이징   페이징    페이징    페이징    페이징    페이징    페이징    페이징    페이징     -->
+<script>
+$(window).load(function(){
+(function ($) {
+    $(function () {
+        $.widget("zpd.paging", {
+            options: {
+                limit: 20,
+                limitPaging: 10,
+                rowDisplayStyle: 'block',
+                activePage: 0,
+                rows: []
+            },
+            _create: function () {
+                var rows = $("tbody", this.element).children();
+                this.options.rows = rows;
+                this.options.rowDisplayStyle = rows.css('display');
+                var nav = this._getNavBar();
+                this.element.after(nav);
+                this.showPage(0);
+            },
+            _getNavBar: function () {
+                var rows = this.options.rows;
+                var nav = $('<div>', {
+                    class: 'paging-nav'
+                });
+                var displayVal;
+                for (var i = 0; i < Math.ceil(rows.length / this.options.limit); i++) {
+                    displayVal = 'display:inline-block';
+                    if (i > this.options.limitPaging) displayVal = 'display:none';
+
+                    this._on($('<a>', {
+                        href: '#',
+                        text: (i + 1),
+                            "data-page": (i),
+                        style: displayVal
+                    }).appendTo(nav), {
+                        click: "pageClickHandler"
+                    });
+
+                }
+                //create previous link
+                this._on($('<a>', {
+                    href: '#',
+                    text: '<<',
+                        "data-direction": -1
+                }).prependTo(nav), {
+                    click: "pageStepHandler"
+                });
+                //create next link
+                this._on($('<a>', {
+                    href: '#',
+                    text: '>>',
+                        "data-direction": +1
+                }).appendTo(nav), {
+                    click: "pageStepHandler"
+                });
+                return nav;
+            },
+            showPage: function (pageNum) {
+                var num = pageNum * 1; //it has to be numeric
+                this.options.activePage = num;
+                var rows = this.options.rows;
+                var limit = this.options.limit;
+                for (var i = 0; i < rows.length; i++) {
+                    if (i >= limit * num && i < limit * (num + 1)) {
+                        $(rows[i]).css('display', this.options.rowDisplayStyle);
+                    } else {
+                        $(rows[i]).css('display', 'none');
+                    }
+                }
+            },
+            pageClickHandler: function (event) {
+                event.preventDefault();
+                $(event.target).siblings().attr('class', "");
+                $(event.target).attr('class', "selected-page");
+                var pageNum = $(event.target).attr('data-page');
+                var itemsOnEachSide = this.options.limitPaging / 2;
+                var startPage = Math.floor(parseInt(pageNum) - itemsOnEachSide + 1); // Plus 1 because the array of links starts in "1" index and not "0". "0" index is the next (">>") button 
+                var endPage = Math.ceil(parseInt(pageNum) + itemsOnEachSide + 1);
+                var pagingLinks = $(event.target).parent().children();
+                for (var i = 1; i < pagingLinks.length - 1; i++) {
+                    if (i >= startPage && i <= endPage) $(pagingLinks[i]).css('display', 'inline-block');
+                    else $(pagingLinks[i]).css('display', 'none');
+                }
+
+                this.showPage(pageNum);
+            },
+            pageStepHandler: function (event) {
+                event.preventDefault();
+                //get the direction and ensure it's numeric
+                var dir = $(event.target).attr('data-direction') * 1;
+                var pageNum = this.options.activePage + dir;
+                //if we're in limit, trigger the requested pages link
+                if (pageNum >= 0 && pageNum < this.options.rows.length) {
+                    $("a[data-page=" + pageNum + "]", $(event.target).parent()).click();
+                }
+            }
+        });
+    });
+
+    $('#table-demo').paging({
+        limit: 20,
+        limitPaging: 10
+    });
+})(jQuery);
+});
+</script>
+<!-- 페이징 끝   페이징 끝   페이징 끝   페이징 끝   페이징 끝   페이징 끝   페이징 끝    --> 
 
 </head>
+
+<!-- 서치 스크립트 시작      서치 스크립트 시작      서치 스크립트 시작      서치 스크립트 시작      서치 스크립트 시작      서치 스크립트 시작       -->
+<style>
+.result table, .result table td, .result ul, .result li { margin:0; padding:0 }  
+.result table {border-collapse: collapse; margin-bottom:20px; }
+.result table td { padding:10px }
+.result table td.highlight { padding:5px; word-break:break-all; }
+.result table td.highlight li { margin:10px; margin-left:20px;}
+</style>
+
+<script>
+var FETCH_LIST_SIZE = 10;
+var fetchIndex = 0;
+
+function insertHit( fields ) {
+
+	var html = 
+		"<table style='width:1500px; TABLE-layout:fixed' border='1' align='center' id='table-demo' class='table table-striped'>"  +
+			"<tr>" +
+				"<td width='100px' height='40px' align='center'>" + fields._id + "</td>" +
+				"<td width='200px' align='center'>" + fields.fields.account_addr + "</td>" +
+				"<td width='400px' padding-left='100px'><a href='DispatcherServlet?command=detailView&mail_no=" + fields.fields.mail_id + " ' target='_blank'>" + (fields.fields.title == null ? fields.fields.mail_title : fields.fields.title) + "</a></td>" +
+				"<td width='200px' align='center'>" + fields.fields.rec_addr + "</td>" +
+				"<td width='200px' align='center'>"+ fields.fields.date_detail+"</td>" +
+			"</tr>" +
+				
+			"<tr>" +
+				"<td colspan='5'; class='highlight'; word-break:break-all >" +
+				"<ul>" +
+				
+				( fields.highlight.title == null ? "" : "<li><span>제목 :</span><span>" + fields.highlight.title + "</span></li>") + 
+				( fields.highlight.file == null ? "" : "<li><span>내용 :</span><span>" + fields.highlight.file + "</span></li>") + 
+				( fields.highlight.attachment_title == null ? "" : "<li><span>첨부파일 제목 :</span><span>" + fields.highlight.attachment_title + "</span></li>") + 
+				( fields.highlight.attachment_file == null ? "" : "<li><span>첨부파일 내용 :</span><span>" + fields.highlight.attachment_file + "</span></li>") + 
+			
+				"</ul>" +
+				"</td>" +
+			"</tr>" /* +
+				
+				( fields.fields.attachment_file == null ? "" : "<tr><td colspan='5' style='padding-left:50px'>첨부파일 미리보기&nbsp;&nbsp;:&nbsp;&nbsp; <button type='button' data-toggle='modal' data-target='#myModal' id='modaltestBtn'>"+fields.fields.attachment_title+"</button> </td></tr>")+ */
+			
+		"</table>"; /* + 
+		
+		( fields.fields.attachment_file == null ? $("div.modal-body").text("미리보기가 불가능한 첨부파일입니다.") : $("div.modal-body").text(fieds.fields.attachment_file)) */;
+		
+		
+	
+	$("#table-demo").append( html );
+	
+	$("#modaltestBtn").click(function(){
+		$('#myModal').modal();
+	});
+
+}
+
+function search1( isFirst ){
+	 var id = $('#searchText').val();
+	 var id2 = $('#searchCon').val();
+	 var hidden_mb_id = $('#hidden_mb_id').val();
+	 var hidden_acc_id = $('#searchID').val();
+
+	 if(id==""){
+		 if(id2=="nothing"){
+			 alert("조건을 입력하세요");
+			 return false;
+		 }else{
+		 	alert("검색값을 입력하세요");
+		 	return false;
+		 }
+	 }else{
+		 if(id2=="nothing"){
+			 alert("조건을 입력하세요");
+			 return false;
+	 	}else{
+	 	$("#table-demo").append( "" );
+	 	}
+	 }
+
+	 
+	 if( isFirst == true ) {
+	 	$("#table-demo").html( "" );
+	 	fetchIndex = 0;
+	 }
+	 
+	 if(hidden_acc_id=="all"){
+	 
+		 if(id2=="allSearch"){
+			 var data=  {
+						"fields": ["mail_id","account_addr","rec_addr","title","mail_title","attachment_title","attachment_file","date_detail"],
+						"query": {
+						    "bool": {
+						         "must": [{
+						             "multi_match": {
+						               "query": id,
+						               "fields": [
+											"title",
+											"file",
+											"attachment_title",
+											"attachment_file"
+						               ],
+						              "type": "cross_fields",
+						              "operator":"OR",
+						              "minimum_should_match": "50%"
+						             }
+						           }]
+						    }
+						  },
+						  "size": FETCH_LIST_SIZE,
+						  "from" :fetchIndex,
+						  "sort": [
+						           {
+						             "date": {
+						               "order": "desc"
+						             }
+						           }
+						         ],
+						  "highlight": {
+							  "fields": {
+							      "*":  {"fragment_size" : 150, "number_of_fragments" : 3}
+							  }
+						  
+						  }
+		}
+		
+		$.ajax({
+			url:"http://192.168.1.55:9200/" + hidden_mb_id + "/_search",
+			type:"post",
+			data:JSON.stringify(data),
+			dataType:"json",	 
+			success:function( response ){
+	      	console.log(response);
+	       
+	       var count = response.hits.hits.length;
+	       console.log( count );
+	       
+	       for( var i = 0; i < count; i++ ) {
+	     	  var fields = response.hits.hits[ i ];
+	     	  insertHit( fields )
+	       }
+	       
+	       fetchIndex += count;
+	       
+	       if( count > 0 ){
+	    	   $("#down-arrow").show();
+	    	   $("div.paging-nav").hide();
+	       } else {
+	    	   $("#down-arrow").hide();
+	    	   
+	    	}
+		}
+	    });
+
+		}
+		 
+		 else if(id2=="mailSearch"){
+				 var data=  {
+							"fields": ["mail_id","account_addr","rec_addr","title","date_detail"],
+							"query": {
+							    "bool": {
+							         "must": [{
+							             "multi_match": {
+							               "query": id,
+							               "fields": [
+												"title",
+												"file"
+							               ],
+							              "type": "cross_fields",
+							              "operator":"OR",
+							              "minimum_should_match": "50%"
+							             }
+							           }]
+							    }
+							  },
+							  "size": FETCH_LIST_SIZE,
+							  "from" :fetchIndex,
+							  "sort": [
+							           {
+							             "date": {
+							               "order": "desc"
+							             }
+							           }
+							         ],
+							  "highlight": {
+								  "fields": {
+								      "*":  {"fragment_size" : 150, "number_of_fragments" : 3}
+								  }
+							  
+							  }
+				 }
+				 
+			
+			$.ajax({
+				url:"http://192.168.1.55:9200/" + hidden_mb_id + "/mail_type/_search",
+				type:"post",
+				data:JSON.stringify(data),
+				dataType:"json",	 
+				success:function( response ){
+		          console.log(response);
+		          var count = response.hits.hits.length;
+			       console.log( count );
+			       
+			       for( var i = 0; i < count; i++ ) {
+			     	  var fields = response.hits.hits[ i ];
+			     	  insertHit( fields )
+			       }
+			       
+			       fetchIndex += count;       
+			       
+			       if( count > 0 ){
+			    	   $("#down-arrow").show();
+			    	   $("div.paging-nav").hide();
+			       } else {
+			    	   $("#down-arrow").hide();
+			    	   
+			    	}
+				}
+			    });
+			 
+		 }
+		 
+		 else if(id2=="attachSearch"){
+				 var data=  {
+							"fields": ["mail_id","account_addr","rec_addr","mail_title","attachment_title","attachment_file","date_detail"],
+							"query": {
+							    "bool": {
+							         "must": [{
+							             "multi_match": {
+							               "query": id,
+							               "fields": [
+												"attachment_title",
+												"attachment_file"
+							               ],
+							              "type": "cross_fields",
+							              "operator":"OR",
+							              "minimum_should_match": "50%"
+							             }
+							           }]
+							    }
+							  },
+							  "size": FETCH_LIST_SIZE,
+							  "from" :fetchIndex,
+							  "sort": [
+							           {
+							             "date": {
+							               "order": "desc"
+							             }
+							           }
+							         ],
+							  "highlight": {
+								  "fields": {
+								      "*":  {"fragment_size" : 150, "number_of_fragments" : 3}
+								  }
+							  
+							  }
+				 }
+				 
+			
+			$.ajax({
+				url:"http://192.168.1.55:9200/" + hidden_mb_id + "/attachment_type/_search",
+				type:"post",
+				data:JSON.stringify(data),
+				dataType:"json",	 	
+				success:function( response ){
+		          console.log(response);
+		          var count = response.hits.hits.length;
+			       console.log( count );
+			       
+			       for( var i = 0; i < count; i++ ) {
+			     	  var fields = response.hits.hits[ i ];
+			     	  insertHit( fields )
+			       }
+			       
+			       fetchIndex += count;
+			       
+			       if( count > 0 ){
+			    	   $("#down-arrow").show();
+			    	   $("div.paging-nav").hide();
+			       } else {
+			    	   $("#down-arrow").hide();
+			    	   
+			    	}
+			       
+				}
+			    });
+		 }
+	 }
+	 
+	 // 아이디서치 조건이 all 이 아닐때
+	 else{
+		 if(id2=="allSearch"){
+			 var data=  {
+						"fields": ["mail_id","account_addr","rec_addr","title","mail_title","attachment_title","attachment_file","date_detail"],
+						"query": {
+						    "bool": {
+						         "must": [{
+						             "multi_match": {
+						               "query": id,
+						               "fields": [
+											"title",
+											"file",
+											"attachment_title",
+											"attachment_file"
+						               ],
+						              "type": "cross_fields",
+						              "operator":"OR",
+						              "minimum_should_match": "50%"
+						             }
+						           }]
+						    }
+						  },
+						  "post_filter" : {
+							  "term" : {
+								  "account_id" : hidden_acc_id
+							  }
+						  }, 
+						  "size": FETCH_LIST_SIZE,
+						  "from" :fetchIndex,
+						  "sort": [
+						           {
+						             "date": {
+						               "order": "desc"
+						             }
+						           }
+						         ],
+						  "highlight": {
+							  "fields": {
+							      "*":  {"fragment_size" : 150, "number_of_fragments" : 3}
+							  }
+						  
+						  }
+		}
+		
+		$.ajax({
+			url:"http://192.168.1.55:9200/" + hidden_mb_id + "/_search",
+			type:"post",
+			data:JSON.stringify(data),
+			dataType:"json",	 
+			success:function( response ){
+	      	console.log(response);
+	       
+	       var count = response.hits.hits.length;
+	       console.log( count );
+	       
+	       for( var i = 0; i < count; i++ ) {
+	     	  var fields = response.hits.hits[ i ];
+	     	  insertHit( fields );
+	       }
+	       
+	       fetchIndex += count;
+	       
+	       if( count > 0 ){
+	    	   $("#down-arrow").show();
+	    	   $("div.paging-nav").hide();
+	       } else {
+	    	   $("#down-arrow").hide();
+	    	   
+	    	}
+		}
+	    });
+
+		}
+		 
+		 else if(id2=="mailSearch"){
+				 var data=  {
+							"fields": ["mail_id","account_addr","rec_addr","title","date_detail"],
+							"query": {
+							    "bool": {
+							         "must": [{
+							             "multi_match": {
+							               "query": id,
+							               "fields": [
+												"title",
+												"file"
+							               ],
+							              "type": "cross_fields",
+							              "operator":"OR",
+							              "minimum_should_match": "50%"
+							             }
+							           }]
+							    }
+							  },
+							  "post_filter" : {
+								  "term" : {
+									  "account_id" : hidden_acc_id
+								  }
+							  }, 
+							  "size": FETCH_LIST_SIZE,
+							  "from" :fetchIndex,
+							  "sort": [
+							           {
+							             "date": {
+							               "order": "desc"
+							             }
+							           }
+							         ],
+							  "highlight": {
+								  "fields": {
+								      "*":  {"fragment_size" : 150, "number_of_fragments" : 3}
+								  }
+							  
+							  }
+				 }
+				 
+			
+			$.ajax({
+				url:"http://192.168.1.55:9200/" + hidden_mb_id + "/mail_type/_search",
+				type:"post",
+				data:JSON.stringify(data),
+				dataType:"json",	 
+				success:function( response ){
+		          console.log(response);
+		          var count = response.hits.hits.length;
+			       console.log( count );
+			       
+			       for( var i = 0; i < count; i++ ) {
+			     	  var fields = response.hits.hits[ i ];
+			     	  insertHit( fields )
+			       }
+			       
+			       fetchIndex += count;
+			       if( count > 0 ){
+			    	   $("#down-arrow").show();
+			    	   $("div.paging-nav").hide();
+			       } else {
+			    	   $("#down-arrow").hide();
+			    	   
+			    	}
+			       
+				}
+			    });
+			 
+		 }
+		 
+		 else if(id2=="attachSearch"){
+				 var data=  {
+							"fields": ["mail_id","account","rec_addr","mail_title","attachment_file","date"],
+							"query": {
+							    "bool": {
+							         "must": [{
+							             "multi_match": {
+							               "query": id,
+							               "fields": [
+												"attachment_title",
+												"attachment_file"
+							               ],
+							              "type": "cross_fields",
+							              "operator":"OR",
+							              "minimum_should_match": "75%"
+							             }
+							           }]
+							    }
+							  },
+							  "post_filter" : {
+								  "term" : {
+									  "account_id" : hidden_acc_id
+								  }
+							  }, 
+							  "size": FETCH_LIST_SIZE,
+							  "from" :fetchIndex,
+							  "sort": [
+							           {
+							             "date": {
+							               "order": "desc"
+							             }
+							           }
+							         ],
+							  "highlight": {
+								  "fields": {
+								      "*":  {"fragment_size" : 150, "number_of_fragments" : 3}
+								  }
+							  
+							  }
+				 }
+				 
+			
+			$.ajax({
+				url:"http://192.168.1.55:9200/" + hidden_mb_id + "/attachment_type/_search",
+				type:"post",
+				data:JSON.stringify(data),
+				dataType:"json",	 
+				success:function( response ){
+		          console.log(response);
+		          
+		          var count = response.hits.hits.length;
+			       console.log( count );
+			       
+			       for( var i = 0; i < count; i++ ) {
+			     	  var fields = response.hits.hits[ i ];
+			     	  insertHit( fields )
+			       }
+			       
+			       fetchIndex += count;
+			       if( count > 0 ){
+			    	   $("#down-arrow").show();
+			    	   $("div.paging-nav").hide();
+			       } else {
+			    	   $("#down-arrow").hide();
+			    	   
+			    	}
+				}
+			    });
+		 }
+	 }
+	 
+	 	 
+	 
+	 
+ }
+</script>
+<!-- 서치스크립트 끝      서치스크립트 끝      서치스크립트 끝      서치스크립트 끝      서치스크립트 끝      서치스크립트 끝      서치스크립트 끝      서치스크립트 끝       -->
+
+
 <script>
 
 function logout(){
@@ -58,7 +688,10 @@ function logout(){
 	 if(con == true){
 		session.invalidate(); 
 	  	location.href="index.jsp";
-	  	}else{}
+	  	return false;
+	  	}else{
+	  		return false;
+	  	}
 	}
 	
 function checkChange(){
@@ -130,12 +763,38 @@ function insRow() {
 	}
 </script>
 <body>
+
+  <!-- 모달    모달    모달    모달    모달    모달    모달    모달    모달     -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+     <div class="modal-dialog">
+       <div class="modal-content">
+		<!-- -----------------------모달 타이틀---------------------- -->
+		   <div class="modal-header">
+		       <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="myModalLabel">첨부파일</h4>
+		    </div>
+		<!-- ---------------------모달내용--------------------- -->
+		    <div class="modal-body">
+		
+		
+		   </div>
+		<!-- ---------------------모달 하단--------------------- -->
+		   <div class="modal-footer">
+		      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		   </div>
+       </div>
+     </div>
+   </div>
+   
+ <!-- 모달 끝       모달 끝       모달 끝       모달 끝       모달 끝       모달 끝       모달 끝       모달 끝        -->
+   
+   
 	<% int count=0; %>
 	<c:forEach items="${loginInfo}" var="loginInfo" >
 		<%count++; %>
 	</c:forEach>
 
-	<c:set var="name" value="${user_id}" scope="application"></c:set>
+	<input type="hidden" id="hidden_mb_id" value="${mb_id}">
 
 	<!-- container section start -->
 	<section id="container" class=""> <header
@@ -150,27 +809,41 @@ function insRow() {
 	<!--logo start--> <a href="DispatcherServlet?command=home" class="logo">Team<span
 		class="lite"> SC</span></a> <!--logo end--> 
 		
-		<!--  search form start -->
-	<div class="nav search-row" id="top_menu">
-				<ul class="nav top-menu">
-					<li>
-						<form class="navbar-form" action="DispatcherServlet" method="post">
-							<input class="form-control" placeholder="Search" type="text" name="searchText">
-							<input type="hidden" name="command" value="search">
-							
-							<select id="search" name="search" class="form-control">
-								<option value="">검색값 선택</option>
-								<option value="mailsearch">일반메일검색</option>
-								<option value="attachsearch">첨부파일검색</option>
-								<option value="mailidsearch">메일주소검색</option>
-								<option value="daysearch">수신기간검색</option>
-							</select>
-							<input type="submit" value="검색" class="form-control">
-						</form>
-					</li>
-				</ul>
-			</div>
+	<!--  search form start -->
+	
+	<style>
+		.navbar-form select {-webkit-appearance:none; -moz-appearance: none; position: relative; appearance: none; border-radius:7px; background:url(./img2/sdown.png) no-repeat 95% 50%; background-color:white; }
+	</style>
+	
+		<div class="nav search-row" id="top_menu">
+			<ul class="nav top-menu">
+				<li>
+					<div class="navbar-form">
+						<input type="hidden" name="command" value="search">
+						&nbsp;&nbsp;&nbsp;&nbsp;
+						<select id="searchID" name="searchID" style="width:160px; height:26px; font-family:고딕체">
+								<option value="all" height="100px">&nbsp;모든 메일 검색</option>
+							<c:forEach items="${loginInfo}" var="list">
+								<option value="${list.acc_id}">&nbsp;${list.acc_addr}</option>
+							</c:forEach>
+						</select>
+						&nbsp;&nbsp;
+						<select id="searchCon" name="searchCon" style="width:140px; height:26px; font-family:고딕체">
+							<option value="nothing">&nbsp;조건</option>
+							<option value="allSearch">&nbsp;전체 검색</option>
+							<option value="mailSearch">&nbsp;일반메일검색</option>
+							<option value="attachSearch">&nbsp;첨부파일검색</option>
+						</select>
+						&nbsp;&nbsp;
+						<input placeholder="&nbsp;&nbsp;Search" type="text" name="searchText" id="searchText" style="width:200px; height:26px; border-radius:5px; position:relative; font-family:고딕체;">
+						
+						<button type="button" style="background-Color:#1a2732; border:0px #f1f2f7;" value="검색" onclick="search1( true );"><img alt="avatar" src="./img2/searchB2.png"></button>
+					</div>
+				</li>
+			</ul>
+	</div>
 	<!--  search form end -->
+
 
 	<div class="top-nav notification-row">
 		<!-- notificatoin dropdown start-->
@@ -277,7 +950,7 @@ function insRow() {
 			<li class="dropdown"><a data-toggle="dropdown"
 				class="dropdown-toggle" href="#"> <span class="profile-ava">
 						<img alt="" src="img2/avatar1_small.jpg">
-				</span> <span class="username"><c:out value="${name}"></c:out></span> <b class="caret"></b>
+				</span> <span class="username">${user_id }</span> <b class="caret"></b>
 			</a>
 				<ul class="dropdown-menu extended logout">
 					<div class="log-arrow-up"></div>
@@ -395,8 +1068,8 @@ function insRow() {
 				<i class="fa fa-laptop"></i> Dashboard
 			</h3>
 			<ol class="breadcrumb">
-				<li><i class="fa fa-home"></i><a href="home.html">Home</a></li>
-				<li><i class="fa fa-laptop"></i>Dashboard</li>
+				<li><i class="fa fa-home"></i><a href="home.jsp">Home</a></li>
+				<li><i class="fa fa-laptop"></i>Account Add</li>
 			</ol>
 		</div>
 	</div>
